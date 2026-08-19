@@ -325,3 +325,408 @@ Ban lãnh đạo cần biết:
 | **EX-16** | Lỗi hệ thống thành phần              | Payment/Notification gặp lỗi                                | Không để lỗi của thành phần làm dừng toàn bộ chức năng đặt xe                            |
 | **EX-17** | Dữ liệu vị trí không khả dụng        | Không nhận được vị trí Driver                               | Không sử dụng vị trí hiện tại cho việc xác định khoảng cách/ETA và xử lý theo chính sách |
 | **EX-18** | Lỗi khi mở rộng hệ thống             | Thành phần sau khi scale hoạt động không ổn định            | Kiểm tra, rollback hoặc xử lý theo quy trình vận hành                                    |
+
+## mô hình hóa dữ liệu
+
+### 1. UserAccount
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `UserID` | Mã người dùng | PK |
+| `Username` | Tên đăng nhập | |
+| `Password` | Mật khẩu đã mã hóa | |
+| `Email` | Email | |
+| `Phone` | Số điện thoại | |
+| `FullName` | Họ tên | |
+| `Status` | Trạng thái tài khoản | |
+| `CreatedAt` | Ngày tạo | |
+| `UpdatedAt` | Ngày cập nhật | |
+
+---
+
+### 2. Role
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `RoleID` | Mã vai trò | PK |
+| `RoleName` | Tên vai trò | |
+| `Description` | Mô tả vai trò | |
+| `Status` | Trạng thái | |
+
+Ví dụ: `Customer`, `Driver`, `Operation Staff`, `Admin`, `Management`, `Finance`.
+
+---
+
+## 3. Permission
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `PermissionID` | Mã quyền | PK |
+| `PermissionName` | Tên quyền | |
+| `Description` | Mô tả quyền | |
+| `Resource` | Đối tượng/chức năng được phép truy cập | |
+| `Action` | Hành động được phép | |
+
+Ví dụ: `Trip.View`, `Trip.Update`, `User.Lock`.
+
+---
+
+## 4. Customer
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `CustomerID` | Mã khách hàng | PK |
+| `UserID` | Tài khoản người dùng | FK |
+| `Address` | Địa chỉ | |
+| `DateOfBirth` | Ngày sinh | |
+| `CreatedAt` | Ngày tạo hồ sơ | |
+
+`Customer` nên liên kết với `UserAccount` thay vì lưu lại `Username`, `Password`, `Email`,...
+
+---
+
+### 5. Driver
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `DriverID` | Mã tài xế | PK |
+| `UserID` | Tài khoản tài xế | FK |
+| `LicenseNumber` | Số giấy phép lái xe | |
+| `DriverStatus` | Trạng thái tài xế | |
+| `AvailabilityStatus` | Trạng thái sẵn sàng nhận chuyến | |
+| `RatingAverage` | Điểm đánh giá trung bình | |
+| `CreatedAt` | Ngày tạo | |
+| `UpdatedAt` | Ngày cập nhật | |
+
+Ví dụ `AvailabilityStatus`: `Available`, `Busy`, `Offline`.
+
+---
+
+### 6. Vehicle
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `VehicleID` | Mã phương tiện | PK |
+| `DriverID` | Tài xế sở hữu/sử dụng | FK |
+| `VehicleType` | Loại xe | |
+| `LicensePlate` | Biển số xe | |
+| `Brand` | Hãng xe | |
+| `Model` | Model xe | |
+| `Color` | Màu xe | |
+| `Status` | Trạng thái phương tiện | |
+| `CreatedAt` | Ngày tạo | |
+
+---
+
+### 7. ServiceType
+
+Thực thể này dùng để hỗ trợ **nhiều loại dịch vụ trong tương lai**.
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `ServiceTypeID` | Mã loại dịch vụ | PK |
+| `ServiceName` | Tên dịch vụ | |
+| `Description` | Mô tả | |
+| `VehicleType` | Loại xe phù hợp | |
+| `Status` | Trạng thái | |
+| `CreatedAt` | Ngày tạo | |
+
+Ví dụ: `Taxi 4 chỗ`, `Taxi 7 chỗ`.
+
+---
+
+### 8. Trip
+
+Đây là **thực thể trung tâm** của hệ thống.
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `TripID` | Mã chuyến | PK |
+| `CustomerID` | Khách hàng đặt | FK |
+| `DriverID` | Tài xế được phân công | FK |
+| `VehicleID` | Phương tiện thực hiện | FK |
+| `ServiceTypeID` | Loại dịch vụ | FK |
+| `PickupLocation` | Điểm đón | |
+| `Destination` | Điểm đến | |
+| `PickupLatitude` | Vĩ độ điểm đón | |
+| `PickupLongitude` | Kinh độ điểm đón | |
+| `DestinationLatitude` | Vĩ độ điểm đến | |
+| `DestinationLongitude` | Kinh độ điểm đến | |
+| `RequestedAt` | Thời điểm đặt | |
+| `AcceptedAt` | Thời điểm tài xế nhận | |
+| `StartedAt` | Thời điểm bắt đầu | |
+| `CompletedAt` | Thời điểm hoàn thành | |
+| `Status` | Trạng thái chuyến | |
+| `Note` | Ghi chú | |
+
+---
+
+### 9. TripStatus
+
+Nếu muốn quản lý lịch sử trạng thái thì nên tách thành thực thể riêng.
+
+| Thuộc tính | Ý nghĩa | Khóa |
+|---|---|---|
+| `TripStatusID` | Mã trạng thái | PK |
+| `TripID` | Mã chuyến | FK |
+| `Status` | Trạng thái | |
+| `UpdatedBy` | Người cập nhật | FK |
+| `UpdatedAt` | Thời điểm cập nhật | |
+| `Note` | Ghi chú | |
+
+## 10. DriverLocation
+
+Dùng để lưu vị trí tài xế.
+
+| Thuộc tính   | Ý nghĩa            | Khóa |
+| ------------ | ------------------ | ---- |
+| `LocationID` | Mã vị trí          | PK   |
+| `DriverID`   | Mã tài xế          | FK   |
+| `Latitude`   | Vĩ độ              |      |
+| `Longitude`  | Kinh độ            |      |
+| `RecordedAt` | Thời điểm ghi nhận |      |
+
+Quan hệ:
+
+```text
+Driver 1 ───── N DriverLocation
+```
+
+---
+
+## 11. Fare
+
+| Thuộc tính     | Ý nghĩa             | Khóa |
+| -------------- | ------------------- | ---- |
+| `FareID`       | Mã cước             | PK   |
+| `TripID`       | Mã chuyến           | FK   |
+| `BaseFare`     | Giá cơ bản          |      |
+| `Distance`     | Quãng đường         |      |
+| `Duration`     | Thời gian           |      |
+| `ServiceFee`   | Phí dịch vụ         |      |
+| `Discount`     | Giảm giá            |      |
+| `TotalAmount`  | Tổng tiền           |      |
+| `CalculatedAt` | Thời điểm tính cước |      |
+
+**Lưu ý:** Các thành phần cụ thể của công thức tính cước chưa được khách hàng chốt, nên các thuộc tính trên hiện là mức mô hình hóa đề xuất.
+
+---
+
+## 12. Payment
+
+| Thuộc tính        | Ý nghĩa                | Khóa |
+| ----------------- | ---------------------- | ---- |
+| `PaymentID`       | Mã thanh toán          | PK   |
+| `TripID`          | Mã chuyến              | FK   |
+| `Amount`          | Số tiền thanh toán     |      |
+| `PaymentMethodID` | Phương thức thanh toán | FK   |
+| `PaymentStatus`   | Trạng thái thanh toán  |      |
+| `PaidAt`          | Thời điểm thanh toán   |      |
+| `CreatedAt`       | Ngày tạo               |      |
+
+---
+
+## 13. Transaction
+
+| Thuộc tính              | Ý nghĩa                  | Khóa |
+| ----------------------- | ------------------------ | ---- |
+| `TransactionID`         | Mã giao dịch             | PK   |
+| `PaymentID`             | Mã thanh toán            | FK   |
+| `ProviderID`            | Nhà cung cấp thanh toán  | FK   |
+| `ProviderTransactionID` | Mã giao dịch từ Provider |      |
+| `TransactionReference`  | Mã tham chiếu giao dịch  |      |
+| `Amount`                | Số tiền                  |      |
+| `Status`                | Trạng thái giao dịch     |      |
+| `CreatedAt`             | Thời điểm tạo            |      |
+| `CompletedAt`           | Thời điểm hoàn thành     |      |
+
+Không lưu số thẻ, CVV hoặc thông tin thanh toán nhạy cảm trực tiếp trong CAB.
+
+---
+
+## 14. PaymentMethod
+
+| Thuộc tính        | Ý nghĩa            | Khóa |
+| ----------------- | ------------------ | ---- |
+| `PaymentMethodID` | Mã phương thức     | PK   |
+| `MethodName`      | Tên phương thức    |      |
+| `MethodType`      | Loại phương thức   |      |
+| `ProviderID`      | Provider tương ứng | FK   |
+| `Status`          | Trạng thái         |      |
+
+Ví dụ:
+
+```text
+Cash
+Electronic Payment
+```
+
+---
+
+## 15. Rating
+
+| Thuộc tính   | Ý nghĩa              | Khóa |
+| ------------ | -------------------- | ---- |
+| `RatingID`   | Mã đánh giá          | PK   |
+| `TripID`     | Mã chuyến            | FK   |
+| `CustomerID` | Người đánh giá       | FK   |
+| `DriverID`   | Tài xế được đánh giá | FK   |
+| `Score`      | Điểm đánh giá        |      |
+| `Comment`    | Nội dung đánh giá    |      |
+| `CreatedAt`  | Thời điểm đánh giá   |      |
+
+---
+
+## 16. Notification
+
+| Thuộc tính         | Ý nghĩa          | Khóa |
+| ------------------ | ---------------- | ---- |
+| `NotificationID`   | Mã thông báo     | PK   |
+| `UserID`           | Người nhận       | FK   |
+| `TripID`           | Chuyến liên quan | FK   |
+| `NotificationType` | Loại thông báo   |      |
+| `Title`            | Tiêu đề          |      |
+| `Content`          | Nội dung         |      |
+| `Channel`          | Kênh gửi         |      |
+| `Status`           | Trạng thái gửi   |      |
+| `SentAt`           | Thời điểm gửi    |      |
+
+---
+
+## 17. NotificationProvider
+
+| Thuộc tính      | Ý nghĩa            | Khóa |
+| --------------- | ------------------ | ---- |
+| `ProviderID`    | Mã Provider        | PK   |
+| `ProviderName`  | Tên Provider       |      |
+| `ProviderType`  | SMS/Email/Push     |      |
+| `Configuration` | Thông tin cấu hình |      |
+| `Status`        | Trạng thái         |      |
+| `CreatedAt`     | Ngày tạo           |      |
+
+---
+
+## 18. PaymentProvider
+
+| Thuộc tính      | Ý nghĩa           | Khóa |
+| --------------- | ----------------- | ---- |
+| `ProviderID`    | Mã Provider       | PK   |
+| `ProviderName`  | Tên nhà cung cấp  |      |
+| `ProviderType`  | Loại Provider     |      |
+| `Configuration` | Cấu hình tích hợp |      |
+| `Status`        | Trạng thái        |      |
+| `CreatedAt`     | Ngày tạo          |      |
+
+---
+
+## 19. Incident
+
+| Thuộc tính     | Ý nghĩa              | Khóa |
+| -------------- | -------------------- | ---- |
+| `IncidentID`   | Mã sự cố             | PK   |
+| `TripID`       | Chuyến xảy ra sự cố  | FK   |
+| `ReportedBy`   | Người báo cáo        | FK   |
+| `IncidentType` | Loại sự cố           |      |
+| `Description`  | Mô tả                |      |
+| `Status`       | Trạng thái xử lý     |      |
+| `Resolution`   | Cách xử lý           |      |
+| `CreatedAt`    | Thời điểm tạo        |      |
+| `ResolvedAt`   | Thời điểm xử lý xong |      |
+
+---
+
+## 20. AuditLog
+
+| Thuộc tính   | Ý nghĩa                    | Khóa |
+| ------------ | -------------------------- | ---- |
+| `AuditLogID` | Mã log                     | PK   |
+| `UserID`     | Người thực hiện            | FK   |
+| `Action`     | Hành động                  |      |
+| `EntityType` | Loại đối tượng bị tác động |      |
+| `EntityID`   | ID đối tượng               |      |
+| `OldValue`   | Giá trị trước thay đổi     |      |
+| `NewValue`   | Giá trị sau thay đổi       |      |
+| `IPAddress`  | Địa chỉ IP                 |      |
+| `CreatedAt`  | Thời điểm thao tác         |      |
+
+---
+
+
+## xác định yêu cầu phi chức năng
+
+| ID         | Non-Functional Requirement                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| **NFR-01** | Hệ thống phải phản hồi nhanh đối với các thao tác thông thường của người dùng.                               |
+| **NFR-02** | Hệ thống phải có khả năng xử lý đồng thời nhiều yêu cầu đặt xe.                                              |
+| **NFR-03** | Chức năng tìm và phân công tài xế phải xử lý đủ nhanh để không ảnh hưởng đáng kể đến trải nghiệm khách hàng. |
+| **NFR-04** | Việc cập nhật trạng thái chuyến và vị trí tài xế phải được xử lý kịp thời.                                   |
+| **NFR-05** | Các chức năng báo cáo không được làm ảnh hưởng đáng kể đến hoạt động đặt xe đang diễn ra.                    |
+
+| ID         | Non-Functional Requirement                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| **NFR-11** | Hệ thống phải có khả năng mở rộng khi số lượng khách hàng tăng.                               |
+| **NFR-12** | Hệ thống phải có khả năng mở rộng khi số lượng tài xế tăng.                                   |
+| **NFR-13** | Hệ thống phải có khả năng mở rộng khi số lượng chuyến xe tăng.                                |
+| **NFR-14** | Các thành phần của hệ thống phải có khả năng scale độc lập.                                   |
+| **NFR-15** | Việc mở rộng một thành phần không được gây ảnh hưởng không cần thiết đến các thành phần khác. |
+
+| ID         | Non-Functional Requirement                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| **NFR-16** | Hệ thống phải cho phép bổ sung loại dịch vụ mới mà không phải xây dựng lại toàn bộ hệ thống.      |
+| **NFR-17** | Hệ thống phải cho phép bổ sung phương thức thanh toán mới.                                        |
+| **NFR-18** | Hệ thống phải cho phép tích hợp thêm Payment Provider.                                            |
+| **NFR-19** | Hệ thống phải cho phép tích hợp thêm Notification Provider.                                       |
+| **NFR-20** | Chức năng mới có thể được triển khai từng phần và hạn chế ảnh hưởng đến chức năng đang hoạt động. |
+
+| ID         | Non-Functional Requirement                                                              |
+| ---------- | --------------------------------------------------------------------------------------- |
+| **NFR-21** | Người dùng phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản.        |
+| **NFR-22** | Hệ thống phải kiểm soát quyền truy cập đối với các chức năng quản trị.                  |
+| **NFR-23** | Người dùng không có quyền không được phép truy cập hoặc thực hiện thao tác trái quyền.  |
+| **NFR-24** | Thông tin cá nhân của khách hàng và tài xế phải được bảo vệ.                            |
+| **NFR-25** | Thông tin phương tiện phải được bảo vệ khỏi truy cập trái phép.                         |
+| **NFR-26** | Dữ liệu vị trí tài xế phải được bảo vệ.                                                 |
+| **NFR-27** | Dữ liệu giao dịch thanh toán phải được bảo vệ.                                          |
+| **NFR-28** | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán. |
+| **NFR-29** | Các thao tác quan trọng phải được ghi nhận để phục vụ kiểm tra và điều tra sự cố.       |
+
+| ID         | Non-Functional Requirement                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| **NFR-30** | Hệ thống phải đảm bảo dữ liệu chuyến xe được cập nhật nhất quán.                                       |
+| **NFR-31** | Kết quả thanh toán phải được ghi nhận chính xác.                                                       |
+| **NFR-32** | Hệ thống phải xử lý được lỗi của các hệ thống bên ngoài mà không làm mất dữ liệu nghiệp vụ quan trọng. |
+| **NFR-33** | Hệ thống phải đảm bảo trạng thái chuyến không bị chuyển sang trạng thái không hợp lệ.                  |
+| **NFR-34** | Hệ thống phải có khả năng phục hồi phù hợp khi xảy ra lỗi thành phần.                                  |
+
+| ID         | Non-Functional Requirement                                                      |
+| ---------- | ------------------------------------------------------------------------------- |
+| **NFR-35** | Các thành phần hệ thống phải được thiết kế độc lập để thuận tiện bảo trì.       |
+| **NFR-36** | Việc thay đổi một thành phần không nên yêu cầu thay đổi toàn bộ hệ thống.       |
+| **NFR-37** | Hệ thống phải hỗ trợ triển khai chức năng mới từng phần.                        |
+| **NFR-38** | Các tích hợp bên ngoài phải được tách biệt để có thể thay đổi Provider khi cần. |
+| **NFR-39** | Hệ thống phải có cơ chế logging và monitoring để hỗ trợ phát hiện và xử lý lỗi. |
+
+| ID         | Non-Functional Requirement                              |
+| ---------- | ------------------------------------------------------- |
+| **NFR-40** | Hệ thống phải lưu vết các thao tác quản trị quan trọng. |
+| **NFR-41** | Log phải xác định được người thực hiện thao tác.        |
+| **NFR-42** | Log phải ghi nhận thời điểm thực hiện thao tác.         |
+| **NFR-43** | Log phải cho phép truy vết đối tượng bị thay đổi.       |
+| **NFR-44** | Dữ liệu log phải hỗ trợ điều tra khi xảy ra sự cố.      |
+
+| Nhóm            | ID              | Yêu cầu                                                 |
+| --------------- | --------------- | ------------------------------------------------------- |
+| Performance     | NFR-01 → NFR-05 | Đáp ứng nhanh và xử lý được nhiều yêu cầu đồng thời     |
+| Availability    | NFR-06 → NFR-10 | Duy trì hoạt động khi thành phần phụ trợ gặp lỗi        |
+| Scalability     | NFR-11 → NFR-15 | Scale theo người dùng, tài xế, chuyến và từng component |
+| Extensibility   | NFR-16 → NFR-20 | Dễ bổ sung Service, Payment, Notification               |
+| Security        | NFR-21 → NFR-29 | Authentication, Authorization, bảo vệ dữ liệu           |
+| Reliability     | NFR-30 → NFR-34 | Đảm bảo tính chính xác, nhất quán và phục hồi           |
+| Maintainability | NFR-35 → NFR-39 | Dễ bảo trì, thay thế component và Provider              |
+| Auditability    | NFR-40 → NFR-44 | Có khả năng truy vết thao tác và sự cố                  |
+
+## Vẽ UseCase UC
+
+## Đặc tả UseCase
+
+
