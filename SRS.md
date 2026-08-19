@@ -726,64 +726,230 @@ Electronic Payment
 | Auditability    | NFR-40 → NFR-44 | Có khả năng truy vết thao tác và sự cố                  |
 
 ## Vẽ UseCase UC
-flowchart LR
-    %% Định nghĩa Actors (Sử dụng hình thoi hoặc hình tròn để phân biệt với Use Case)
-    CUST([Customer])
-    DRV([Driver])
-    OPS([Operation Staff])
-    ADM([Admin])
-    MNG([Management])
-    FIN([Finance / Accounting])
-    PAY[[Payment Provider]]
-    NOT[[Notification Provider]]
 
-    %% System Boundary
-    subgraph CAB_System [CAB System]
-        direction TB
-        UC01(Đặt và quản lý chuyến xe)
-        UC02(Tìm và phân công tài xế)
-        UC03(Cập nhật trạng thái chuyến)
-        UC04(Thanh toán chuyến xe)
-        UC05(Xử lý thanh toán)
-        UC06(Xử lý thanh toán thất bại)
-        UC07(Quản lý khách hàng, tài xế, phương tiện)
-        UC08(Giám sát vận hành)
-        UC09(Xử lý sự cố)
-        UC10(Quản lý tài khoản và phân quyền)
-        UC11(Báo cáo và phân tích)
-        UC12(Gửi thông báo)
-    end
-
-    %% Tương tác giữa Actor và Use Case chính
-    CUST --- UC01
-    CUST --- UC04
-    DRV --- UC03
-    OPS --- UC07
-    OPS --- UC08
-    ADM --- UC10
-    ADM --- UC07
-    MNG --- UC08
-    MNG --- UC11
-    FIN --- UC11
-    FIN --- UC04
-
-    %% Tương tác với hệ thống bên ngoài
-    UC05 --- PAY
-    UC12 --- NOT
-
-    %% Quan hệ Include và Extend
-    UC01 -. "<<include>>" .-> UC02
-    UC01 -. "<<include>>" .-> UC12
-    UC03 -. "<<include>>" .-> UC12
-    UC04 -. "<<include>>" .-> UC05
-    UC06 -. "<<extend>>" .-> UC04
-    UC09 -. "<<extend>>" .-> UC08
-
-    %% Style bổ sung để làm nổi bật
-    classDef external fill:#f9f2f4,stroke:#d9534f,stroke-width:2px;
-    class PAY,NOT external;
-    classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
-    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12 usecase;
 ## Đặc tả UseCase
 
+## Tiêu chí chấp nhận (Acceptance Criteria – AC) là các điều kiện cụ thể mà một chức năng phải đáp ứng để được xem là hoàn thành và được khách hàng/BA chấp nhận.
 
+AC-01 — Đăng ký và xác thực tài khoản
+| ID      | Tiêu chí chấp nhận                                                                       |
+| ------- | ---------------------------------------------------------------------------------------- |
+| AC-01.1 | Người dùng có thể đăng ký tài khoản với thông tin hợp lệ.                                |
+| AC-01.2 | Hệ thống từ chối đăng ký khi thông tin bắt buộc không hợp lệ hoặc bị thiếu.              |
+| AC-01.3 | Người dùng phải đăng nhập thành công trước khi sử dụng các chức năng yêu cầu tài khoản.  |
+| AC-01.4 | Tài khoản bị khóa hoặc không hợp lệ không được phép sử dụng chức năng yêu cầu tài khoản. |
+| AC-01.5 | Người dùng không có quyền truy cập chức năng quản trị phải bị từ chối truy cập.          |
+
+AC-02 — Đặt xe
+| ID      | Tiêu chí chấp nhận                                                               |
+| ------- | -------------------------------------------------------------------------------- |
+| AC-02.1 | Khách hàng có thể nhập điểm đón, điểm đến và loại dịch vụ/xe.                    |
+| AC-02.2 | Hệ thống kiểm tra tính hợp lệ của thông tin trước khi tạo yêu cầu.               |
+| AC-02.3 | Nếu thông tin không hợp lệ, hệ thống không tạo chuyến và hiển thị thông báo lỗi. |
+| AC-02.4 | Nếu thông tin hợp lệ, hệ thống tạo yêu cầu đặt xe với trạng thái phù hợp.        |
+| AC-02.5 | Khách hàng có thể xem thông tin chuyến sau khi tạo.                              |
+| AC-02.6 | Khách hàng có thể hủy yêu cầu/chuyến theo chính sách được doanh nghiệp xác nhận. |
+
+AC-03 — Tìm và phân công tài xế
+| ID      | Tiêu chí chấp nhận                                                                                    |
+| ------- | ----------------------------------------------------------------------------------------------------- |
+| AC-03.1 | Khi chuyến được tạo thành công, hệ thống bắt đầu tìm tài xế phù hợp.                                  |
+| AC-03.2 | Hệ thống chỉ lựa chọn tài xế đáp ứng điều kiện khả dụng và phù hợp với chuyến.                        |
+| AC-03.3 | Tài xế phải ở trạng thái sẵn sàng nhận chuyến mới được đề xuất chuyến.                                |
+| AC-03.4 | Hệ thống gửi yêu cầu nhận chuyến đến tài xế phù hợp.                                                  |
+| AC-03.5 | Khi tài xế chấp nhận, hệ thống gán tài xế cho chuyến.                                                 |
+| AC-03.6 | Một chuyến tại một thời điểm chỉ được gán cho một tài xế.                                             |
+| AC-03.7 | Khi tài xế từ chối hoặc không phản hồi, hệ thống tiếp tục tìm tài xế khác.                            |
+| AC-03.8 | Khi không còn tài xế phù hợp, hệ thống thông báo cho khách hàng rằng chuyến không thể được phân công. |
+
+AC-04 — Theo dõi trạng thái chuyến
+| ID      | Tiêu chí chấp nhận                                                                                                    |
+| ------- | --------------------------------------------------------------------------------------------------------------------- |
+| AC-04.1 | Khách hàng có thể xem trạng thái hiện tại của chuyến.                                                                 |
+| AC-04.2 | Hệ thống hiển thị được các giai đoạn chính của chuyến.                                                                |
+| AC-04.3 | Khi tài xế được phân công, khách hàng có thể xem thông tin tài xế.                                                    |
+| AC-04.4 | Khi trạng thái chuyến thay đổi, thông tin hiển thị cho khách hàng được cập nhật.                                      |
+| AC-04.5 | Trạng thái chuyến chỉ được chuyển theo trình tự nghiệp vụ hợp lệ.                                                     |
+| AC-04.6 | Khách hàng có thể biết chuyến đang ở trạng thái tìm tài xế, đã phân công, tài xế đến, đang thực hiện hoặc hoàn thành. |
+
+AC-05 — Tài xế cập nhật chuyến
+| ID      | Tiêu chí chấp nhận                                                       |
+| ------- | ------------------------------------------------------------------------ |
+| AC-05.1 | Tài xế chỉ được cập nhật chuyến mà mình được phân công.                  |
+| AC-05.2 | Tài xế có thể cập nhật trạng thái chuyến theo các bước nghiệp vụ hợp lệ. |
+| AC-05.3 | Hệ thống từ chối trạng thái không hợp lệ hoặc không đúng trình tự.       |
+| AC-05.4 | Trạng thái hợp lệ được lưu vào hệ thống.                                 |
+| AC-05.5 | Khi trạng thái thay đổi, khách hàng nhận được thông tin cập nhật.        |
+
+AC-06 — Tính cước
+| ID      | Tiêu chí chấp nhận                                         |
+| ------- | ---------------------------------------------------------- |
+| AC-06.1 | Hệ thống chỉ tính cước khi chuyến đã hoàn thành.           |
+| AC-06.2 | Hệ thống thu thập các thông tin cần thiết để tính cước.    |
+| AC-06.3 | Hệ thống tính và lưu thông tin cước của chuyến.            |
+| AC-06.4 | Tổng số tiền phải thanh toán được hiển thị cho khách hàng. |
+| AC-06.5 | Kết quả tính cước được liên kết với đúng chuyến xe.        |
+
+AC-07 — Thanh toán
+| ID      | Tiêu chí chấp nhận                                                          |
+| ------- | --------------------------------------------------------------------------- |
+| AC-07.1 | Khách hàng nhìn thấy chính xác số tiền cần thanh toán trước khi thanh toán. |
+| AC-07.2 | Khách hàng có thể chọn thanh toán tiền mặt hoặc điện tử.                    |
+| AC-07.3 | Thanh toán tiền mặt được ghi nhận với trạng thái tương ứng.                 |
+| AC-07.4 | Thanh toán điện tử được gửi đến Payment Provider.                           |
+| AC-07.5 | Hệ thống nhận và lưu kết quả giao dịch từ Payment Provider.                 |
+| AC-07.6 | Giao dịch thanh toán được liên kết với đúng chuyến xe.                      |
+| AC-07.7 | Hệ thống không lưu số thẻ, CVV hoặc thông tin thanh toán nhạy cảm.          |
+
+AC-08 — Thanh toán thất bại
+| ID      | Tiêu chí chấp nhận                                                                          |
+| ------- | ------------------------------------------------------------------------------------------- |
+| AC-08.1 | Khi Payment Provider trả kết quả thất bại, hệ thống cập nhật giao dịch thành thất bại.      |
+| AC-08.2 | Khách hàng nhận được thông báo thanh toán thất bại.                                         |
+| AC-08.3 | Hệ thống không ghi nhận giao dịch thất bại là thanh toán thành công.                        |
+| AC-08.4 | Khách hàng có thể thực hiện thanh toán lại nếu chính sách doanh nghiệp cho phép.            |
+| AC-08.5 | Nếu Payment Provider không phản hồi, hệ thống không tự động xác nhận thanh toán thành công. |
+| AC-08.6 | Hệ thống ghi nhận trạng thái để phục vụ retry hoặc đối soát.                                |
+
+AC-09 — Thông báo
+| ID      | Tiêu chí chấp nhận                                                                                     |
+| ------- | ------------------------------------------------------------------------------------------------------ |
+| AC-09.1 | Hệ thống xác định được sự kiện cần gửi thông báo.                                                      |
+| AC-09.2 | Hệ thống xác định đúng người nhận thông báo.                                                           |
+| AC-09.3 | Khách hàng nhận thông báo khi yêu cầu đặt xe được tiếp nhận.                                           |
+| AC-09.4 | Khách hàng nhận thông báo khi tài xế nhận chuyến.                                                      |
+| AC-09.5 | Khách hàng nhận thông báo khi tài xế đến điểm đón.                                                     |
+| AC-09.6 | Khách hàng nhận thông báo khi chuyến hoàn thành.                                                       |
+| AC-09.7 | Khách hàng nhận thông báo khi thanh toán có kết quả.                                                   |
+| AC-09.8 | Tài xế nhận thông báo khi có chuyến mới hoặc thay đổi liên quan đến chuyến.                            |
+| AC-09.9 | Nếu Notification Provider lỗi, hệ thống ghi nhận lỗi và thực hiện cơ chế retry/dự phòng theo thiết kế. |
+
+AC-10 — Quản lý khách hàng, tài xế và phương tiện
+| ID      | Tiêu chí chấp nhận                                                  |
+| ------- | ------------------------------------------------------------------- |
+| AC-10.1 | Nhân viên có quyền có thể xem thông tin khách hàng.                 |
+| AC-10.2 | Nhân viên có quyền có thể xem và quản lý tài xế.                    |
+| AC-10.3 | Nhân viên có quyền có thể xem và quản lý phương tiện.               |
+| AC-10.4 | Người dùng có quyền phù hợp mới được thêm, sửa hoặc khóa đối tượng. |
+| AC-10.5 | Người không có quyền bị từ chối thao tác quản trị.                  |
+| AC-10.6 | Các thao tác quản trị quan trọng được ghi vào AuditLog.             |
+
+AC-11 — Giám sát vận hành
+| ID      | Tiêu chí chấp nhận                                                    |
+| ------- | --------------------------------------------------------------------- |
+| AC-11.1 | Nhân viên vận hành có thể xem danh sách các chuyến đang diễn ra.      |
+| AC-11.2 | Nhân viên vận hành có thể xem thông tin tài xế của chuyến.            |
+| AC-11.3 | Nhân viên vận hành có thể theo dõi trạng thái chuyến.                 |
+| AC-11.4 | Hệ thống cho phép phát hiện/ghi nhận chuyến có dấu hiệu bất thường.   |
+| AC-11.5 | Nhân viên vận hành có thể ghi nhận và cập nhật quá trình xử lý sự cố. |
+| AC-11.6 | Kết quả xử lý sự cố được lưu lại để phục vụ tra cứu.                  |
+
+AC-12 — Báo cáo và KPI
+| ID      | Tiêu chí chấp nhận                                                              |
+| ------- | ------------------------------------------------------------------------------- |
+| AC-12.1 | Người có quyền có thể xem báo cáo số lượng chuyến.                              |
+| AC-12.2 | Báo cáo thể hiện doanh thu.                                                     |
+| AC-12.3 | Báo cáo thể hiện trạng thái chuyến.                                             |
+| AC-12.4 | Hệ thống cung cấp dữ liệu về chuyến hoàn thành và chuyến hủy.                   |
+| AC-12.5 | Hệ thống cung cấp dữ liệu đánh giá hiệu quả tài xế.                             |
+| AC-12.6 | Dữ liệu báo cáo được tổng hợp từ dữ liệu nghiệp vụ của hệ thống.                |
+| AC-12.7 | Việc tạo báo cáo không làm ảnh hưởng đáng kể đến hoạt động đặt xe đang diễn ra. |
+
+
+AC-13 — Đánh giá tài xế
+| ID      | Tiêu chí chấp nhận                                                         |
+| ------- | -------------------------------------------------------------------------- |
+| AC-13.1 | Khách hàng chỉ được đánh giá tài xế sau khi chuyến hoàn thành.             |
+| AC-13.2 | Đánh giá được liên kết với đúng chuyến và tài xế.                          |
+| AC-13.3 | Hệ thống lưu điểm đánh giá và nội dung nhận xét nếu có.                    |
+| AC-13.4 | Người không liên quan đến chuyến không được đánh giá tài xế của chuyến đó. |
+
+AC-14 — Bảo mật và phân quyền
+| ID      | Tiêu chí chấp nhận                                                                      |
+| ------- | --------------------------------------------------------------------------------------- |
+| AC-14.1 | Người dùng phải được xác thực trước khi truy cập chức năng yêu cầu tài khoản.           |
+| AC-14.2 | Hệ thống kiểm tra quyền trước mỗi thao tác quản trị được bảo vệ.                        |
+| AC-14.3 | Người dùng không có quyền không thể thực hiện thao tác trái quyền.                      |
+| AC-14.4 | Dữ liệu cá nhân, phương tiện, vị trí và giao dịch chỉ được truy cập bởi người có quyền. |
+| AC-14.5 | Các thao tác quan trọng được ghi nhận trong AuditLog.                                   |
+| AC-14.6 | AuditLog xác định được người thực hiện, thời gian và đối tượng bị thay đổi.             |
+
+AC-15 — Khả năng mở rộng và tích hợp
+| ID      | Tiêu chí chấp nhận                                                                    |
+| ------- | ------------------------------------------------------------------------------------- |
+| AC-15.1 | Hệ thống có thể bổ sung loại dịch vụ mới mà không phải xây dựng lại toàn bộ hệ thống. |
+| AC-15.2 | Hệ thống có thể bổ sung phương thức thanh toán mới.                                   |
+| AC-15.3 | Payment Provider có thể được thay thế hoặc bổ sung.                                   |
+| AC-15.4 | Notification Provider có thể được thay thế hoặc bổ sung.                              |
+| AC-15.5 | Các thành phần có thể được scale độc lập khi tải tăng.                                |
+| AC-15.6 | Việc scale một thành phần không làm gián đoạn không cần thiết các chức năng khác.     |
+| AC-15.7 | Chức năng mới có thể được triển khai từng phần.                                       |
+
+AC-16 — Khả năng chịu lỗi
+| ID      | Tiêu chí chấp nhận                                                                         |
+| ------- | ------------------------------------------------------------------------------------------ |
+| AC-16.1 | Lỗi Payment Provider không làm toàn bộ chức năng đặt xe ngừng hoạt động.                   |
+| AC-16.2 | Lỗi Notification Provider không làm toàn bộ chức năng đặt xe ngừng hoạt động.              |
+| AC-16.3 | Lỗi hệ thống bên ngoài không làm mất dữ liệu nghiệp vụ quan trọng.                         |
+| AC-16.4 | Hệ thống ghi nhận lỗi để phục vụ retry, monitoring hoặc xử lý vận hành.                    |
+| AC-16.5 | Khi một thành phần gặp lỗi, các chức năng độc lập khác vẫn có thể hoạt động theo thiết kế. |
+
+## Truy xuất nguồn gốc yêu cầu
+
+Ma trận truy xuất nguồn gốc yêu cầu
+| Nguồn yêu cầu                                   | Business Requirement                            | Business Process                           | Functional Requirement | Acceptance Criteria                  |
+| ----------------------------------------------- | ----------------------------------------------- | ------------------------------------------ | ---------------------- | ------------------------------------ |
+| **Vấn đề 1 – Phân công tài xế thủ công**        | BR-02 – Tự động tìm và phân công tài xế         | BP-02 – Tìm và phân công tài xế            | FR-02.1 → FR-02.4      | AC-03.1 → AC-03.6                    |
+| **Vấn đề 1 – Phân công tài xế thủ công**        | BR-03 – Xử lý tài xế từ chối/không nhận         | BP-03 – Xử lý tài xế từ chối               | FR-03.1 → FR-03.5      | AC-03.7 → AC-03.8                    |
+| **Vấn đề 2 – Khách hàng khó theo dõi chuyến**   | BR-01 – Tạo và quản lý yêu cầu đặt xe           | BP-01 – Đặt và quản lý chuyến xe           | FR-01.1 → FR-01.5      | AC-02.1 → AC-02.6                    |
+| **Vấn đề 2 – Khách hàng khó theo dõi chuyến**   | BR-04 – Theo dõi trạng thái chuyến              | BP-04 – Theo dõi trạng thái chuyến         | FR-04.1 → FR-04.4      | AC-04.1 → AC-04.6                    |
+| **Vấn đề 2 – Khách hàng khó theo dõi chuyến**   | BR-05 – Tài xế cập nhật trạng thái              | BP-05 – Cập nhật trạng thái chuyến         | FR-05.1 → FR-05.4      | AC-05.1 → AC-05.5                    |
+| **Vấn đề 3 – Thanh toán chưa tập trung**        | BR-06 – Tính và quản lý cước                    | BP-06 – Tính cước chuyến xe                | FR-06.1 → FR-06.4      | AC-06.1 → AC-06.5                    |
+| **Vấn đề 3 – Thanh toán chưa tập trung**        | BR-07 – Thanh toán tiền mặt và điện tử          | BP-07 – Thanh toán chuyến xe               | FR-07.1 → FR-07.5      | AC-07.1 → AC-07.7                    |
+| **Vấn đề 3 – Thanh toán chưa tập trung**        | BR-08 – Tích hợp Payment Provider               | BP-08 – Xử lý thanh toán điện tử           | FR-08.1 → FR-08.4      | AC-07.4 → AC-07.6                    |
+| **Vấn đề 3 – Thanh toán chưa tập trung**        | BR-09 – Xử lý thanh toán thất bại               | BP-09 – Xử lý giao dịch thất bại           | FR-09.1 → FR-09.4      | AC-08.1 → AC-08.6                    |
+| **Vấn đề 3 – Thanh toán chưa tập trung**        | BR-10 – Không lưu dữ liệu thanh toán nhạy cảm   | BP-10 – Xử lý thông tin thanh toán an toàn | FR-10.1 → FR-10.3      | AC-07.7                              |
+| **Vấn đề 5 – Quản lý vận hành chưa hiệu quả**   | BR-11 – Quản lý khách hàng, tài xế, phương tiện | BP-11 – Quản lý đối tượng vận hành         | FR-11.1 → FR-11.5      | AC-10.1 → AC-10.6                    |
+| **Vấn đề 5 – Quản lý vận hành chưa hiệu quả**   | BR-12 – Theo dõi chuyến đang diễn ra            | BP-12 – Giám sát vận hành chuyến xe        | FR-12.1 → FR-12.4      | AC-11.1 → AC-11.4                    |
+| **Vấn đề 5 – Quản lý vận hành chưa hiệu quả**   | BR-13 – Xử lý chuyến gặp lỗi/sự cố              | BP-13 – Xử lý sự cố vận hành               | FR-13.1 → FR-13.5      | AC-11.5 → AC-11.6                    |
+| **Vấn đề 5 – Quản lý vận hành chưa hiệu quả**   | BR-14 – Quản lý tài khoản và phân quyền         | BP-14 – Quản lý người dùng và quyền        | FR-14.1 → FR-14.5      | AC-01.3 → AC-01.5; AC-14.1 → AC-14.6 |
+| **Vấn đề 2, 3 – Theo dõi chuyến và thanh toán** | BR-15 – Gửi thông báo                           | BP-15 – Gửi và quản lý thông báo           | FR-15.1 → FR-15.5      | AC-09.1 → AC-09.9                    |
+| **Vấn đề 6 – Thiếu dữ liệu quản lý**            | BR-16 – Báo cáo và KPI                          | BP-16 – Báo cáo và phân tích               | FR-16.1 → FR-16.6      | AC-12.1 → AC-12.7                    |
+| **Vấn đề 4 – Khó mở rộng hệ thống**             | BR-17 – Mở rộng Payment, Notification, Service  | BP-17 – Quản lý tích hợp và mở rộng        | FR-17.1 → FR-17.5      | AC-15.x                              |
+| **Vấn đề 4 – Khó mở rộng hệ thống**             | BR-18 – Khả năng mở rộng hệ thống               | BP-18 – Quản lý khả năng mở rộng           | FR-18.1 → FR-18.5      | AC-15.x                              |
+
+Truy xuất yêu cầu phi chức năng
+| Nguồn yêu cầu                                               | Nhóm NFR            | Các yêu cầu liên quan |
+| ----------------------------------------------------------- | ------------------- | --------------------- |
+| Nhu cầu hệ thống hoạt động ổn định khi tải cao              | **Performance**     | NFR-01 → NFR-05       |
+| Nhu cầu không để lỗi Payment/Notification làm dừng hệ thống | **Availability**    | NFR-06 → NFR-10       |
+| Nhu cầu phục vụ số lượng lớn khách hàng, tài xế, chuyến xe  | **Scalability**     | NFR-11 → NFR-15       |
+| Nhu cầu thêm Service, Payment, Notification Provider        | **Extensibility**   | NFR-16 → NFR-20       |
+| Nhu cầu bảo vệ tài khoản và dữ liệu                         | **Security**        | NFR-21 → NFR-29       |
+| Nhu cầu đảm bảo dữ liệu và giao dịch chính xác              | **Reliability**     | NFR-30 → NFR-34       |
+| Nhu cầu dễ bảo trì và thay thế thành phần                   | **Maintainability** | NFR-35 → NFR-39       |
+| Nhu cầu lưu vết thao tác và điều tra sự cố                  | **Auditability**    | NFR-40 → NFR-44       |
+
+Truy xuất từ yêu cầu khách hàng đến chức năng
+Yêu cầu khách hàng
+       │
+       ▼
+Business Problem
+       │
+       ▼
+Business Requirement (BR)
+       │
+       ▼
+Business Process (BP)
+       │
+       ▼
+Functional Requirement (FR)
+       │
+       ▼
+Use Case (UC)
+       │
+       ▼
+Acceptance Criteria (AC)
+       │
+       ▼
+Kiểm thử / nghiệm thu
