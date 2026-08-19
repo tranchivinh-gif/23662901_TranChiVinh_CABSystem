@@ -276,3 +276,52 @@ Ban lãnh đạo cần biết:
 |           |                                          | **FR-18.4** Thực hiện mở rộng hệ thống                              |
 |           |                                          | **FR-18.5** Kiểm tra hệ thống sau khi scale                         |
 
+## xác định Quy tắc nghiệp vụ Bussiness Rule, exception 
+
+| ID        | Business Rule                                                                                                                  | Áp dụng cho     |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| **BR-01** | Khách hàng phải đăng ký và đăng nhập trước khi sử dụng các chức năng yêu cầu tài khoản.                                        | Customer        |
+| **BR-02** | Tài xế phải có tài khoản hợp lệ và thông tin phương tiện hợp lệ trước khi nhận chuyến.                                         | Driver          |
+| **BR-03** | Tài xế chỉ được nhận chuyến khi đang ở trạng thái **sẵn sàng nhận chuyến**.                                                    | Driver          |
+| **BR-04** | Một chuyến xe chỉ được phân công cho một tài xế tại một thời điểm.                                                             | Trip            |
+| **BR-05** | Hệ thống chỉ tìm tài xế trong nhóm tài xế đáp ứng điều kiện khả dụng và phù hợp với chuyến.                                    | Driver Matching |
+| **BR-06** | Khi tài xế từ chối hoặc không nhận chuyến, hệ thống phải tiếp tục tìm tài xế khác mà không yêu cầu khách hàng tạo lại yêu cầu. | Driver Matching |
+| **BR-07** | Khi không còn tài xế phù hợp, hệ thống phải thông báo cho khách hàng rằng chuyến không thể được phân công.                     | Trip            |
+| **BR-08** | Trạng thái chuyến phải được cập nhật theo trình tự nghiệp vụ hợp lệ.                                                           | Trip            |
+| **BR-09** | Tài xế chỉ được cập nhật các trạng thái thuộc chuyến mà mình đang được phân công.                                              | Driver          |
+| **BR-10** | Chuyến chỉ được tính cước sau khi chuyến được hoàn thành.                                                                      | Fare            |
+| **BR-11** | Số tiền thanh toán phải được xác định trước khi thực hiện thanh toán.                                                          | Payment         |
+| **BR-12** | Hệ thống hỗ trợ ít nhất hai phương thức thanh toán: tiền mặt và điện tử.                                                       | Payment         |
+| **BR-13** | Thanh toán điện tử phải được xử lý thông qua Payment Provider bên ngoài.                                                       | Payment         |
+| **BR-14** | Hệ thống CAB không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                    | Payment         |
+| **BR-15** | Mỗi giao dịch thanh toán phải được liên kết với chuyến xe tương ứng.                                                           | Transaction     |
+| **BR-16** | Khi thanh toán điện tử thất bại, giao dịch phải được cập nhật trạng thái thất bại và khách hàng phải được thông báo.           | Payment         |
+| **BR-17** | Khách hàng chỉ có thể đánh giá tài xế sau khi chuyến xe hoàn thành.                                                            | Rating          |
+| **BR-18** | Các thao tác quản trị phải được kiểm tra quyền trước khi thực hiện.                                                            | Admin           |
+| **BR-19** | Nhân viên không có quyền phù hợp không được thực hiện thao tác quản trị nhạy cảm.                                              | Authorization   |
+| **BR-20** | Các thay đổi quan trọng về chuyến xe và giao dịch phải tạo thông báo cho các bên liên quan.                                    | Notification    |
+| **BR-21** | Hệ thống phải lưu vết các thao tác quan trọng để phục vụ kiểm tra và xử lý sự cố.                                              | Audit           |
+| **BR-22** | Dữ liệu cá nhân, phương tiện, vị trí và giao dịch phải được bảo vệ khỏi truy cập trái phép.                                    | Security        |
+| **BR-23** | Notification Provider và Payment Provider phải được thiết kế theo hướng có thể thay thế/mở rộng.                               | Integration     |
+| **BR-24** | Các thành phần của hệ thống phải có khả năng mở rộng độc lập khi tải tăng.                                                     | Scalability     |
+
+| ID        | Exception                            | Điều kiện xảy ra                                            | Hệ thống xử lý                                                                           |
+| --------- | ------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **EX-01** | Thông tin đặt xe không hợp lệ        | Thiếu/sai thông tin điểm đón, điểm đến hoặc loại xe         | Từ chối yêu cầu và thông báo lỗi                                                         |
+| **EX-02** | Không tìm thấy tài xế                | Không có tài xế phù hợp/khả dụng                            | Thông báo khách hàng không tìm được tài xế                                               |
+| **EX-03** | Tài xế từ chối chuyến                | Driver chọn từ chối                                         | Cập nhật trạng thái và tìm tài xế khác                                                   |
+| **EX-04** | Tài xế không phản hồi                | Driver không phản hồi yêu cầu                               | Chuyển sang cơ chế tìm tài xế khác theo chính sách                                       |
+| **EX-05** | Tài xế không còn khả dụng            | Driver chuyển trạng thái không sẵn sàng trong quá trình tìm | Loại tài xế khỏi danh sách tìm kiếm                                                      |
+| **EX-06** | Không thể cập nhật trạng thái chuyến | Trạng thái mới không hợp lệ hoặc không đúng trình tự        | Từ chối cập nhật và thông báo lỗi                                                        |
+| **EX-07** | Thanh toán điện tử thất bại          | Payment Provider trả kết quả thất bại                       | Cập nhật giao dịch thất bại, thông báo khách hàng và cho phép xử lý lại theo chính sách  |
+| **EX-08** | Payment Provider không phản hồi      | Không nhận được kết quả giao dịch                           | Ghi nhận trạng thái phù hợp và xử lý theo cơ chế retry/đối soát                          |
+| **EX-09** | Dữ liệu thanh toán không hợp lệ      | Payment Provider từ chối payment request                    | Thông báo lỗi và không xác nhận thanh toán thành công                                    |
+| **EX-10** | Không gửi được thông báo             | Notification Provider lỗi                                   | Ghi nhận lỗi gửi và xử lý theo cơ chế dự phòng/retry                                     |
+| **EX-11** | Người dùng không có quyền            | User truy cập chức năng không thuộc quyền                   | Từ chối truy cập                                                                         |
+| **EX-12** | Tài khoản không hợp lệ/bị khóa       | User sử dụng tài khoản không hợp lệ                         | Không cho phép sử dụng chức năng yêu cầu tài khoản                                       |
+| **EX-13** | Phương tiện không hợp lệ             | Driver sử dụng phương tiện chưa được xác nhận               | Không cho phép tài xế nhận/thực hiện chuyến                                              |
+| **EX-14** | Chuyến xảy ra sự cố                  | Operation phát hiện chuyến lỗi/bất thường                   | Tạo/ghi nhận sự cố để nhân viên vận hành xử lý                                           |
+| **EX-15** | Mất kết nối mạng                     | User/Driver mất kết nối trong quá trình sử dụng             | **Chưa chốt**, cần BA xác nhận chính sách xử lý                                          |
+| **EX-16** | Lỗi hệ thống thành phần              | Payment/Notification gặp lỗi                                | Không để lỗi của thành phần làm dừng toàn bộ chức năng đặt xe                            |
+| **EX-17** | Dữ liệu vị trí không khả dụng        | Không nhận được vị trí Driver                               | Không sử dụng vị trí hiện tại cho việc xác định khoảng cách/ETA và xử lý theo chính sách |
+| **EX-18** | Lỗi khi mở rộng hệ thống             | Thành phần sau khi scale hoạt động không ổn định            | Kiểm tra, rollback hoặc xử lý theo quy trình vận hành                                    |
