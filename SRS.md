@@ -170,32 +170,32 @@ Tài xế nào hoạt động hiệu quả?
 | **IT/DevOps**                                  | Vận hành hệ thống        | Deployment, monitoring, scalability, availability       |
 
 
-                 STAKEHOLDER POWER–INTEREST MATRIX
+STAKEHOLDER POWER–INTEREST MATRIX
 
-                    MỨC ĐỘ QUAN TÂM
-                 THẤP                    CAO
-                  │                       │
-        ┌─────────┼───────────────────────┐
- CAO    │         │                       │
-        │  KEEP   │    MANAGE CLOSELY     │
-        │SATISFIED│                       │
-        │         │  • Ban giám đốc       │
-        │ • Finance│  • Operation Staff  │
-        │ • IT/DevOps│ • Admin            │
-        │         │  • BA                 │
-        │         │                       │
-        ├─────────┼───────────────────────┤
- THẤP   │         │                       │
-        │ MONITOR │    KEEP INFORMED      │
-        │         │                       │
-        │ • Notification │ • Customer     │
-        │   Provider      │ • Driver       │
-        │                 │ • QA/Tester   │
-        │                 │ • Development  │
-        │                 │ • Payment      │
-        │                 │   Provider     │
-        └─────────┴───────────────────────┘
-             MỨC ĐỘ ẢNH HƯỞNG → CAO
+                         MỨC ĐỘ QUAN TÂM
+                    THẤP                 CAO
+                     │                    │
+          ┌──────────┼────────────────────┐
+    CAO   │          │                    │
+          │  KEEP    │   MANAGE CLOSELY   │
+          │SATISFIED │                    │
+          │          │ • Ban giám đốc     │
+          │ • Finance│ • Operation Staff  │
+          │ • IT/DevOps • Admin            │
+          │          │ • BA               │
+          │          │                    │
+          ├──────────┼────────────────────┤
+   THẤP  │          │                    │
+          │ MONITOR  │   KEEP INFORMED    │
+          │          │                    │
+          │ • Notification │ • Customer   │
+          │   Provider      │ • Driver     │
+          │                 │ • QA/Tester │
+          │                 │ • Development│
+          │                 │ • Payment    │
+          │                 │   Provider   │
+          └──────────┴────────────────────┘
+                MỨC ĐỘ ẢNH HƯỞNG → CAO
   | Nhóm               | Mức ảnh hưởng | Mức quan tâm | Cách quản lý                                                 |
 | ------------------ | ------------- | ------------ | ------------------------------------------------------------ |
 | **Manage Closely** | Cao           | Cao          | Làm việc thường xuyên, lấy ý kiến và phối hợp chặt chẽ       |
