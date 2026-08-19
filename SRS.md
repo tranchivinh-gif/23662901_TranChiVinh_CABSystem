@@ -108,7 +108,7 @@ Tài xế nào hoạt động hiệu quả?
 
 <img width="524" height="619" alt="image" src="https://github.com/user-attachments/assets/c67df35a-9e25-4aba-86ca-3ebeb652cfef" />
 
-## Score
+## Phạm Vi
 
 ### Trong phạm vi
 
