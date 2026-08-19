@@ -108,3 +108,25 @@ Tài xế nào hoạt động hiệu quả?
 
 <img width="524" height="619" alt="image" src="https://github.com/user-attachments/assets/c67df35a-9e25-4aba-86ca-3ebeb652cfef" />
 
+## Score
+
+Trong phạm vi:
+
+Quản lý khách hàng.
+Quản lý tài xế và phương tiện.
+Đặt và quản lý chuyến xe.
+Tìm và phân công tài xế.
+Theo dõi trạng thái chuyến.
+Tính cước và thanh toán.
+Gửi thông báo.
+Quản lý vận hành.
+Báo cáo.
+
+Ngoài phạm vi / chưa xác định:
+
+Chi tiết cách tính cước.
+Chính sách hủy chuyến.
+Tiêu chí ưu tiên tài xế.
+Thời gian phản hồi của tài xế.
+Cách xử lý mất kết nối.
+Chính sách lưu trữ dữ liệu.
