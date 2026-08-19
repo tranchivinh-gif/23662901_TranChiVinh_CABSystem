@@ -172,30 +172,8 @@ Tài xế nào hoạt động hiệu quả?
 
 STAKEHOLDER POWER–INTEREST MATRIX
 
-                         MỨC ĐỘ QUAN TÂM
-                    THẤP                 CAO
-                     │                    │
-          ┌──────────┼────────────────────┐
-    CAO   │          │                    │
-          │  KEEP    │   MANAGE CLOSELY   │
-          │SATISFIED │                    │
-          │          │ • Ban giám đốc     │
-          │ • Finance│ • Operation Staff  │
-          │ • IT/DevOps • Admin            │
-          │          │ • BA               │
-          │          │                    │
-          ├──────────┼────────────────────┤
-   THẤP  │          │                    │
-          │ MONITOR  │   KEEP INFORMED    │
-          │          │                    │
-          │ • Notification │ • Customer   │
-          │   Provider      │ • Driver     │
-          │                 │ • QA/Tester │
-          │                 │ • Development│
-          │                 │ • Payment    │
-          │                 │   Provider   │
-          └──────────┴────────────────────┘
-                MỨC ĐỘ ẢNH HƯỞNG → CAO
+![Uploading image.png…]()
+
   | Nhóm               | Mức ảnh hưởng | Mức quan tâm | Cách quản lý                                                 |
 | ------------------ | ------------- | ------------ | ------------------------------------------------------------ |
 | **Manage Closely** | Cao           | Cao          | Làm việc thường xuyên, lấy ý kiến và phối hợp chặt chẽ       |
