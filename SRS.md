@@ -726,7 +726,64 @@ Electronic Payment
 | Auditability    | NFR-40 → NFR-44 | Có khả năng truy vết thao tác và sự cố                  |
 
 ## Vẽ UseCase UC
+flowchart LR
+    %% Định nghĩa Actors (Sử dụng hình thoi hoặc hình tròn để phân biệt với Use Case)
+    CUST([Customer])
+    DRV([Driver])
+    OPS([Operation Staff])
+    ADM([Admin])
+    MNG([Management])
+    FIN([Finance / Accounting])
+    PAY[[Payment Provider]]
+    NOT[[Notification Provider]]
 
+    %% System Boundary
+    subgraph CAB_System [CAB System]
+        direction TB
+        UC01(Đặt và quản lý chuyến xe)
+        UC02(Tìm và phân công tài xế)
+        UC03(Cập nhật trạng thái chuyến)
+        UC04(Thanh toán chuyến xe)
+        UC05(Xử lý thanh toán)
+        UC06(Xử lý thanh toán thất bại)
+        UC07(Quản lý khách hàng, tài xế, phương tiện)
+        UC08(Giám sát vận hành)
+        UC09(Xử lý sự cố)
+        UC10(Quản lý tài khoản và phân quyền)
+        UC11(Báo cáo và phân tích)
+        UC12(Gửi thông báo)
+    end
+
+    %% Tương tác giữa Actor và Use Case chính
+    CUST --- UC01
+    CUST --- UC04
+    DRV --- UC03
+    OPS --- UC07
+    OPS --- UC08
+    ADM --- UC10
+    ADM --- UC07
+    MNG --- UC08
+    MNG --- UC11
+    FIN --- UC11
+    FIN --- UC04
+
+    %% Tương tác với hệ thống bên ngoài
+    UC05 --- PAY
+    UC12 --- NOT
+
+    %% Quan hệ Include và Extend
+    UC01 -. "<<include>>" .-> UC02
+    UC01 -. "<<include>>" .-> UC12
+    UC03 -. "<<include>>" .-> UC12
+    UC04 -. "<<include>>" .-> UC05
+    UC06 -. "<<extend>>" .-> UC04
+    UC09 -. "<<extend>>" .-> UC08
+
+    %% Style bổ sung để làm nổi bật
+    classDef external fill:#f9f2f4,stroke:#d9534f,stroke-width:2px;
+    class PAY,NOT external;
+    classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:1px;
+    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12 usecase;
 ## Đặc tả UseCase
 
 
