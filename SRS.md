@@ -188,7 +188,7 @@ Ban lãnh đạo cần biết:
 
 
 ## Sơ đồ quy trình nghiệp vụ
-
+```mermaid
 BP-01 — Đặt và quản lý chuyến xe
 flowchart TD
     A[Customer] --> B[Nhập thông tin chuyến]
@@ -477,3 +477,10 @@ flowchart TD
     AA[Management / IT] --> AB[BP-17<br/>Mở rộng Integration]
     AA --> AC[BP-18<br/>Scalability]
     
+# Business Processes
+
+## BP-01 — Đặt và quản lý chuyến xe
+
+```mermaid
+
+## Phân rã yêu cầu chức năng FR
