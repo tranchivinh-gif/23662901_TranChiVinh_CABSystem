@@ -110,23 +110,23 @@ Tài xế nào hoạt động hiệu quả?
 
 ## Score
 
-Trong phạm vi:
+### Trong phạm vi
 
-Quản lý khách hàng.
-Quản lý tài xế và phương tiện.
-Đặt và quản lý chuyến xe.
-Tìm và phân công tài xế.
-Theo dõi trạng thái chuyến.
-Tính cước và thanh toán.
-Gửi thông báo.
-Quản lý vận hành.
-Báo cáo.
+- Quản lý khách hàng.
+- Quản lý tài xế và phương tiện.
+- Đặt và quản lý chuyến xe.
+- Tìm và phân công tài xế.
+- Theo dõi trạng thái chuyến.
+- Tính cước và thanh toán.
+- Gửi thông báo.
+- Quản lý vận hành.
+- Báo cáo.
 
-Ngoài phạm vi / chưa xác định:
+### Ngoài phạm vi / Chưa xác định
 
-Chi tiết cách tính cước.
-Chính sách hủy chuyến.
-Tiêu chí ưu tiên tài xế.
-Thời gian phản hồi của tài xế.
-Cách xử lý mất kết nối.
-Chính sách lưu trữ dữ liệu.
+- Chi tiết cách tính cước.
+- Chính sách hủy chuyến.
+- Tiêu chí ưu tiên tài xế.
+- Thời gian phản hồi của tài xế.
+- Cách xử lý mất kết nối.
+- Chính sách lưu trữ dữ liệu.
