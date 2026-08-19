@@ -1,4 +1,4 @@
-<img width="813" height="1024" alt="image" src="https://github.com/user-attachments/assets/e0fc30c4-7b09-43d3-8203-19a34e1fcc08" />Vấn đề 1 — Phân công tài xế thủ công
+Vấn đề 1 — Phân công tài xế thủ công
 
 Hiện tại việc phân công tài xế chủ yếu thủ công.
 Hậu quả:
