@@ -189,16 +189,90 @@ Ban lãnh đạo cần biết:
 
 # Sơ đồ quy trình nghiệp vụ
 
-## BP-01 — Đặt và quản lý chuyến xe
-
-```mermaid
-flowchart TD
-    A[Customer] --> B[Nhập thông tin chuyến]
-    B --> C[Gửi yêu cầu đặt xe]
-    C --> D{Thông tin hợp lệ?}
-    D -- Không --> E[Thông báo lỗi]
-    E --> B
-    D -- Có --> F[Tạo yêu cầu chuyến]
-    F --> G[Chờ tìm tài xế]
-
 ## Phân rã yêu cầu chức năng FR
+
+| BR        | BP                                       | Functional Requirement (FR)                                         |
+| --------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **BR-01** | BP-01 Đặt và quản lý chuyến xe           | **FR-01.1** Nhập thông tin chuyến xe                                |
+|           |                                          | **FR-01.2** Kiểm tra tính hợp lệ thông tin đặt xe                   |
+|           |                                          | **FR-01.3** Tạo yêu cầu đặt xe                                      |
+|           |                                          | **FR-01.4** Xem thông tin chuyến xe                                 |
+|           |                                          | **FR-01.5** Hủy yêu cầu/chuyến xe                                   |
+| **BR-02** | BP-02 Tìm và phân công tài xế            | **FR-02.1** Xác định tài xế khả dụng                                |
+|           |                                          | **FR-02.2** Lọc tài xế phù hợp                                      |
+|           |                                          | **FR-02.3** Gửi yêu cầu nhận chuyến cho tài xế                      |
+|           |                                          | **FR-02.4** Phân công tài xế cho chuyến                             |
+| **BR-03** | BP-03 Xử lý tài xế từ chối               | **FR-03.1** Ghi nhận tài xế từ chối                                 |
+|           |                                          | **FR-03.2** Cập nhật trạng thái yêu cầu                             |
+|           |                                          | **FR-03.3** Tìm tài xế thay thế                                     |
+|           |                                          | **FR-03.4** Gửi yêu cầu cho tài xế tiếp theo                        |
+|           |                                          | **FR-03.5** Xử lý trường hợp không tìm được tài xế                  |
+| **BR-04** | BP-04 Theo dõi trạng thái chuyến         | **FR-04.1** Hiển thị trạng thái chuyến                              |
+|           |                                          | **FR-04.2** Cập nhật trạng thái theo từng giai đoạn                 |
+|           |                                          | **FR-04.3** Hiển thị thông tin tài xế                               |
+|           |                                          | **FR-04.4** Hiển thị tiến trình chuyến                              |
+| **BR-05** | BP-05 Cập nhật trạng thái chuyến         | **FR-05.1** Cho phép tài xế cập nhật trạng thái                     |
+|           |                                          | **FR-05.2** Kiểm tra trạng thái hợp lệ                              |
+|           |                                          | **FR-05.3** Lưu trạng thái chuyến                                   |
+|           |                                          | **FR-05.4** Thông báo trạng thái mới cho khách hàng                 |
+| **BR-06** | BP-06 Tính cước                          | **FR-06.1** Thu thập thông tin tính cước                            |
+|           |                                          | **FR-06.2** Tính cước chuyến xe                                     |
+|           |                                          | **FR-06.3** Lưu thông tin cước                                      |
+|           |                                          | **FR-06.4** Hiển thị tổng tiền                                      |
+| **BR-07** | BP-07 Thanh toán chuyến xe               | **FR-07.1** Hiển thị số tiền cần thanh toán                         |
+|           |                                          | **FR-07.2** Cho phép chọn phương thức thanh toán                    |
+|           |                                          | **FR-07.3** Xử lý thanh toán tiền mặt                               |
+|           |                                          | **FR-07.4** Khởi tạo thanh toán điện tử                             |
+|           |                                          | **FR-07.5** Cập nhật kết quả thanh toán                             |
+| **BR-08** | BP-08 Thanh toán điện tử                 | **FR-08.1** Tạo payment request                                     |
+|           |                                          | **FR-08.2** Gửi yêu cầu đến Payment Provider                        |
+|           |                                          | **FR-08.3** Nhận kết quả giao dịch                                  |
+|           |                                          | **FR-08.4** Cập nhật trạng thái giao dịch                           |
+| **BR-09** | BP-09 Thanh toán thất bại                | **FR-09.1** Phát hiện giao dịch thất bại                            |
+|           |                                          | **FR-09.2** Cập nhật trạng thái thất bại                            |
+|           |                                          | **FR-09.3** Thông báo thanh toán thất bại                           |
+|           |                                          | **FR-09.4** Cho phép khách hàng thanh toán lại                      |
+| **BR-10** | BP-10 Xử lý thông tin thanh toán an toàn | **FR-10.1** Không lưu thông tin nhạy cảm của phương thức thanh toán |
+|           |                                          | **FR-10.2** Lưu Transaction Reference                               |
+|           |                                          | **FR-10.3** Liên kết giao dịch với chuyến xe                        |
+| **BR-11** | BP-11 Quản lý đối tượng vận hành         | **FR-11.1** Quản lý khách hàng                                      |
+|           |                                          | **FR-11.2** Quản lý tài xế                                          |
+|           |                                          | **FR-11.3** Quản lý phương tiện                                     |
+|           |                                          | **FR-11.4** Xem thông tin đối tượng                                 |
+|           |                                          | **FR-11.5** Thêm/Sửa/Khóa đối tượng                                 |
+| **BR-12** | BP-12 Giám sát vận hành                  | **FR-12.1** Hiển thị danh sách chuyến đang diễn ra                  |
+|           |                                          | **FR-12.2** Xem thông tin tài xế                                    |
+|           |                                          | **FR-12.3** Theo dõi trạng thái chuyến                              |
+|           |                                          | **FR-12.4** Phát hiện chuyến có dấu hiệu bất thường                 |
+| **BR-13** | BP-13 Xử lý sự cố                        | **FR-13.1** Ghi nhận sự cố                                          |
+|           |                                          | **FR-13.2** Phân loại/xác định nguyên nhân                          |
+|           |                                          | **FR-13.3** Cập nhật quá trình xử lý                                |
+|           |                                          | **FR-13.4** Hoàn tất xử lý sự cố                                    |
+|           |                                          | **FR-13.5** Thông báo kết quả xử lý                                 |
+| **BR-14** | BP-14 Quản lý người dùng và quyền        | **FR-14.1** Tạo và quản lý tài khoản                                |
+|           |                                          | **FR-14.2** Gán Role cho người dùng                                 |
+|           |                                          | **FR-14.3** Thiết lập quyền truy cập                                |
+|           |                                          | **FR-14.4** Xác thực đăng nhập                                      |
+|           |                                          | **FR-14.5** Kiểm tra quyền truy cập                                 |
+| **BR-15** | BP-15 Gửi thông báo                      | **FR-15.1** Xác định sự kiện cần thông báo                          |
+|           |                                          | **FR-15.2** Xác định người nhận                                     |
+|           |                                          | **FR-15.3** Chọn kênh thông báo                                     |
+|           |                                          | **FR-15.4** Gửi thông báo                                           |
+|           |                                          | **FR-15.5** Ghi nhận kết quả gửi                                    |
+| **BR-16** | BP-16 Báo cáo và phân tích               | **FR-16.1** Thu thập dữ liệu báo cáo                                |
+|           |                                          | **FR-16.2** Tổng hợp số chuyến                                      |
+|           |                                          | **FR-16.3** Tổng hợp doanh thu                                      |
+|           |                                          | **FR-16.4** Thống kê trạng thái chuyến                              |
+|           |                                          | **FR-16.5** Đánh giá hiệu quả tài xế                                |
+|           |                                          | **FR-16.6** Hiển thị báo cáo/KPI                                    |
+| **BR-17** | BP-17 Quản lý tích hợp và mở rộng        | **FR-17.1** Quản lý Payment Provider                                |
+|           |                                          | **FR-17.2** Quản lý Notification Provider                           |
+|           |                                          | **FR-17.3** Cấu hình Service mới                                    |
+|           |                                          | **FR-17.4** Kiểm tra kết nối Integration                            |
+|           |                                          | **FR-17.5** Kích hoạt/tắt Integration                               |
+| **BR-18** | BP-18 Quản lý khả năng mở rộng           | **FR-18.1** Theo dõi tải hệ thống                                   |
+|           |                                          | **FR-18.2** Phát hiện nhu cầu mở rộng                               |
+|           |                                          | **FR-18.3** Xác định thành phần cần scale                           |
+|           |                                          | **FR-18.4** Thực hiện mở rộng hệ thống                              |
+|           |                                          | **FR-18.5** Kiểm tra hệ thống sau khi scale                         |
+
