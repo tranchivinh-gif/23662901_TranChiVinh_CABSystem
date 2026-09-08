@@ -1,0 +1,109 @@
+# PHẢN HỒI VÀ XÁC NHẬN BỔ SUNG CỦA KHÁCH HÀNG
+
+Sau khi trao đổi và làm rõ các yêu cầu của hệ thống CAB, khách hàng thống nhất bổ sung và xác nhận một số nội dung nghiệp vụ như sau:
+
+## 1. Quy tắc tìm kiếm và phân công tài xế
+
+Khi khách hàng tạo yêu cầu đặt xe, hệ thống sẽ tự động tìm kiếm các tài xế phù hợp dựa trên vị trí hiện tại của tài xế, trạng thái sẵn sàng nhận chuyến và loại xe phù hợp với yêu cầu của khách hàng.
+
+Trong trường hợp có nhiều tài xế phù hợp, hệ thống ưu tiên tài xế có khoảng cách hoặc thời gian dự kiến đến điểm đón thấp nhất.
+
+Khi một chuyến được đề xuất cho tài xế, tài xế có 30 giây để chấp nhận hoặc từ chối chuyến. Nếu tài xế không phản hồi trong thời gian quy định hoặc từ chối chuyến, hệ thống xem như tài xế không nhận chuyến và tiếp tục tìm kiếm tài xế phù hợp khác.
+
+Khách hàng không cần tạo lại yêu cầu đặt xe khi tài xế từ chối hoặc không phản hồi. Nếu hệ thống không tìm được tài xế phù hợp, hệ thống phải thông báo rõ ràng cho khách hàng.
+
+## 2. Trạng thái và quá trình thực hiện chuyến đi
+
+Một chuyến đi được quản lý theo các trạng thái:
+
+**Đã tiếp nhận → Đang tìm tài xế → Đã phân tài xế → Tài xế đã đến → Đã đón khách → Đang di chuyển → Hoàn thành.**
+
+Trong đó, hệ thống chịu trách nhiệm cập nhật các trạng thái liên quan đến quá trình tiếp nhận và phân công chuyến; tài xế chịu trách nhiệm cập nhật các trạng thái trong quá trình thực hiện chuyến như đã đến điểm đón, đã đón khách, đang di chuyển và hoàn thành chuyến.
+
+Các trạng thái của chuyến đi phải được thực hiện theo đúng trình tự nghiệp vụ và không được tự ý bỏ qua trạng thái.
+
+Hệ thống cũng lưu thông tin vị trí của tài xế để hỗ trợ việc tìm tài xế gần khách hàng và cải thiện khả năng dự kiến thời gian tài xế đến.
+
+Trong trường hợp mất kết nối mạng, ứng dụng phải hạn chế việc mất dữ liệu của chuyến đi và đồng bộ lại thông tin khi kết nối được khôi phục. Việc mất kết nối tại một chức năng không được làm dừng toàn bộ hệ thống đặt xe.
+
+## 3. Quy tắc tính cước
+
+Số tiền khách hàng phải trả được xác định dựa trên loại dịch vụ và thông tin của chuyến đi.
+
+Doanh nghiệp sử dụng bảng giá được cấu hình theo loại dịch vụ hoặc loại xe. Hệ thống có thể áp dụng mức giá tối thiểu và các khoản phụ phí theo chính sách kinh doanh của doanh nghiệp.
+
+Cước chuyến đi được xác định khi chuyến hoàn thành. Các thông tin liên quan đến số tiền phải trả phải được lưu lại để phục vụ việc thanh toán, xem lịch sử chuyến đi và tra cứu giao dịch.
+
+Chỉ những nhân viên có quyền quản trị phù hợp mới được phép thay đổi các thông tin cấu hình về giá.
+
+## 4. Thanh toán
+
+Hệ thống hỗ trợ hai phương thức thanh toán chính là **tiền mặt và thanh toán điện tử**.
+
+Đối với thanh toán điện tử, hệ thống CAB sẽ tích hợp với nhà cung cấp dịch vụ thanh toán bên ngoài. CAB không lưu trực tiếp các thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán của khách hàng.
+
+Khi thanh toán điện tử thành công, hệ thống ghi nhận kết quả giao dịch và cập nhật trạng thái thanh toán của chuyến đi.
+
+Nếu thanh toán điện tử thất bại, hệ thống phải thông báo cho khách hàng và cho phép khách hàng thực hiện lại giao dịch theo chính sách của doanh nghiệp.
+
+Hệ thống phải lưu thông tin cần thiết về lịch sử giao dịch để nhân viên vận hành có thể tra cứu và hỗ trợ xử lý các trường hợp phát sinh.
+
+## 5. Thông báo
+
+Khách hàng phải nhận được thông báo khi:
+
+* Yêu cầu đặt xe được tiếp nhận.
+* Có tài xế nhận chuyến.
+* Tài xế đến điểm đón.
+* Chuyến đi hoàn thành.
+* Thanh toán có kết quả.
+
+Tài xế phải nhận được thông báo khi có chuyến mới hoặc khi có thay đổi liên quan đến chuyến đang thực hiện.
+
+Trong giai đoạn đầu, hệ thống có thể sử dụng thông báo đẩy trên ứng dụng. Kiến trúc hệ thống phải cho phép bổ sung các kênh thông báo khác như SMS hoặc Email trong tương lai mà không phải thay đổi toàn bộ hệ thống.
+
+Nếu việc gửi thông báo thất bại, hệ thống phải ghi nhận lỗi và thực hiện gửi lại theo cơ chế phù hợp. Lỗi của chức năng thông báo không được làm dừng toàn bộ quy trình đặt và thực hiện chuyến.
+
+## 6. Quản lý và phân quyền nhân viên vận hành
+
+Nhân viên vận hành được sử dụng giao diện quản trị để quản lý khách hàng, tài xế, phương tiện, chuyến đi và tra cứu lịch sử giao dịch.
+
+Hệ thống phân biệt quyền của nhân viên vận hành thông thường và người có quyền quản trị cao hơn.
+
+Các thao tác nhạy cảm như thay đổi dữ liệu quan trọng, xử lý giao dịch, quản lý tài khoản hoặc các thao tác quản trị quan trọng phải được kiểm soát bằng quyền truy cập.
+
+Hệ thống phải lưu vết các thao tác quản trị quan trọng để phục vụ việc kiểm tra và điều tra khi xảy ra sự cố. Thời gian lưu audit log được đề xuất là **12 tháng**, sau đó xử lý theo chính sách lưu trữ dữ liệu của doanh nghiệp.
+
+## 7. Báo cáo quản trị
+
+Hệ thống cần cung cấp các báo cáo phục vụ việc theo dõi hoạt động kinh doanh và vận hành, bao gồm:
+
+* Số lượng chuyến đi.
+* Doanh thu.
+* Tỷ lệ chuyến hoàn thành.
+* Tỷ lệ chuyến bị hủy.
+* Hiệu quả hoạt động của tài xế.
+
+Báo cáo có thể được xem theo ngày, tuần, tháng hoặc khoảng thời gian do người dùng lựa chọn.
+
+Quyền xem báo cáo được cấp cho nhân viên có chức năng phù hợp và cấp quản lý theo chính sách phân quyền của doanh nghiệp.
+
+## 8. Hiệu năng và khả năng mở rộng
+
+Hệ thống CAB phải hoạt động ổn định trong những thời điểm nhu cầu sử dụng tăng cao.
+
+Trong giai đoạn đầu, hệ thống được định hướng đáp ứng khoảng **1.000 người dùng đồng thời** và phải có khả năng mở rộng khi số lượng khách hàng và tài xế tăng.
+
+Các thao tác thông thường của hệ thống nên có thời gian phản hồi không quá **3 giây** trong điều kiện tải bình thường.
+
+Hệ thống được đề xuất đạt mức khả dụng tối thiểu **99,5%** trong thời gian vận hành.
+
+Lỗi xảy ra tại chức năng thanh toán hoặc thông báo không được làm cho toàn bộ hệ thống đặt xe ngừng hoạt động. Các thành phần có tải cao cần có khả năng mở rộng độc lập.
+
+Ngoài ra, các chức năng mới cần có khả năng được triển khai từng phần nhằm hạn chế ảnh hưởng đến các chức năng đang hoạt động.
+
+## 9. Khả năng mở rộng trong tương lai
+
+Doanh nghiệp mong muốn CAB là một nền tảng có thể phát triển lâu dài. Vì vậy, hệ thống cần được thiết kế đủ linh hoạt để có thể bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới hoặc thay đổi một số thành phần kỹ thuật mà không phải xây dựng lại toàn bộ ứng dụng.
+
+Các nội dung trên được xem là cơ sở để Business Analyst hoàn thiện yêu cầu chức năng, yêu cầu phi chức năng, quy tắc nghiệp vụ, trường hợp ngoại lệ, Use Case và ma trận truy vết yêu cầu trước khi chuyển sang giai đoạn phát triển hệ thống.

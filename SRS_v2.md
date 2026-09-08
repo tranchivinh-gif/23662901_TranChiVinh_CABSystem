@@ -2,9 +2,9 @@
 
 ## Phạm vi tài liệu
 
-Tài liệu này thực hiện bước 02: đọc và phân tích nguồn yêu cầu khách hàng. Nội dung được trích xuất từ `YeuCauKhachHang/Customer-Requirement.docx`, theo các đoạn nguồn `[P1]` đến `[P14]` trong tài liệu gốc.
+Tài liệu này thực hiện các bước phân tích yêu cầu từ bước 02 đến bước 17. Nguồn đầu vào gồm `YeuCauKhachHang/Customer-Requirement.docx`, theo các đoạn nguồn `[P1]` đến `[P14]` trong tài liệu gốc, và `YeuCauKhachHang/PhanHoiBoSung_v2.txt` là phản hồi/xác nhận bổ sung mới nhất của khách hàng.
 
-Tài liệu chỉ ghi nhận thông tin gốc, vấn đề, nhu cầu, đối tượng, hoạt động, ràng buộc và điểm cần làm rõ. Các nội dung chưa được chuẩn hóa thành Business Requirement, Business Process, Functional Requirement, Business Rule, NFR, Data Model, Use Case hoặc giải pháp kỹ thuật.
+Tài liệu ghi nhận và chuẩn hóa thông tin gốc, vấn đề, nhu cầu, đối tượng, hoạt động, ràng buộc, Business Requirement, Business Process, Functional Requirement, Business Rule, NFR, Data Model, Use Case, Acceptance Criteria và RTM. Các điểm đã được khách hàng xác nhận trong `PhanHoiBoSung_v2.txt` được ưu tiên áp dụng và thay thế trạng thái `[Cần làm rõ]` tương ứng trong các phần trước. Khi phản hồi v2 dùng mức “đề xuất”, “định hướng” hoặc “MVP”, tài liệu giữ nguyên mức độ đó và không tự biến thành cam kết nghiệm thu bắt buộc.
 
 ## 1. Thông tin tổng quan dự án
 
@@ -35,47 +35,47 @@ Tài liệu chỉ ghi nhận thông tin gốc, vấn đề, nhu cầu, đối t�
 
 Đây là nhu cầu được trích xuất nguyên bản, chưa phải Business Requirement chính thức.
 
-| Need ID | Nhu cầu                                                                                                                                                   | Đối tượng được đề cập                                                              | Mức độ rõ ràng                                                   | Nguồn        |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------ |
-| NEED-01 | Đăng ký, đăng nhập và cập nhật thông tin cá nhân                                                                                                          | Khách hàng                                                                         | Rõ                                                               | [P4]         |
-| NEED-02 | Nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu đặt xe                                                                                               | Khách hàng                                                                         | Rõ                                                               | [P4]         |
-| NEED-03 | Theo dõi quá trình tìm tài xế, tài xế nhận chuyến, thời gian dự kiến đến và trạng thái chuyến                                                             | Khách hàng                                                                         | Rõ về nhu cầu; chi tiết cách xác định thời gian chưa rõ          | [P4], [P5]   |
-| NEED-04 | Xem lịch sử chuyến, số tiền phải trả và đánh giá tài xế sau chuyến                                                                                        | Khách hàng                                                                         | Rõ                                                               | [P4]         |
-| NEED-05 | Đăng ký hoặc được nhân viên vận hành tạo tài khoản; cập nhật hồ sơ, phương tiện và trạng thái hoạt động                                                   | Tài xế, nhân viên vận hành                                                         | Rõ                                                               | [P5]         |
-| NEED-06 | Chuyển sang trạng thái sẵn sàng nhận chuyến; nhận thông báo và chấp nhận hoặc từ chối chuyến phù hợp                                                      | Tài xế                                                                             | Rõ                                                               | [P5]         |
-| NEED-07 | Cập nhật các trạng thái trong quá trình thực hiện chuyến                                                                                                  | Tài xế                                                                             | Rõ về các trạng thái được nêu; quy tắc chuyển trạng thái chưa rõ | [P5]         |
-| NEED-08 | Lưu vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và cải thiện dự kiến thời gian đến                                                                  | Doanh nghiệp, tài xế                                                               | Rõ về mục đích; cách thu thập và tần suất chưa rõ                | [P5]         |
-| NEED-09 | Tìm tài xế theo vị trí, trạng thái sẵn sàng và một số tiêu chí vận hành khác; tiếp tục tìm khi bị từ chối hoặc không phản hồi                             | Doanh nghiệp, khách hàng, tài xế                                                   | Rõ về nhu cầu; tiêu chí và thời gian phản hồi chưa rõ            | [P6], [P12]  |
-| NEED-10 | Thông báo các sự kiện về yêu cầu, chuyến, tài xế và thanh toán                                                                                            | Khách hàng, tài xế                                                                 | Rõ về sự kiện; kênh và chính sách gửi chưa đầy đủ                | [P8]         |
-| NEED-11 | Tính cước sau khi chuyến hoàn thành dựa trên loại dịch vụ và thông tin chuyến                                                                             | Khách hàng, doanh nghiệp                                                           | Rõ về thời điểm và dữ liệu đầu vào; công thức chưa chốt          | [P7], [P12]  |
-| NEED-12 | Thanh toán bằng tiền mặt hoặc điện tử; tích hợp nhà cung cấp thanh toán bên ngoài; xử lý lại khi thanh toán điện tử thất bại theo chính sách doanh nghiệp | Khách hàng, doanh nghiệp                                                           | Rõ về phương thức; chính sách xử lý lại chưa rõ                  | [P7], [P12]  |
-| NEED-13 | Không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán                                                                                  | Doanh nghiệp, khách hàng                                                           | Rõ                                                               | [P7]         |
-| NEED-14 | Giao diện quản trị để quản lý khách hàng, tài xế, phương tiện và chuyến đi                                                                                | Nhân viên vận hành                                                                 | Rõ                                                               | [P9]         |
-| NEED-15 | Xem chuyến đang diễn ra, trạng thái tài xế, xử lý chuyến lỗi và tra cứu lịch sử giao dịch                                                                 | Nhân viên vận hành                                                                 | Rõ                                                               | [P9]         |
-| NEED-16 | Phân quyền để nhân viên thông thường không thực hiện thao tác nhạy cảm                                                                                    | Nhân viên vận hành, doanh nghiệp                                                   | Rõ về nhu cầu; danh sách thao tác nhạy cảm chưa rõ               | [P9], [P11]  |
-| NEED-17 | Báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế                                                                           | Ban lãnh đạo                                                                       | Rõ về chỉ số; định nghĩa và kỳ báo cáo chưa rõ                   | [P9]         |
-| NEED-18 | Hoạt động ổn định khi nhu cầu tăng cao, mở rộng độc lập các thành phần và triển khai chức năng mới từng phần                                              | Doanh nghiệp, nhóm phát triển, IT/DevOps được nhắc gián tiếp qua nội dung vận hành | Rõ về kỳ vọng; mức tải và tiêu chí ổn định chưa rõ               | [P10], [P12] |
-| NEED-19 | Bảo vệ dữ liệu cá nhân, phương tiện, vị trí và giao dịch; lưu vết thao tác quan trọng                                                                     | Doanh nghiệp, khách hàng, tài xế                                                   | Rõ về loại dữ liệu và mục đích; thời gian lưu trữ chưa rõ        | [P11], [P12] |
-| NEED-20 | Có thể bổ sung loại dịch vụ, phương thức thanh toán, nhà cung cấp thông báo hoặc thay đổi thành phần kỹ thuật trong tương lai                             | Doanh nghiệp, nhóm phát triển                                                      | Rõ về định hướng; chưa xác định cụ thể các loại mở rộng          | [P12]        |
+| Need ID | Nhu cầu                                                                                                                                         | Đối tượng được đề cập            | Mức độ rõ ràng                                                | Nguồn              |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------- | ------------------ |
+| NEED-01 | Đăng ký, đăng nhập và cập nhật thông tin cá nhân                                                                                                | Khách hàng                       | Rõ                                                            | [P4]               |
+| NEED-02 | Nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu đặt xe                                                                                     | Khách hàng                       | Rõ                                                            | [P4]               |
+| NEED-03 | Theo dõi quá trình tìm tài xế, tài xế nhận chuyến, ETA theo vị trí/khoảng cách và trạng thái chuyến                                             | Khách hàng                       | Rõ; chưa tích hợp giao thông thời gian thực ở MVP             | [P4], phản hồi v2  |
+| NEED-04 | Xem lịch sử chuyến, số tiền phải trả và đánh giá tài xế sau chuyến                                                                              | Khách hàng                       | Rõ                                                            | [P4]               |
+| NEED-05 | Đăng ký hoặc được nhân viên vận hành tạo tài khoản; cập nhật hồ sơ, phương tiện và trạng thái hoạt động                                         | Tài xế, nhân viên vận hành       | Rõ                                                            | [P5]               |
+| NEED-06 | Chuyển sang trạng thái sẵn sàng nhận chuyến; nhận thông báo và chấp nhận hoặc từ chối chuyến phù hợp                                            | Tài xế                           | Rõ                                                            | [P5]               |
+| NEED-07 | Cập nhật các trạng thái chuyến đúng trình tự, không bỏ qua trạng thái; sau khi nhận chuyến chỉ yêu cầu hủy/báo sự cố theo chính sách            | Tài xế                           | Rõ; trạng thái không cho phép hủy cần xác nhận                | [P5], phản hồi v2  |
+| NEED-08 | Cập nhật vị trí tài xế khoảng 10 giây/lần, mục tiêu độ chính xác khoảng 50 m, hỗ trợ tìm gần và ETA theo khoảng cách                            | Doanh nghiệp, tài xế             | Rõ; chưa yêu cầu dữ liệu giao thông thời gian thực            | [P5], phản hồi v2  |
+| NEED-09 | Hệ thống tự động tìm/phân công tài xế theo tiêu chí cấu hình; không phản hồi trong 30 giây được xem như từ chối và tìm tiếp                     | Doanh nghiệp, khách hàng, tài xế | Rõ; chi tiết khả năng đáp ứng cần đặc tả                      | [P6], phản hồi v2  |
+| NEED-10 | Thông báo trong hệ thống và email ở MVP; retry tối đa 3 lần khi gửi thất bại; hỗ trợ mở rộng provider/kênh về sau                               | Khách hàng, tài xế               | Rõ; không chuyển kênh khác sau retry thất bại ở phiên bản đầu | [P8], phản hồi v2  |
+| NEED-11 | Hệ thống tự động tính cước sau khi hoàn thành từ bảng giá cấu hình và thông tin chuyến                                                          | Khách hàng, doanh nghiệp         | Rõ; công thức bảng giá chi tiết cần xác nhận                  | [P7], phản hồi v2  |
+| NEED-12 | Thanh toán tiền mặt hoặc điện tử; điện tử retry tối đa 3 lần trong 30 phút; tiền mặt hoàn tất khi tài xế xác nhận đã thu đủ                     | Khách hàng, doanh nghiệp         | Rõ; hoàn tiền điện tử khi hủy theo Payment Provider           | [P7], phản hồi v2  |
+| NEED-13 | Không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán                                                                        | Doanh nghiệp, khách hàng         | Rõ                                                            | [P7]               |
+| NEED-14 | Giao diện quản trị để quản lý khách hàng, tài xế, phương tiện và chuyến đi                                                                      | Nhân viên vận hành               | Rõ                                                            | [P9]               |
+| NEED-15 | Xem chuyến đang diễn ra, trạng thái tài xế, xử lý chuyến lỗi và tra cứu lịch sử giao dịch                                                       | Nhân viên vận hành               | Rõ                                                            | [P9]               |
+| NEED-16 | Phân quyền theo vai trò Nhân viên vận hành và Quản trị viên; chỉ Quản trị viên cấp/thay đổi quyền                                               | Nhân viên vận hành, doanh nghiệp | Rõ ở mức MVP; ma trận quyền chi tiết cần đặc tả               | [P9], phản hồi v2  |
+| NEED-17 | Báo cáo theo ngày/tuần/tháng hoặc khoảng thời gian, lọc theo thời gian, tài xế, loại xe và trạng thái; có công thức tỷ lệ hoàn thành/hủy        | Ban lãnh đạo, nhân viên vận hành | Rõ; chi tiết chỉ số hiệu quả tài xế cần xác nhận              | [P9], phản hồi v2  |
+| NEED-18 | Hoạt động ổn định với mức MVP đề xuất 500 người dùng đồng thời, phản hồi tối đa 3 giây, khả dụng đề xuất 99,5%, backup và phục hồi theo RTO/RPO | Doanh nghiệp, nhóm phát triển    | Rõ ở mức đề xuất; cần phê duyệt tiêu chí nghiệm thu           | [P10], phản hồi v2 |
+| NEED-19 | Bảo vệ và lưu trữ dữ liệu: chuyến/giao dịch 24 tháng, vị trí chi tiết 30 ngày, audit log 12 tháng theo đề xuất                                  | Doanh nghiệp, khách hàng, tài xế | Rõ ở mức đề xuất; xử lý sau hạn theo chính sách doanh nghiệp  | [P11], phản hồi v2 |
+| NEED-20 | Có thể bổ sung loại dịch vụ, phương thức thanh toán, nhà cung cấp thông báo hoặc thay đổi thành phần kỹ thuật trong tương lai                   | Doanh nghiệp, nhóm phát triển    | Rõ về định hướng; chưa xác định cụ thể các loại mở rộng       | [P12]              |
 
 ## 4. Ghi nhận nội dung liên quan đến phạm vi
 
 Phần này chỉ ghi nhận nội dung tài liệu có đề cập, chưa kết luận chính thức trong hoặc ngoài phạm vi.
 
-| Scope Item ID | Nội dung được đề cập                                              | Bằng chứng   | Ghi chú                                                              |
-| ------------- | ----------------------------------------------------------------- | ------------ | -------------------------------------------------------------------- |
-| SCOPE-01      | Nền tảng đặt xe CAB cho quy trình tạo yêu cầu và thực hiện chuyến | [P1], [P14]  | Nội dung trung tâm của dự án                                         |
-| SCOPE-02      | Tài khoản và thông tin khách hàng                                 | [P4]         | Chi tiết dữ liệu chưa được nêu                                       |
-| SCOPE-03      | Tài khoản, hồ sơ, phương tiện và trạng thái tài xế                | [P5]         | Có hình thức tài xế tự đăng ký hoặc nhân viên vận hành tạo tài khoản |
-| SCOPE-04      | Tìm, ưu tiên và phân công tài xế; xử lý không phản hồi/từ chối    | [P6]         | Tiêu chí vận hành và thời gian phản hồi chưa chốt                    |
-| SCOPE-05      | Theo dõi trạng thái, vị trí và thời gian dự kiến tài xế đến       | [P4], [P5]   | Cách tính thời gian dự kiến chưa rõ                                  |
-| SCOPE-06      | Tính cước, thanh toán tiền mặt và thanh toán điện tử              | [P7]         | Công thức cước và chính sách thanh toán cần làm rõ                   |
-| SCOPE-07      | Tích hợp nhà cung cấp thanh toán bên ngoài                        | [P7]         | Phụ thuộc hệ thống bên ngoài                                         |
-| SCOPE-08      | Thông báo cho khách hàng và tài xế; mở rộng kênh thông báo        | [P8]         | Kênh cụ thể chưa chốt                                                |
-| SCOPE-09      | Giao diện quản trị và hỗ trợ vận hành                             | [P9]         | Có yêu cầu phân quyền và xử lý sự cố                                 |
-| SCOPE-10      | Báo cáo và dữ liệu theo dõi hoạt động                             | [P9], [P14]  | Chưa rõ báo cáo có phải chức năng giai đoạn đầu hay không            |
-| SCOPE-11      | Xác thực, phân quyền, bảo vệ dữ liệu và lưu vết thao tác          | [P11]        | Yêu cầu được nêu ở mức định hướng                                    |
-| SCOPE-12      | Mở rộng độc lập, triển khai từng phần và bổ sung dịch vụ/provider | [P10], [P12] | Có khả năng vượt phạm vi đồ án nhỏ, cần bước phạm vi xem xét         |
+| Scope Item ID | Nội dung được đề cập                                              | Bằng chứng             | Ghi chú                                                                                                               |
+| ------------- | ----------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| SCOPE-01      | Nền tảng đặt xe CAB cho quy trình tạo yêu cầu và thực hiện chuyến | [P1], [P14]            | Nội dung trung tâm của dự án                                                                                          |
+| SCOPE-02      | Tài khoản và thông tin khách hàng                                 | [P4]                   | Chi tiết dữ liệu chưa được nêu                                                                                        |
+| SCOPE-03      | Tài khoản, hồ sơ, phương tiện và trạng thái tài xế                | [P5]                   | Có hình thức tài xế tự đăng ký hoặc nhân viên vận hành tạo tài khoản                                                  |
+| SCOPE-04      | Tìm, ưu tiên và phân công tài xế; xử lý không phản hồi/từ chối    | [P6]                   | Tiêu chí vận hành và thời gian phản hồi chưa chốt                                                                     |
+| SCOPE-05      | Theo dõi trạng thái, vị trí và thời gian dự kiến tài xế đến       | [P4], [P5]             | Cách tính thời gian dự kiến chưa rõ                                                                                   |
+| SCOPE-06      | Tính cước, thanh toán tiền mặt và thanh toán điện tử              | [P7], phản hồi bổ sung | Bảng giá theo loại dịch vụ/loại xe, giá tối thiểu và phụ phí đã được xác nhận; công thức chi tiết và retry cần làm rõ |
+| SCOPE-07      | Tích hợp nhà cung cấp thanh toán bên ngoài                        | [P7]                   | Phụ thuộc hệ thống bên ngoài                                                                                          |
+| SCOPE-08      | Thông báo cho khách hàng và tài xế; mở rộng kênh thông báo        | [P8]                   | Kênh cụ thể chưa chốt                                                                                                 |
+| SCOPE-09      | Giao diện quản trị và hỗ trợ vận hành                             | [P9]                   | Có yêu cầu phân quyền và xử lý sự cố                                                                                  |
+| SCOPE-10      | Báo cáo và dữ liệu theo dõi hoạt động                             | [P9], [P14]            | Chưa rõ báo cáo có phải chức năng giai đoạn đầu hay không                                                             |
+| SCOPE-11      | Xác thực, phân quyền, bảo vệ dữ liệu và lưu vết thao tác          | [P11]                  | Yêu cầu được nêu ở mức định hướng                                                                                     |
+| SCOPE-12      | Mở rộng độc lập, triển khai từng phần và bổ sung dịch vụ/provider | [P10], [P12]           | Có khả năng vượt phạm vi đồ án nhỏ, cần bước phạm vi xem xét                                                          |
 
 ## 5. Ghi nhận các đối tượng được đề cập
 
@@ -159,15 +159,15 @@ Các thông số như thời gian phản hồi, số lượng người dùng/chu
 
 Không phát hiện mâu thuẫn trực tiếp giữa các đoạn `[P1]`-[P14]. Tuy nhiên, các điểm sau còn chung chung hoặc có nhiều cách hiểu:
 
-| Issue ID | Nội dung                                | Phát hiện                                                                                                                                  | Cần xử lý                                                                  |
-| -------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| I-01     | Nhóm người dùng                         | Tài liệu nói hỗ trợ ít nhất ba nhóm chính nhưng các phần khác còn đề cập ban lãnh đạo, nhân viên vận hành, nhóm phát triển và bên cung cấp | [CẦN LÀM RÕ VỚI KHÁCH HÀNG] ai là người dùng trực tiếp trong giai đoạn đầu |
-| I-02     | Phân công tài xế                        | Có nói ưu tiên tài xế phù hợp và gần khách hàng nhưng chưa định nghĩa tiêu chí, cách xếp hạng và thời gian phản hồi                        | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                |
-| I-03     | Vị trí và thời gian dự kiến             | Có nhu cầu lưu vị trí và cải thiện dự kiến đến nhưng chưa nói cách thu thập, độ chính xác hoặc cách tính                                   | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                |
-| I-04     | Thanh toán thất bại                     | Có yêu cầu cho phép xử lý lại theo chính sách nhưng chính sách chưa tồn tại trong tài liệu                                                 | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                |
-| I-05     | Báo cáo                                 | Có nêu tỷ lệ hủy nhưng tài liệu đồng thời ghi chính sách hủy chưa chốt                                                                     | Cần thống nhất định nghĩa dữ liệu và trạng thái hủy                        |
-| I-06     | Mở rộng và thay đổi thành phần kỹ thuật | Kỳ vọng mở rộng độc lập, thay provider và triển khai từng phần ở mức cao, chưa có giới hạn giai đoạn                                       | [CẦN LÀM RÕ VỚI KHÁCH HÀNG] phạm vi ưu tiên và mức kỳ vọng trong 7 tuần    |
-| I-07     | Bảo vệ và lưu trữ dữ liệu               | Có yêu cầu bảo vệ và audit nhưng thời gian lưu dữ liệu chưa chốt                                                                           | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                |
+| Issue ID | Nội dung                                | Phát hiện                                                                                                                                  | Cần xử lý                                                                        |
+| -------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| I-01     | Nhóm người dùng                         | Tài liệu nói hỗ trợ ít nhất ba nhóm chính nhưng các phần khác còn đề cập ban lãnh đạo, nhân viên vận hành, nhóm phát triển và bên cung cấp | [CẦN LÀM RÕ VỚI KHÁCH HÀNG] ai là người dùng trực tiếp trong giai đoạn đầu       |
+| I-02     | Phân công tài xế                        | Đã xác nhận lọc theo vị trí, trạng thái sẵn sàng, loại xe; ưu tiên khoảng cách/ETA thấp nhất và timeout phản hồi 30 giây                   | Còn làm rõ cách tính ETA và chính sách retry cụ thể                              |
+| I-03     | Vị trí và thời gian dự kiến             | Có nhu cầu lưu vị trí và cải thiện dự kiến đến nhưng chưa nói cách thu thập, độ chính xác hoặc cách tính                                   | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                      |
+| I-04     | Thanh toán thất bại                     | Có yêu cầu cho phép xử lý lại theo chính sách nhưng chính sách chưa tồn tại trong tài liệu                                                 | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                      |
+| I-05     | Báo cáo                                 | Có nêu tỷ lệ hủy nhưng tài liệu đồng thời ghi chính sách hủy chưa chốt                                                                     | Cần thống nhất định nghĩa dữ liệu và trạng thái hủy                              |
+| I-06     | Mở rộng và thay đổi thành phần kỹ thuật | Đã xác nhận mở rộng độc lập, thay provider và triển khai từng phần; mục tiêu tải/khả dụng được nêu ở phản hồi bổ sung                      | Cần xác nhận phạm vi triển khai trong 7 tuần và cách nghiệm thu mục tiêu đề xuất |
+| I-07     | Bảo vệ và lưu trữ dữ liệu               | Có yêu cầu bảo vệ và audit nhưng thời gian lưu dữ liệu chưa chốt                                                                           | [CẦN LÀM RÕ VỚI KHÁCH HÀNG]                                                      |
 
 ## 10. Nội dung có khả năng vượt phạm vi đồ án nhỏ
 
@@ -688,28 +688,28 @@ BR chỉ mô tả điều doanh nghiệp cần hệ thống đạt được. Cá
 
 ## II. Danh sách Business Requirement
 
-| BR ID | Business Requirement                                                                                                                                                                                     | Nguồn NEED             | Stakeholder liên quan          | Scope liên quan | Trạng thái                                                      |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------ | --------------- | --------------------------------------------------------------- |
-| BR-01 | Hệ thống cần hỗ trợ khách hàng quản lý tài khoản cá nhân để sử dụng dịch vụ đặt xe.                                                                                                                      | NEED-01; [P4]          | STK-02                         | S-F01           | Đã xác nhận                                                     |
-| BR-02 | Hệ thống cần hỗ trợ khách hàng tạo yêu cầu đặt xe với thông tin điểm đón, điểm đến và loại xe.                                                                                                           | NEED-02; [P4]          | STK-02                         | S-F02           | Đã xác nhận                                                     |
-| BR-03 | Hệ thống cần hỗ trợ khách hàng theo dõi quá trình xử lý và trạng thái chuyến xe.                                                                                                                         | NEED-03; [P4]          | STK-02                         | S-F04           | Đã xác nhận; cách xác định thời gian dự kiến cần làm rõ         |
-| BR-04 | Hệ thống cần hỗ trợ khách hàng xem lịch sử chuyến, số tiền phải trả và đánh giá tài xế sau khi chuyến hoàn thành.                                                                                        | NEED-04; [P4]          | STK-02                         | S-F04, S-F06    | Đã xác nhận; điều kiện và nội dung đánh giá cần làm rõ          |
-| BR-05 | Hệ thống cần hỗ trợ doanh nghiệp quản lý hồ sơ, phương tiện và trạng thái hoạt động của tài xế.                                                                                                          | NEED-05; [P5], [P9]    | STK-03, STK-04                 | S-F08           | Đã xác nhận                                                     |
-| BR-06 | Hệ thống cần hỗ trợ tài xế sẵn sàng nhận chuyến, nhận thông tin chuyến và phản hồi chấp nhận hoặc từ chối chuyến.                                                                                        | NEED-06; [P5]          | STK-03                         | S-F03, S-F07    | Đã xác nhận                                                     |
-| BR-07 | Hệ thống cần hỗ trợ tài xế cập nhật tiến trình thực hiện chuyến từ khi đến điểm đón đến khi hoàn thành.                                                                                                  | NEED-07; [P5]          | STK-03, STK-02                 | S-F04           | Đã xác nhận; quy tắc chuyển trạng thái cần làm rõ               |
-| BR-08 | Hệ thống cần quản lý thông tin vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và cải thiện thời gian dự kiến đến.                                                                                     | NEED-08; [P5]          | STK-01, STK-03                 | S-F03, S-F05    | Đã xác nhận; cách thu thập, độ chính xác và tần suất cần làm rõ |
-| BR-09 | Hệ thống cần hỗ trợ tìm và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành được doanh nghiệp xác nhận.                                                              | NEED-09; [P6]          | STK-01, STK-02, STK-03, STK-04 | S-F03           | Đã xác nhận; tiêu chí và thời gian phản hồi cần làm rõ          |
-| BR-10 | Hệ thống cần hỗ trợ tiếp tục tìm tài xế khác khi tài xế được đề xuất không phản hồi hoặc từ chối, đồng thời thông báo khi không tìm được tài xế.                                                         | NEED-09; [P6]          | STK-02, STK-03, STK-04         | S-F03, S-F07    | Đã xác nhận; chính sách chuyển tiếp cần làm rõ                  |
-| BR-11 | Hệ thống cần hỗ trợ gửi thông báo về các sự kiện quan trọng của yêu cầu đặt xe, chuyến xe, tài xế và thanh toán đến các bên liên quan.                                                                   | NEED-10; [P8]          | STK-02, STK-03, STK-04, STK-07 | S-F07           | Đã xác nhận; kênh và chính sách gửi cần làm rõ                  |
-| BR-12 | Hệ thống cần xác định số tiền khách hàng phải trả sau khi chuyến xe hoàn thành dựa trên loại dịch vụ và thông tin chuyến.                                                                                | NEED-11; [P7]          | STK-01, STK-02, STK-05         | S-F06           | Đã xác nhận; công thức cước cần làm rõ                          |
-| BR-13 | Hệ thống cần hỗ trợ khách hàng thanh toán chuyến xe bằng tiền mặt hoặc phương thức điện tử.                                                                                                              | NEED-12; [P7]          | STK-01, STK-02, STK-06         | S-F06           | Đã xác nhận                                                     |
-| BR-14 | Hệ thống cần phối hợp với Payment Provider để tiếp nhận và quản lý kết quả thanh toán điện tử, bao gồm trường hợp giao dịch thất bại.                                                                    | NEED-12; [P7]          | STK-01, STK-02, STK-06         | S-F06           | Đã xác nhận; provider và chính sách xử lý lại cần làm rõ        |
-| BR-15 | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                                                                                        | NEED-13; [P7]          | STK-01, STK-02, STK-06         | S-F06, S-F09    | Đã xác nhận                                                     |
-| BR-16 | Hệ thống cần cung cấp chức năng vận hành để quản lý khách hàng, tài xế, phương tiện, chuyến xe, sự cố và lịch sử giao dịch.                                                                              | NEED-14, NEED-15; [P9] | STK-04                         | S-F08           | Đã xác nhận                                                     |
-| BR-17 | Hệ thống cần hỗ trợ phân quyền để kiểm soát các thao tác quản trị và ngăn nhân viên không phù hợp thực hiện thao tác nhạy cảm.                                                                           | NEED-16; [P9], [P11]   | STK-01, STK-04                 | S-F09           | Đã xác nhận; ma trận quyền cần làm rõ                           |
-| BR-18 | Hệ thống cần cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế.                                                                                     | NEED-17; [P9]          | STK-01, STK-05                 | S-F10           | Đã xác nhận; định nghĩa KPI và kỳ báo cáo cần làm rõ            |
-| BR-19 | Hệ thống cần hoạt động ổn định khi nhu cầu tăng cao, cho phép các thành phần được mở rộng độc lập và chức năng mới được triển khai từng phần.                                                            | NEED-18; [P10]         | STK-01, STK-05, STK-09         | S-F11           | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                 |
-| BR-20 | Hệ thống cần cho phép doanh nghiệp định hướng bổ sung loại dịch vụ, phương thức thanh toán, nhà cung cấp thông báo hoặc thay đổi thành phần trong tương lai mà không phải xây dựng lại toàn bộ ứng dụng. | NEED-20; [P12]         | STK-01, STK-05, STK-07, STK-09 | S-F11           | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                 |
+| BR ID | Business Requirement                                                                                                                                                                                                    | Nguồn NEED                      | Stakeholder liên quan          | Scope liên quan | Trạng thái                                                       |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------ | --------------- | ---------------------------------------------------------------- |
+| BR-01 | Hệ thống cần hỗ trợ khách hàng quản lý tài khoản cá nhân để sử dụng dịch vụ đặt xe.                                                                                                                                     | NEED-01; [P4]                   | STK-02                         | S-F01           | Đã xác nhận                                                      |
+| BR-02 | Hệ thống cần hỗ trợ khách hàng tạo yêu cầu đặt xe với thông tin điểm đón, điểm đến và loại xe.                                                                                                                          | NEED-02; [P4]                   | STK-02                         | S-F02           | Đã xác nhận                                                      |
+| BR-03 | Hệ thống cần hỗ trợ khách hàng theo dõi quá trình xử lý và trạng thái chuyến xe.                                                                                                                                        | NEED-03; [P4]                   | STK-02                         | S-F04           | Đã xác nhận; cách xác định thời gian dự kiến cần làm rõ          |
+| BR-04 | Hệ thống cần hỗ trợ khách hàng xem lịch sử chuyến, số tiền phải trả và đánh giá tài xế sau khi chuyến hoàn thành.                                                                                                       | NEED-04; [P4]                   | STK-02                         | S-F04, S-F06    | Đã xác nhận; điều kiện và nội dung đánh giá cần làm rõ           |
+| BR-05 | Hệ thống cần hỗ trợ doanh nghiệp quản lý hồ sơ, phương tiện và trạng thái hoạt động của tài xế.                                                                                                                         | NEED-05; [P5], [P9]             | STK-03, STK-04                 | S-F08           | Đã xác nhận                                                      |
+| BR-06 | Hệ thống cần hỗ trợ tài xế sẵn sàng nhận chuyến, nhận thông tin chuyến và phản hồi chấp nhận hoặc từ chối chuyến.                                                                                                       | NEED-06; [P5]                   | STK-03                         | S-F03, S-F07    | Đã xác nhận                                                      |
+| BR-07 | Hệ thống cần hỗ trợ tài xế cập nhật tiến trình thực hiện chuyến từ khi đến điểm đón đến khi hoàn thành.                                                                                                                 | NEED-07; [P5]                   | STK-03, STK-02                 | S-F04           | Đã xác nhận; quy tắc chuyển trạng thái cần làm rõ                |
+| BR-08 | Hệ thống cần quản lý thông tin vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và cải thiện thời gian dự kiến đến.                                                                                                    | NEED-08; [P5]                   | STK-01, STK-03                 | S-F03, S-F05    | Đã xác nhận; cách thu thập, độ chính xác và tần suất cần làm rõ  |
+| BR-09 | Hệ thống cần tự động tìm và ưu tiên tài xế phù hợp dựa trên vị trí hiện tại, trạng thái sẵn sàng và loại xe; nếu có nhiều ứng viên, ưu tiên khoảng cách hoặc thời gian dự kiến đến điểm đón thấp nhất.                  | NEED-09; [P6], phản hồi bổ sung | STK-01, STK-02, STK-03, STK-04 | S-F03           | Đã xác nhận; cách tính ETA cần làm rõ                            |
+| BR-10 | Hệ thống cần hỗ trợ tiếp tục tìm tài xế khác khi tài xế được đề xuất không phản hồi hoặc từ chối, đồng thời thông báo khi không tìm được tài xế.                                                                        | NEED-09; [P6]                   | STK-02, STK-03, STK-04         | S-F03, S-F07    | Đã xác nhận; chính sách chuyển tiếp cần làm rõ                   |
+| BR-11 | Hệ thống cần hỗ trợ gửi thông báo về các sự kiện quan trọng của yêu cầu đặt xe, chuyến xe, tài xế và thanh toán đến các bên liên quan.                                                                                  | NEED-10; [P8]                   | STK-02, STK-03, STK-04, STK-07 | S-F07           | Đã xác nhận; kênh và chính sách gửi cần làm rõ                   |
+| BR-12 | Hệ thống cần xác định số tiền khách hàng phải trả khi chuyến hoàn thành bằng bảng giá cấu hình theo loại dịch vụ/loại xe, có thể gồm giá tối thiểu và phụ phí; kết quả phải được lưu để thanh toán, lịch sử và tra cứu. | NEED-11; [P7], phản hồi bổ sung | STK-01, STK-02, STK-05         | S-F06           | Đã xác nhận; công thức chi tiết và quyền sửa bảng giá cần làm rõ |
+| BR-13 | Hệ thống cần hỗ trợ khách hàng thanh toán chuyến xe bằng tiền mặt hoặc phương thức điện tử.                                                                                                                             | NEED-12; [P7]                   | STK-01, STK-02, STK-06         | S-F06           | Đã xác nhận                                                      |
+| BR-14 | Hệ thống cần phối hợp với Payment Provider để tiếp nhận, cập nhật trạng thái và lưu lịch sử kết quả thanh toán điện tử; khi thất bại cho phép tối đa 3 lần retry trong 30 phút.                                         | NEED-12; phản hồi v2            | STK-01, STK-02, STK-06         | S-F06           | Đã xác nhận; xử lý sau khi hết retry theo chính sách vận hành    |
+| BR-15 | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                                                                                                       | NEED-13; [P7]                   | STK-01, STK-02, STK-06         | S-F06, S-F09    | Đã xác nhận                                                      |
+| BR-16 | Hệ thống cần cung cấp chức năng vận hành để quản lý khách hàng, tài xế, phương tiện, chuyến xe, sự cố và lịch sử giao dịch.                                                                                             | NEED-14, NEED-15; [P9]          | STK-04                         | S-F08           | Đã xác nhận                                                      |
+| BR-17 | Hệ thống cần hỗ trợ phân quyền để kiểm soát các thao tác quản trị và ngăn nhân viên không phù hợp thực hiện thao tác nhạy cảm.                                                                                          | NEED-16; [P9], [P11]            | STK-01, STK-04                 | S-F09           | Đã xác nhận; ma trận quyền cần làm rõ                            |
+| BR-18 | Hệ thống cần cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế theo ngày, tuần, tháng hoặc khoảng thời gian người dùng chọn, với quyền xem theo vai trò.                         | NEED-17; [P9], phản hồi bổ sung | STK-01, STK-05                 | S-F10           | Đã xác nhận; công thức KPI chi tiết cần làm rõ                   |
+| BR-19 | Hệ thống cần hoạt động ổn định khi nhu cầu tăng cao, cho phép các thành phần được mở rộng độc lập và chức năng mới được triển khai từng phần.                                                                           | NEED-18; [P10]                  | STK-01, STK-05, STK-09         | S-F11           | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                  |
+| BR-20 | Hệ thống cần cho phép doanh nghiệp định hướng bổ sung loại dịch vụ, phương thức thanh toán, nhà cung cấp thông báo hoặc thay đổi thành phần trong tương lai mà không phải xây dựng lại toàn bộ ứng dụng.                | NEED-20; [P12]                  | STK-01, STK-05, STK-07, STK-09 | S-F11           | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                  |
 
 BR-09 và BR-10 cùng xuất phát từ NEED-09 nhưng có hai mục tiêu nghiệp vụ khác nhau: tìm/ưu tiên tài xế và xử lý khi tài xế không nhận chuyến. BR-14 tách phần phối hợp Payment Provider và xử lý kết quả khỏi BR-13 vì đây là hai mục tiêu nghiệp vụ có thể truy xuất riêng.
 
@@ -907,16 +907,16 @@ Mô tả dưới đây chỉ ở mức nghiệp vụ: mục tiêu, điều kiệ
 
 ## II. Danh sách Business Process
 
-| BP ID | Tên Business Process                    | Mục tiêu                                                                                        | BR liên quan               | Scope liên quan     | Trạng thái                                      |
-| ----- | --------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------- | ------------------- | ----------------------------------------------- |
-| BP-01 | Quản lý tài khoản và tạo yêu cầu đặt xe | Hỗ trợ khách hàng bắt đầu sử dụng dịch vụ và tạo yêu cầu chuyến                                 | BR-01, BR-02               | S-F01, S-F02        | Đã xác nhận                                     |
-| BP-02 | Tìm và phân công tài xế                 | Tìm tài xế phù hợp, ưu tiên theo tiêu chí được xác nhận và tiếp tục xử lý khi không nhận chuyến | BR-08, BR-09, BR-10        | S-F03, S-F05, S-F07 | Đã xác nhận; một số điều kiện cần làm rõ        |
-| BP-03 | Thực hiện và theo dõi chuyến xe         | Hỗ trợ tài xế thực hiện chuyến và khách hàng theo dõi tiến trình                                | BR-03, BR-04, BR-06, BR-07 | S-F04, S-F07        | Đã xác nhận                                     |
-| BP-04 | Tính cước và thanh toán chuyến xe       | Xác định tiền phải trả và xử lý thanh toán tiền mặt hoặc điện tử                                | BR-12, BR-13, BR-14, BR-15 | S-F06, S-F09        | Đã xác nhận; chính sách cần làm rõ              |
-| BP-05 | Gửi và quản lý thông báo                | Cập nhật các sự kiện quan trọng đến các bên liên quan                                           | BR-11                      | S-F07               | Đã xác nhận; provider/kênh cần làm rõ           |
-| BP-06 | Vận hành và xử lý sự cố                 | Quản lý đối tượng, theo dõi chuyến, xử lý chuyến lỗi và kiểm soát quyền                         | BR-05, BR-16, BR-17        | S-F08, S-F09        | Đã xác nhận                                     |
-| BP-07 | Báo cáo hoạt động                       | Cung cấp dữ liệu về chuyến, doanh thu, tỷ lệ và hiệu quả tài xế                                 | BR-18                      | S-F10               | Đã xác nhận; KPI cần làm rõ                     |
-| BP-08 | Quản lý khả năng mở rộng nền tảng       | Hỗ trợ định hướng mở rộng thành phần, dịch vụ, provider và triển khai từng phần                 | BR-19, BR-20               | S-F11               | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| BP ID | Tên Business Process                    | Mục tiêu                                                                                                                     | BR liên quan               | Scope liên quan     | Trạng thái                                      |
+| ----- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------------------- | ----------------------------------------------- |
+| BP-01 | Quản lý tài khoản và tạo yêu cầu đặt xe | Hỗ trợ khách hàng bắt đầu sử dụng dịch vụ và tạo yêu cầu chuyến                                                              | BR-01, BR-02               | S-F01, S-F02        | Đã xác nhận                                     |
+| BP-02 | Tìm và phân công tài xế                 | Tự động tìm theo vị trí, trạng thái sẵn sàng, loại xe; ưu tiên ứng viên có khoảng cách/ETA thấp nhất và chờ phản hồi 30 giây | BR-08, BR-09, BR-10        | S-F03, S-F05, S-F07 | Đã xác nhận; cách tính ETA cần làm rõ           |
+| BP-03 | Thực hiện và theo dõi chuyến xe         | Hỗ trợ tài xế thực hiện chuyến và khách hàng theo dõi tiến trình                                                             | BR-03, BR-04, BR-06, BR-07 | S-F04, S-F07        | Đã xác nhận                                     |
+| BP-04 | Tính cước và thanh toán chuyến xe       | Xác định tiền phải trả và xử lý thanh toán tiền mặt hoặc điện tử                                                             | BR-12, BR-13, BR-14, BR-15 | S-F06, S-F09        | Đã xác nhận; chính sách cần làm rõ              |
+| BP-05 | Gửi và quản lý thông báo                | Gửi thông báo trong hệ thống/email ở MVP, tối đa 3 lần thử lại và cho phép thay đổi provider/kênh về sau                     | BR-11                      | S-F07               | Đã xác nhận định hướng                          |
+| BP-06 | Vận hành và xử lý sự cố                 | Quản lý đối tượng, theo dõi chuyến, xử lý chuyến lỗi và kiểm soát quyền                                                      | BR-05, BR-16, BR-17        | S-F08, S-F09        | Đã xác nhận                                     |
+| BP-07 | Báo cáo hoạt động                       | Cung cấp báo cáo theo ngày, tuần, tháng hoặc khoảng thời gian tùy chọn, theo quyền xem được cấp                              | BR-18                      | S-F10               | Đã xác nhận; công thức KPI cần làm rõ           |
+| BP-08 | Quản lý khả năng mở rộng nền tảng       | Hỗ trợ định hướng mở rộng thành phần, dịch vụ, provider và triển khai từng phần                                              | BR-19, BR-20               | S-F11               | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
 
 ## III. Mô tả chi tiết các Business Process
 
@@ -1362,7 +1362,7 @@ Bảng này chỉ tổng hợp điều kiện nghiệp vụ đã có nguồn ho�
 | ----- | ------------------------------------------------------------------------------------ | ----------------------------- | ------------------------ | --------------------------------------------- |
 | BP-01 | Yêu cầu cần có thông tin điểm đón, điểm đến và loại xe                               | Tiếp nhận yêu cầu             | BR-02; [P4]              | Đã xác nhận                                   |
 | BP-02 | Tìm tài xế dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành                 | Xác định/ưu tiên tài xế       | BR-08, BR-09; [P5], [P6] | Đã xác nhận; tiêu chí cần làm rõ              |
-| BP-02 | Khi tài xế từ chối hoặc không phản hồi, tiếp tục tìm tài xế khác                     | Rẽ nhánh phân công            | BR-10; [P6]              | Đã xác nhận; thời gian phản hồi cần làm rõ    |
+| BP-02 | Khi tài xế từ chối hoặc không phản hồi trong 30 giây, tiếp tục tìm tài xế khác       | Rẽ nhánh phân công            | BR-10; phản hồi bổ sung  | Đã xác nhận                                   |
 | BP-03 | Tài xế cập nhật các trạng thái đã đến, đã đón khách, đang di chuyển, hoàn thành      | Thực hiện chuyến              | BR-07; [P5]              | Đã xác nhận                                   |
 | BP-03 | Khách hàng cần biết trạng thái chuyến, tài xế và thời gian dự kiến                   | Theo dõi chuyến               | BR-03; [P4]              | Đã xác nhận; cách tính thời gian cần làm rõ   |
 | BP-04 | Tính cước sau khi chuyến hoàn thành theo loại dịch vụ và thông tin chuyến            | Tính tiền                     | BR-12; [P7]              | Đã xác nhận; công thức cần làm rõ             |
@@ -1554,7 +1554,7 @@ flowchart TD
 | BP ID        | BP-02                                                  |
 | BR liên quan | BR-08, BR-09, BR-10                                    |
 | Mục tiêu     | Tìm tài xế phù hợp và xử lý từ chối/không phản hồi     |
-| Trạng thái   | Đã xác nhận; tiêu chí và thời gian phản hồi cần làm rõ |
+| Trạng thái   | Đã xác nhận; timeout 30 giây, cách tính ETA cần làm rõ |
 
 ```mermaid
 flowchart TD
@@ -1587,12 +1587,12 @@ flowchart TD
 
 ### Thông tin truy xuất
 
-| Thành phần   | Giá trị                                                    |
-| ------------ | ---------------------------------------------------------- |
-| BP ID        | BP-03                                                      |
-| BR liên quan | BR-03, BR-04, BR-06, BR-07                                 |
-| Mục tiêu     | Tài xế thực hiện chuyến, khách hàng theo dõi tiến trình    |
-| Trạng thái   | Đã xác nhận; mất kết nối và trình tự trạng thái cần làm rõ |
+| Thành phần   | Giá trị                                                  |
+| ------------ | -------------------------------------------------------- |
+| BP ID        | BP-03                                                    |
+| BR liên quan | BR-03, BR-04, BR-06, BR-07                               |
+| Mục tiêu     | Tài xế thực hiện chuyến, khách hàng theo dõi tiến trình  |
+| Trạng thái   | Đã xác nhận; đồng bộ chi tiết sau mất kết nối cần làm rõ |
 
 ```mermaid
 flowchart TD
@@ -1863,38 +1863,38 @@ Các FR dưới đây là FR cấp cao. Chưa tạo mã FR con dạng `FR-01.1`,
 
 ## II. Danh sách Functional Requirement cấp cao
 
-| FR ID | Functional Requirement                                                                                                       | BR liên quan        | BP liên quan | Step liên quan   | Đối tượng sử dụng/kích hoạt    | Scope        | Trạng thái                                                     |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------ | ---------------- | ------------------------------ | ------------ | -------------------------------------------------------------- |
-| FR-01 | Hệ thống cho phép khách hàng đăng ký, đăng nhập và quản lý thông tin tài khoản cá nhân.                                      | BR-01               | BP-01        | STEP-01          | STK-02                         | S-F01        | Đã xác nhận                                                    |
-| FR-02 | Hệ thống cho phép khách hàng nhập và gửi thông tin yêu cầu đặt xe gồm điểm đón, điểm đến và loại xe.                         | BR-02               | BP-01        | STEP-02          | STK-02                         | S-F02        | Đã xác nhận                                                    |
-| FR-03 | Hệ thống tiếp nhận và chuyển yêu cầu đặt xe sang quá trình tìm tài xế.                                                       | BR-02               | BP-01        | STEP-03          | STK-01, STK-02                 | S-F02, S-F03 | [Suy ra] cần thiết để thực hiện BR-02 và BR-09                 |
-| FR-04 | Hệ thống xác định các tài xế có khả năng phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành được xác nhận.    | BR-08, BR-09        | BP-02        | STEP-04          | STK-01, STK-03, STK-04         | S-F03, S-F05 | Đã xác nhận; tiêu chí cần làm rõ                               |
-| FR-05 | Hệ thống gửi yêu cầu chuyến đến tài xế phù hợp và ghi nhận phản hồi chấp nhận, từ chối hoặc không phản hồi.                  | BR-06, BR-09, BR-10 | BP-02        | STEP-05          | STK-03                         | S-F03, S-F07 | Đã xác nhận; thời gian phản hồi cần làm rõ                     |
-| FR-06 | Hệ thống ghi nhận kết quả phân công tài xế cho chuyến khi tài xế chấp nhận.                                                  | BR-09               | BP-02        | STEP-06          | STK-01, STK-02, STK-03         | S-F03        | Đã xác nhận                                                    |
-| FR-07 | Hệ thống tiếp tục tìm tài xế khác khi tài xế từ chối hoặc không phản hồi và thông báo khi không còn tài xế phù hợp.          | BR-10               | BP-02        | STEP-05, STEP-06 | STK-02, STK-03, STK-04         | S-F03, S-F07 | Đã xác nhận; chính sách chuyển tiếp cần làm rõ                 |
-| FR-08 | Hệ thống hỗ trợ tài xế cập nhật các trạng thái trong quá trình thực hiện chuyến.                                             | BR-07               | BP-03        | STEP-07          | STK-03                         | S-F04        | Đã xác nhận; trình tự trạng thái cần làm rõ                    |
-| FR-09 | Hệ thống hiển thị cho khách hàng thông tin và trạng thái tiến trình của chuyến xe.                                           | BR-03, BR-04        | BP-03        | STEP-08          | STK-02                         | S-F04        | Đã xác nhận; thời gian dự kiến cần làm rõ                      |
-| FR-10 | Hệ thống tiếp nhận kết quả chuyến hoàn thành và chuyển sang quá trình tính cước/thanh toán.                                  | BR-07, BR-12        | BP-03        | STEP-09          | STK-02, STK-03                 | S-F04, S-F06 | [Suy ra] cần thiết để nối BP-03 với BP-04                      |
-| FR-11 | Hệ thống cho phép ghi nhận hoặc chuyển thông tin chuyến có sự cố cho bộ phận vận hành.                                       | BR-16               | BP-03, BP-06 | STEP-09, STEP-16 | STK-02, STK-03, STK-04         | S-F04, S-F08 | Đã xác nhận; cách thông báo cần làm rõ                         |
-| FR-12 | Hệ thống quản lý thông tin vị trí tài xế phục vụ việc tìm tài xế gần khách hàng.                                             | BR-08, BR-09        | BP-02        | STEP-04          | STK-03, STK-01                 | S-F05        | Đã xác nhận; cách thu thập/tần suất cần làm rõ                 |
-| FR-13 | Hệ thống xác định số tiền khách hàng phải trả sau khi chuyến hoàn thành dựa trên loại dịch vụ và thông tin chuyến.           | BR-12               | BP-04        | STEP-10          | STK-01, STK-02                 | S-F06        | Đã xác nhận; công thức cước cần làm rõ                         |
-| FR-14 | Hệ thống cho phép khách hàng lựa chọn phương thức thanh toán tiền mặt hoặc điện tử.                                          | BR-13               | BP-04        | STEP-11          | STK-02                         | S-F06        | Đã xác nhận                                                    |
-| FR-15 | Hệ thống ghi nhận kết quả thanh toán tiền mặt theo chính sách doanh nghiệp.                                                  | BR-13               | BP-04        | STEP-11, STEP-12 | STK-01, STK-02                 | S-F06        | Đã xác nhận; chính sách tiền mặt cần làm rõ                    |
-| FR-16 | Hệ thống gửi yêu cầu thanh toán điện tử đến Payment Provider và tiếp nhận kết quả giao dịch.                                 | BR-14               | BP-04        | STEP-11, STEP-12 | STK-02, STK-06                 | S-F06        | Đã xác nhận; provider cụ thể cần làm rõ                        |
-| FR-17 | Hệ thống ghi nhận thanh toán điện tử thất bại, thông báo khách hàng và hỗ trợ xử lý lại theo chính sách doanh nghiệp.        | BR-14               | BP-04        | STEP-12          | STK-02, STK-06                 | S-F06, S-F07 | Đã xác nhận; chính sách xử lý lại cần làm rõ                   |
-| FR-18 | Hệ thống không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                 | BR-15               | BP-04        | STEP-12          | STK-01, STK-02, STK-06         | S-F06, S-F09 | Đã xác nhận                                                    |
-| FR-19 | Hệ thống xác định sự kiện, bên nhận và thông tin cần gửi thông báo.                                                          | BR-11               | BP-05        | STEP-13          | STK-02, STK-03, STK-04, STK-07 | S-F07        | Đã xác nhận; kênh và người nhận cần làm rõ                     |
-| FR-20 | Hệ thống gửi thông báo qua kênh/provider được xác định và ghi nhận kết quả gửi.                                              | BR-11               | BP-05        | STEP-14          | STK-07                         | S-F07        | Đã xác nhận; provider/retry cần làm rõ                         |
-| FR-21 | Hệ thống cho phép nhân viên vận hành xem và quản lý thông tin khách hàng, tài xế, phương tiện và chuyến theo quyền được cấp. | BR-05, BR-16        | BP-06        | STEP-15          | STK-04                         | S-F08, S-F09 | Đã xác nhận; danh sách quyền cần làm rõ                        |
-| FR-22 | Hệ thống kiểm tra quyền trước khi cho phép thực hiện thao tác quản trị.                                                      | BR-17               | BP-06        | STEP-15          | STK-04                         | S-F09        | Đã xác nhận; ma trận quyền cần làm rõ                          |
-| FR-23 | Hệ thống cho phép nhân viên vận hành ghi nhận và cập nhật quá trình xử lý chuyến bị lỗi hoặc sự cố.                          | BR-16               | BP-06        | STEP-16          | STK-04                         | S-F08        | Đã xác nhận; trạng thái xử lý cần làm rõ                       |
-| FR-24 | Hệ thống cung cấp thông tin kết quả xử lý sự cố cho các bên liên quan theo chính sách được xác nhận.                         | BR-16               | BP-06        | STEP-16          | STK-02, STK-03, STK-04         | S-F07, S-F08 | [Suy ra] từ nhu cầu hỗ trợ vận hành; cách thông báo cần làm rõ |
-| FR-25 | Hệ thống lưu vết các thao tác quan trọng để phục vụ kiểm tra khi có sự cố.                                                   | BR-17               | BP-06        | STEP-17          | STK-01, STK-04                 | S-F09        | Đã xác nhận; danh sách và thời gian lưu cần làm rõ             |
-| FR-26 | Hệ thống tập hợp dữ liệu hoạt động cần thiết cho báo cáo.                                                                    | BR-18               | BP-07        | STEP-18          | STK-01, STK-04, STK-05         | S-F10        | Đã xác nhận; dữ liệu/KPI cần làm rõ                            |
-| FR-27 | Hệ thống tổng hợp và cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế.               | BR-18               | BP-07        | STEP-19          | STK-01, STK-05                 | S-F10        | Đã xác nhận; công thức KPI cần làm rõ                          |
-| FR-28 | Hệ thống hỗ trợ ghi nhận nhu cầu, phạm vi ảnh hưởng và ưu tiên của thay đổi/mở rộng nền tảng.                                | BR-19, BR-20        | BP-08        | STEP-20          | STK-01, STK-05, STK-09         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
-| FR-29 | Hệ thống hỗ trợ triển khai và kiểm tra thay đổi từng phần theo phạm vi được xác nhận.                                        | BR-19, BR-20        | BP-08        | STEP-21          | STK-09                         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
-| FR-30 | Hệ thống hỗ trợ ghi nhận kết quả khi thay đổi ảnh hưởng hoặc làm hệ thống hoạt động không ổn định.                           | BR-19, BR-20        | BP-08        | STEP-21          | STK-01, STK-05, STK-09         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
+| FR ID | Functional Requirement                                                                                                                                                                           | BR liên quan        | BP liên quan | Step liên quan   | Đối tượng sử dụng/kích hoạt    | Scope        | Trạng thái                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------ | ---------------- | ------------------------------ | ------------ | -------------------------------------------------------------- |
+| FR-01 | Hệ thống cho phép khách hàng đăng ký, đăng nhập và quản lý thông tin tài khoản cá nhân.                                                                                                          | BR-01               | BP-01        | STEP-01          | STK-02                         | S-F01        | Đã xác nhận                                                    |
+| FR-02 | Hệ thống cho phép khách hàng nhập và gửi thông tin yêu cầu đặt xe gồm điểm đón, điểm đến và loại xe.                                                                                             | BR-02               | BP-01        | STEP-02          | STK-02                         | S-F02        | Đã xác nhận                                                    |
+| FR-03 | Hệ thống tiếp nhận và chuyển yêu cầu đặt xe sang quá trình tìm tài xế.                                                                                                                           | BR-02               | BP-01        | STEP-03          | STK-01, STK-02                 | S-F02, S-F03 | [Suy ra] cần thiết để thực hiện BR-02 và BR-09                 |
+| FR-04 | Hệ thống tự động xác định tài xế phù hợp theo vị trí hiện tại, trạng thái sẵn sàng và loại xe; ưu tiên khoảng cách hoặc thời gian dự kiến đến điểm đón thấp nhất.                                | BR-08, BR-09        | BP-02        | STEP-04          | STK-01, STK-03, STK-04         | S-F03, S-F05 | Đã xác nhận; cách tính ETA cần làm rõ                          |
+| FR-05 | Hệ thống gửi yêu cầu chuyến đến tài xế phù hợp và chờ tối đa 30 giây để ghi nhận chấp nhận, từ chối hoặc không phản hồi.                                                                         | BR-06, BR-09, BR-10 | BP-02        | STEP-05          | STK-03                         | S-F03, S-F07 | Đã xác nhận                                                    |
+| FR-06 | Hệ thống ghi nhận kết quả phân công tài xế cho chuyến khi tài xế chấp nhận.                                                                                                                      | BR-09               | BP-02        | STEP-06          | STK-01, STK-02, STK-03         | S-F03        | Đã xác nhận                                                    |
+| FR-07 | Hệ thống tiếp tục tìm tài xế khác khi tài xế từ chối hoặc không phản hồi và thông báo khi không còn tài xế phù hợp.                                                                              | BR-10               | BP-02        | STEP-05, STEP-06 | STK-02, STK-03, STK-04         | S-F03, S-F07 | Đã xác nhận; chính sách chuyển tiếp cần làm rõ                 |
+| FR-08 | Hệ thống hỗ trợ tài xế cập nhật trạng thái theo đúng chuỗi: Đã tiếp nhận, Đang tìm tài xế, Đã phân tài xế, Tài xế đã đến, Đã đón khách, Đang di chuyển, Hoàn thành; không cho bỏ qua trạng thái. | BR-07               | BP-03        | STEP-07          | STK-03                         | S-F04        | Đã xác nhận                                                    |
+| FR-09 | Hệ thống hiển thị cho khách hàng thông tin và trạng thái tiến trình của chuyến xe.                                                                                                               | BR-03, BR-04        | BP-03        | STEP-08          | STK-02                         | S-F04        | Đã xác nhận; thời gian dự kiến cần làm rõ                      |
+| FR-10 | Hệ thống tiếp nhận kết quả chuyến hoàn thành và chuyển sang quá trình tính cước/thanh toán.                                                                                                      | BR-07, BR-12        | BP-03        | STEP-09          | STK-02, STK-03                 | S-F04, S-F06 | [Suy ra] cần thiết để nối BP-03 với BP-04                      |
+| FR-11 | Hệ thống cho phép ghi nhận hoặc chuyển thông tin chuyến có sự cố cho bộ phận vận hành.                                                                                                           | BR-16               | BP-03, BP-06 | STEP-09, STEP-16 | STK-02, STK-03, STK-04         | S-F04, S-F08 | Đã xác nhận; cách thông báo cần làm rõ                         |
+| FR-12 | Hệ thống quản lý thông tin vị trí tài xế phục vụ việc tìm tài xế gần khách hàng.                                                                                                                 | BR-08, BR-09        | BP-02        | STEP-04          | STK-03, STK-01                 | S-F05        | Đã xác nhận; cách thu thập/tần suất cần làm rõ                 |
+| FR-13 | Hệ thống xác định số tiền phải trả khi chuyến hoàn thành bằng bảng giá theo loại dịch vụ/loại xe, có thể áp dụng giá tối thiểu và phụ phí, rồi lưu kết quả cước.                                 | BR-12               | BP-04        | STEP-10          | STK-01, STK-02                 | S-F06        | Đã xác nhận; công thức chi tiết cần làm rõ                     |
+| FR-14 | Hệ thống cho phép khách hàng lựa chọn phương thức thanh toán tiền mặt hoặc điện tử.                                                                                                              | BR-13               | BP-04        | STEP-11          | STK-02                         | S-F06        | Đã xác nhận                                                    |
+| FR-15 | Hệ thống ghi nhận kết quả thanh toán tiền mặt theo chính sách doanh nghiệp.                                                                                                                      | BR-13               | BP-04        | STEP-11, STEP-12 | STK-01, STK-02                 | S-F06        | Đã xác nhận; chính sách tiền mặt cần làm rõ                    |
+| FR-16 | Hệ thống gửi yêu cầu thanh toán điện tử đến Payment Provider, tiếp nhận kết quả, cập nhật trạng thái và lưu lịch sử giao dịch cần thiết.                                                         | BR-14               | BP-04        | STEP-11, STEP-12 | STK-02, STK-06                 | S-F06        | Đã xác nhận; provider cụ thể cần làm rõ                        |
+| FR-17 | Hệ thống ghi nhận thanh toán điện tử thất bại, thông báo khách hàng và hỗ trợ xử lý lại theo chính sách doanh nghiệp.                                                                            | BR-14               | BP-04        | STEP-12          | STK-02, STK-06                 | S-F06, S-F07 | Đã xác nhận; chính sách xử lý lại cần làm rõ                   |
+| FR-18 | Hệ thống không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                                                                                     | BR-15               | BP-04        | STEP-12          | STK-01, STK-02, STK-06         | S-F06, S-F09 | Đã xác nhận                                                    |
+| FR-19 | Hệ thống xác định sự kiện, bên nhận và thông tin cần gửi thông báo.                                                                                                                              | BR-11               | BP-05        | STEP-13          | STK-02, STK-03, STK-04, STK-07 | S-F07        | Đã xác nhận; kênh và người nhận cần làm rõ                     |
+| FR-20 | Hệ thống gửi thông báo trong hệ thống/email ở MVP, ghi nhận kết quả/lỗi và thử lại tối đa 3 lần; cho phép thay đổi provider/kênh về sau.                                                         | BR-11               | BP-05        | STEP-14          | STK-07                         | S-F07        | Đã xác nhận định hướng                                         |
+| FR-21 | Hệ thống cho phép nhân viên vận hành xem và quản lý thông tin khách hàng, tài xế, phương tiện và chuyến theo quyền được cấp.                                                                     | BR-05, BR-16        | BP-06        | STEP-15          | STK-04                         | S-F08, S-F09 | Đã xác nhận; danh sách quyền cần làm rõ                        |
+| FR-22 | Hệ thống kiểm tra quyền trước khi cho phép thực hiện thao tác quản trị.                                                                                                                          | BR-17               | BP-06        | STEP-15          | STK-04                         | S-F09        | Đã xác nhận; ma trận quyền cần làm rõ                          |
+| FR-23 | Hệ thống cho phép nhân viên vận hành ghi nhận và cập nhật quá trình xử lý chuyến bị lỗi hoặc sự cố.                                                                                              | BR-16               | BP-06        | STEP-16          | STK-04                         | S-F08        | Đã xác nhận; trạng thái xử lý cần làm rõ                       |
+| FR-24 | Hệ thống cung cấp thông tin kết quả xử lý sự cố cho các bên liên quan theo chính sách được xác nhận.                                                                                             | BR-16               | BP-06        | STEP-16          | STK-02, STK-03, STK-04         | S-F07, S-F08 | [Suy ra] từ nhu cầu hỗ trợ vận hành; cách thông báo cần làm rõ |
+| FR-25 | Hệ thống lưu vết các thao tác quan trọng để phục vụ kiểm tra khi có sự cố.                                                                                                                       | BR-17               | BP-06        | STEP-17          | STK-01, STK-04                 | S-F09        | Đã xác nhận; danh sách và thời gian lưu cần làm rõ             |
+| FR-26 | Hệ thống tập hợp dữ liệu hoạt động cần thiết cho báo cáo theo ngày, tuần, tháng hoặc khoảng thời gian được chọn.                                                                                 | BR-18               | BP-07        | STEP-18          | STK-01, STK-04, STK-05         | S-F10        | Đã xác nhận                                                    |
+| FR-27 | Hệ thống tổng hợp và cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế theo quyền xem được cấp.                                                           | BR-18               | BP-07        | STEP-19          | STK-01, STK-05                 | S-F10        | Đã xác nhận; công thức KPI chi tiết cần làm rõ                 |
+| FR-28 | Hệ thống hỗ trợ ghi nhận nhu cầu, phạm vi ảnh hưởng và ưu tiên của thay đổi/mở rộng nền tảng.                                                                                                    | BR-19, BR-20        | BP-08        | STEP-20          | STK-01, STK-05, STK-09         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
+| FR-29 | Hệ thống hỗ trợ triển khai và kiểm tra thay đổi từng phần theo phạm vi được xác nhận.                                                                                                            | BR-19, BR-20        | BP-08        | STEP-21          | STK-09                         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
+| FR-30 | Hệ thống hỗ trợ ghi nhận kết quả khi thay đổi ảnh hưởng hoặc làm hệ thống hoạt động không ổn định.                                                                                               | BR-19, BR-20        | BP-08        | STEP-21          | STK-01, STK-05, STK-09         | S-F11        | [Có khả năng vượt phạm vi đồ án - cần xác nhận]                |
 
 ## III. Danh mục chi tiết và truy xuất từng FR
 
@@ -2274,58 +2274,58 @@ Chỉ ghi nhận quy tắc và ngoại lệ nghiệp vụ có nguồn. Các chí
 
 ## II. Danh sách Business Rule
 
-| Rule ID  | Tên quy tắc                           | Nội dung quy tắc                                                                                                          | Điều kiện áp dụng                           | Đối tượng                      | FR/BP/Step                                     | Nguồn                      | Trạng thái                                      |
-| -------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------ | ---------------------------------------------- | -------------------------- | ----------------------------------------------- |
-| BRULE-01 | Tài khoản hợp lệ                      | Chỉ người dùng có tài khoản hợp lệ mới sử dụng chức năng yêu cầu tài khoản.                                               | Trước khi thực hiện chức năng cần tài khoản | STK-02, STK-03, STK-04         | FR-01/FR-01.2/BP-01/STEP-01                    | BR-01; [P4], [P11]         | Đã xác nhận                                     |
-| BRULE-02 | Thông tin đặt xe cần thiết            | Yêu cầu đặt xe phải có điểm đón, điểm đến và loại xe được cung cấp.                                                       | Khi gửi yêu cầu đặt xe                      | STK-02                         | FR-02/FR-02.1/BP-01/STEP-02                    | BR-02; [P4]                | Đã xác nhận                                     |
-| BRULE-03 | Tài xế đủ điều kiện nhận chuyến       | Tài xế được xem xét nhận chuyến khi có thông tin phù hợp và trạng thái sẵn sàng theo tiêu chí doanh nghiệp.               | Khi tìm tài xế                              | STK-01, STK-03, STK-04         | FR-04/FR-04.1, FR-04.2/BP-02/STEP-04           | BR-08, BR-09; [P5], [P6]   | Đã xác nhận; tiêu chí cần làm rõ                |
-| BRULE-04 | Ưu tiên tài xế                        | Việc ưu tiên tài xế phải dựa trên các tiêu chí vận hành được doanh nghiệp xác nhận.                                       | Khi có nhiều tài xế phù hợp                 | STK-01, STK-04                 | FR-04/FR-04.3/BP-02/STEP-04                    | BR-09; [P6]                | [Cần làm rõ]                                    |
-| BRULE-05 | Một yêu cầu tiếp tục được xử lý       | Khi tài xế từ chối hoặc không phản hồi, yêu cầu đặt xe tiếp tục được tìm tài xế khác mà không yêu cầu khách hàng tạo lại. | Khi phân công chưa thành công               | STK-02, STK-03, STK-04         | FR-05/FR-05.2, FR-07/FR-07.1/BP-02/STEP-05,06  | BR-10; [P6]                | Đã xác nhận; thời gian phản hồi cần làm rõ      |
-| BRULE-06 | Phân công thành công                  | Khi tài xế chấp nhận, kết quả phân công phải được ghi nhận trước khi chuyển sang thực hiện chuyến.                        | Tài xế chấp nhận chuyến                     | STK-01, STK-02, STK-03         | FR-06/BP-02/STEP-06                            | BR-09; [P6]                | [Suy ra] từ BP-02                               |
-| BRULE-07 | Trạng thái chuyến theo trình tự       | Trạng thái chuyến chỉ được chuyển theo trình tự nghiệp vụ hợp lệ đã xác nhận.                                             | Khi tài xế cập nhật trạng thái              | STK-03                         | FR-08/FR-08.1, FR-08.2/BP-03/STEP-07           | BR-07; [P5]                | Đã xác nhận nguyên tắc; trình tự cần làm rõ     |
-| BRULE-08 | Tài xế cập nhật chuyến được phân công | Tài xế chỉ cập nhật trạng thái đối với chuyến mình đang thực hiện hoặc được phân công.                                    | Khi cập nhật trạng thái                     | STK-03                         | FR-08/BP-03/STEP-07                            | BR-07; [P5]                | [Suy ra] từ BP-03; cần xác nhận                 |
-| BRULE-09 | Tính cước sau hoàn thành              | Cước được xác định sau khi chuyến hoàn thành và dựa trên loại dịch vụ cùng thông tin chuyến.                              | Khi bắt đầu BP-04                           | STK-01, STK-02                 | FR-10, FR-13/FR-13.1, FR-13.2/BP-04/STEP-09,10 | BR-12; [P7]                | Đã xác nhận; công thức cần làm rõ               |
-| BRULE-10 | Xác định tiền trước thanh toán        | Số tiền phải trả phải được xác định trước khi khách hàng thực hiện thanh toán.                                            | Trước STEP-11                               | STK-02                         | FR-13, FR-14/BP-04/STEP-10,11                  | BR-12, BR-13; [P7]         | [Suy ra] từ BP-04                               |
-| BRULE-11 | Hai phương thức thanh toán            | Hệ thống phải hỗ trợ thanh toán tiền mặt và thanh toán điện tử.                                                           | Khi khách hàng thanh toán                   | STK-02, STK-06                 | FR-14, FR-15, FR-16/BP-04/STEP-11              | BR-13; [P7]                | Đã xác nhận                                     |
-| BRULE-12 | Thanh toán điện tử qua provider       | Thanh toán điện tử phải được xử lý thông qua Payment Provider bên ngoài.                                                  | Khi chọn thanh toán điện tử                 | STK-02, STK-06                 | FR-16/FR-16.1, FR-16.2/BP-04/STEP-11,12        | BR-14; [P7]                | Đã xác nhận                                     |
-| BRULE-13 | Không lưu dữ liệu thanh toán nhạy cảm | CAB không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                        | Trong toàn bộ BP-04                         | STK-01, STK-02, STK-06         | FR-18/BP-04/STEP-12                            | BR-15; [P7]                | Đã xác nhận                                     |
-| BRULE-14 | Liên kết kết quả giao dịch            | Kết quả thanh toán phải được ghi nhận để liên quan đến chuyến tương ứng ở mức nghiệp vụ.                                  | Khi nhận kết quả thanh toán                 | STK-01, STK-02, STK-06         | FR-16/FR-16.3/BP-04/STEP-12                    | BR-14; [P7]                | [Suy ra] từ BP-04; chi tiết cần làm rõ          |
-| BRULE-15 | Thông báo sự kiện quan trọng          | Các thay đổi quan trọng về yêu cầu, chuyến và thanh toán phải tạo thông báo cho bên liên quan.                            | Khi phát sinh sự kiện đã xác định           | STK-02, STK-03, STK-04, STK-07 | FR-19, FR-20/FR-19.1, FR-20.1/BP-05/STEP-13,14 | BR-11; [P8]                | Đã xác nhận                                     |
-| BRULE-16 | Chọn người nhận và kênh               | Người nhận và kênh thông báo phải được xác định theo chính sách doanh nghiệp trước khi gửi.                               | Khi phát sinh thông báo                     | STK-02, STK-03, STK-04, STK-07 | FR-19/FR-19.2, FR-19.3/BP-05/STEP-13           | BR-11; [P8], [P12]         | [Cần làm rõ]                                    |
-| BRULE-17 | Kiểm soát quyền quản trị              | Thao tác quản trị phải được kiểm tra quyền trước khi thực hiện.                                                           | Khi STK-04 thao tác quản trị                | STK-04                         | FR-21, FR-22/FR-21.1, FR-21.2/BP-06/STEP-15    | BR-17; [P9], [P11]         | Đã xác nhận; ma trận quyền cần làm rõ           |
-| BRULE-18 | Lưu vết thao tác quan trọng           | Các thao tác quan trọng phải được lưu vết để phục vụ kiểm tra khi có sự cố.                                               | Sau thao tác được xác định là quan trọng    | STK-01, STK-04                 | FR-25/BP-06/STEP-17                            | BR-17; [P11]               | Đã xác nhận; danh sách/thời gian lưu cần làm rõ |
-| BRULE-19 | Báo cáo theo dữ liệu xác nhận         | Báo cáo chỉ tổng hợp các chỉ số có dữ liệu và định nghĩa được doanh nghiệp xác nhận.                                      | Khi thực hiện BP-07                         | STK-01, STK-05                 | FR-26, FR-27/FR-27.1-27.3/BP-07/STEP-18,19     | BR-18; [P9]                | Đã xác nhận; KPI cần làm rõ                     |
-| BRULE-20 | Triển khai thay đổi từng phần         | Chức năng mới cần được triển khai từng phần và hạn chế ảnh hưởng đến chức năng đang hoạt động.                            | Khi thực hiện BP-08                         | STK-01, STK-05, STK-09         | FR-28, FR-29/FR-28.1-29.2/BP-08/STEP-20,21     | BR-19, BR-20; [P10], [P12] | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
-| BRULE-21 | Bổ sung provider/dịch vụ              | Việc bổ sung loại dịch vụ, phương thức thanh toán hoặc provider phải thuộc nhu cầu và phạm vi được doanh nghiệp xác nhận. | Khi thay đổi nền tảng                       | STK-01, STK-05, STK-07, STK-09 | FR-28, FR-30/BP-08/STEP-20,21                  | BR-20; [P12]               | [Cần làm rõ]                                    |
-| BRULE-22 | Bảo vệ dữ liệu nghiệp vụ              | Thông tin cá nhân, phương tiện, vị trí và giao dịch phải được bảo vệ khỏi truy cập không phù hợp ở mức yêu cầu đã nêu.    | Khi truy cập/quản lý dữ liệu                | STK-01, STK-02, STK-03, STK-04 | FR-18, FR-22, FR-25/BP-04,06                   | NEED-19; [P11]             | Đã xác nhận; mức bảo vệ cần làm rõ              |
+| Rule ID  | Tên quy tắc                           | Nội dung quy tắc                                                                                                                        | Điều kiện áp dụng                           | Đối tượng                      | FR/BP/Step                                     | Nguồn                      | Trạng thái                                      |
+| -------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------ | ---------------------------------------------- | -------------------------- | ----------------------------------------------- |
+| BRULE-01 | Tài khoản hợp lệ                      | Chỉ người dùng có tài khoản hợp lệ mới sử dụng chức năng yêu cầu tài khoản.                                                             | Trước khi thực hiện chức năng cần tài khoản | STK-02, STK-03, STK-04         | FR-01/FR-01.2/BP-01/STEP-01                    | BR-01; [P4], [P11]         | Đã xác nhận                                     |
+| BRULE-02 | Thông tin đặt xe cần thiết            | Yêu cầu đặt xe phải có điểm đón, điểm đến và loại xe được cung cấp.                                                                     | Khi gửi yêu cầu đặt xe                      | STK-02                         | FR-02/FR-02.1/BP-01/STEP-02                    | BR-02; [P4]                | Đã xác nhận                                     |
+| BRULE-03 | Tài xế đủ điều kiện nhận chuyến       | Tài xế được xem xét nhận chuyến khi có thông tin phù hợp và trạng thái sẵn sàng theo tiêu chí doanh nghiệp.                             | Khi tìm tài xế                              | STK-01, STK-03, STK-04         | FR-04/FR-04.1, FR-04.2/BP-02/STEP-04           | BR-08, BR-09; [P5], [P6]   | Đã xác nhận; tiêu chí cần làm rõ                |
+| BRULE-04 | Ưu tiên tài xế                        | Việc ưu tiên tài xế phải dựa trên các tiêu chí vận hành được doanh nghiệp xác nhận.                                                     | Khi có nhiều tài xế phù hợp                 | STK-01, STK-04                 | FR-04/FR-04.3/BP-02/STEP-04                    | BR-09; [P6]                | [Cần làm rõ]                                    |
+| BRULE-05 | Một yêu cầu tiếp tục được xử lý       | Khi tài xế từ chối hoặc không phản hồi trong 30 giây, yêu cầu đặt xe tiếp tục được tìm tài xế khác mà không yêu cầu khách hàng tạo lại. | Khi phân công chưa thành công               | STK-02, STK-03, STK-04         | FR-05/FR-05.2, FR-07/FR-07.1/BP-02/STEP-05,06  | BR-10; phản hồi bổ sung    | Đã xác nhận                                     |
+| BRULE-06 | Phân công thành công                  | Khi tài xế chấp nhận, kết quả phân công phải được ghi nhận trước khi chuyển sang thực hiện chuyến.                                      | Tài xế chấp nhận chuyến                     | STK-01, STK-02, STK-03         | FR-06/BP-02/STEP-06                            | BR-09; [P6]                | [Suy ra] từ BP-02                               |
+| BRULE-07 | Trạng thái chuyến theo trình tự       | Trạng thái chuyến chỉ được chuyển theo trình tự nghiệp vụ hợp lệ đã xác nhận.                                                           | Khi tài xế cập nhật trạng thái              | STK-03                         | FR-08/FR-08.1, FR-08.2/BP-03/STEP-07           | BR-07; [P5]                | Đã xác nhận nguyên tắc; trình tự cần làm rõ     |
+| BRULE-08 | Tài xế cập nhật chuyến được phân công | Tài xế chỉ cập nhật trạng thái đối với chuyến mình đang thực hiện hoặc được phân công.                                                  | Khi cập nhật trạng thái                     | STK-03                         | FR-08/BP-03/STEP-07                            | BR-07; [P5]                | [Suy ra] từ BP-03; cần xác nhận                 |
+| BRULE-09 | Tính cước sau hoàn thành              | Cước được xác định sau khi chuyến hoàn thành và dựa trên loại dịch vụ cùng thông tin chuyến.                                            | Khi bắt đầu BP-04                           | STK-01, STK-02                 | FR-10, FR-13/FR-13.1, FR-13.2/BP-04/STEP-09,10 | BR-12; [P7]                | Đã xác nhận; công thức cần làm rõ               |
+| BRULE-10 | Xác định tiền trước thanh toán        | Số tiền phải trả phải được xác định trước khi khách hàng thực hiện thanh toán.                                                          | Trước STEP-11                               | STK-02                         | FR-13, FR-14/BP-04/STEP-10,11                  | BR-12, BR-13; [P7]         | [Suy ra] từ BP-04                               |
+| BRULE-11 | Hai phương thức thanh toán            | Hệ thống phải hỗ trợ thanh toán tiền mặt và thanh toán điện tử.                                                                         | Khi khách hàng thanh toán                   | STK-02, STK-06                 | FR-14, FR-15, FR-16/BP-04/STEP-11              | BR-13; [P7]                | Đã xác nhận                                     |
+| BRULE-12 | Thanh toán điện tử qua provider       | Thanh toán điện tử phải được xử lý thông qua Payment Provider bên ngoài.                                                                | Khi chọn thanh toán điện tử                 | STK-02, STK-06                 | FR-16/FR-16.1, FR-16.2/BP-04/STEP-11,12        | BR-14; [P7]                | Đã xác nhận                                     |
+| BRULE-13 | Không lưu dữ liệu thanh toán nhạy cảm | CAB không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                                      | Trong toàn bộ BP-04                         | STK-01, STK-02, STK-06         | FR-18/BP-04/STEP-12                            | BR-15; [P7]                | Đã xác nhận                                     |
+| BRULE-14 | Liên kết kết quả giao dịch            | Kết quả thanh toán phải được ghi nhận để liên quan đến chuyến tương ứng ở mức nghiệp vụ.                                                | Khi nhận kết quả thanh toán                 | STK-01, STK-02, STK-06         | FR-16/FR-16.3/BP-04/STEP-12                    | BR-14; [P7]                | [Suy ra] từ BP-04; chi tiết cần làm rõ          |
+| BRULE-15 | Thông báo sự kiện quan trọng          | Các thay đổi quan trọng về yêu cầu, chuyến và thanh toán phải tạo thông báo cho bên liên quan.                                          | Khi phát sinh sự kiện đã xác định           | STK-02, STK-03, STK-04, STK-07 | FR-19, FR-20/FR-19.1, FR-20.1/BP-05/STEP-13,14 | BR-11; [P8]                | Đã xác nhận                                     |
+| BRULE-16 | Chọn người nhận và kênh               | Người nhận và kênh thông báo phải được xác định theo chính sách doanh nghiệp trước khi gửi.                                             | Khi phát sinh thông báo                     | STK-02, STK-03, STK-04, STK-07 | FR-19/FR-19.2, FR-19.3/BP-05/STEP-13           | BR-11; [P8], [P12]         | [Cần làm rõ]                                    |
+| BRULE-17 | Kiểm soát quyền quản trị              | Thao tác quản trị phải được kiểm tra quyền trước khi thực hiện.                                                                         | Khi STK-04 thao tác quản trị                | STK-04                         | FR-21, FR-22/FR-21.1, FR-21.2/BP-06/STEP-15    | BR-17; [P9], [P11]         | Đã xác nhận; ma trận quyền cần làm rõ           |
+| BRULE-18 | Lưu vết thao tác quan trọng           | Các thao tác quan trọng phải được lưu vết để phục vụ kiểm tra khi có sự cố.                                                             | Sau thao tác được xác định là quan trọng    | STK-01, STK-04                 | FR-25/BP-06/STEP-17                            | BR-17; [P11]               | Đã xác nhận; danh sách/thời gian lưu cần làm rõ |
+| BRULE-19 | Báo cáo theo dữ liệu xác nhận         | Báo cáo chỉ tổng hợp các chỉ số có dữ liệu và định nghĩa được doanh nghiệp xác nhận.                                                    | Khi thực hiện BP-07                         | STK-01, STK-05                 | FR-26, FR-27/FR-27.1-27.3/BP-07/STEP-18,19     | BR-18; [P9]                | Đã xác nhận; KPI cần làm rõ                     |
+| BRULE-20 | Triển khai thay đổi từng phần         | Chức năng mới cần được triển khai từng phần và hạn chế ảnh hưởng đến chức năng đang hoạt động.                                          | Khi thực hiện BP-08                         | STK-01, STK-05, STK-09         | FR-28, FR-29/FR-28.1-29.2/BP-08/STEP-20,21     | BR-19, BR-20; [P10], [P12] | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| BRULE-21 | Bổ sung provider/dịch vụ              | Việc bổ sung loại dịch vụ, phương thức thanh toán hoặc provider phải thuộc nhu cầu và phạm vi được doanh nghiệp xác nhận.               | Khi thay đổi nền tảng                       | STK-01, STK-05, STK-07, STK-09 | FR-28, FR-30/BP-08/STEP-20,21                  | BR-20; [P12]               | [Cần làm rõ]                                    |
+| BRULE-22 | Bảo vệ dữ liệu nghiệp vụ              | Thông tin cá nhân, phương tiện, vị trí và giao dịch phải được bảo vệ khỏi truy cập không phù hợp ở mức yêu cầu đã nêu.                  | Khi truy cập/quản lý dữ liệu                | STK-01, STK-02, STK-03, STK-04 | FR-18, FR-22, FR-25/BP-04,06                   | NEED-19; [P11]             | Đã xác nhận; mức bảo vệ cần làm rõ              |
 
 ## III. Danh sách Business Exception
 
-| Exception ID | Tên ngoại lệ                                | Điều kiện xảy ra                                          | Nguyên nhân nghiệp vụ                                | Cách xử lý                                                  | Kết quả                                   | FR/BP/Step                               | Nguồn                      | Trạng thái                                 |
-| ------------ | ------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------- | ---------------------------------------- | -------------------------- | ------------------------------------------ |
-| EX-01        | Thông tin đặt xe không hợp lệ               | Thiếu hoặc không hợp lệ điểm đón, điểm đến, loại xe       | Không đủ dữ liệu để tạo yêu cầu                      | Yêu cầu bổ sung/chỉnh sửa                                   | Chưa tiếp nhận yêu cầu hoàn chỉnh         | FR-02/FR-02.1/BP-01/STEP-02              | BR-02; [P4]                | Đã xác nhận điều kiện; chi tiết cần làm rõ |
-| EX-02        | Mất kết nối khi tạo yêu cầu                 | Khách hàng mất kết nối trong BP-01                        | Chưa có chính sách giữ/gửi lại thông tin             | Cách xử lý chưa được xác định                               | [Cần làm rõ]                              | FR-03/BP-01/STEP-03                      | [P12]                      | [Cần làm rõ]                               |
-| EX-03        | Không tìm thấy tài xế                       | Không có tài xế phù hợp/khả dụng                          | Không đáp ứng tiêu chí tìm tài xế                    | Thông báo rõ cho khách hàng                                 | Chuyến không được phân công               | FR-04, FR-07/FR-07.2/BP-02/STEP-04,06    | BR-10; [P6]                | Đã xác nhận                                |
-| EX-04        | Tài xế từ chối chuyến                       | Tài xế chọn từ chối                                       | Tài xế không nhận yêu cầu                            | Tiếp tục tìm tài xế khác                                    | Yêu cầu tiếp tục được xử lý               | FR-05, FR-07/FR-05.2,07.1/BP-02/STEP-05  | BR-10; [P6]                | Đã xác nhận                                |
-| EX-05        | Tài xế không phản hồi                       | Không nhận phản hồi trong thời gian quy định              | Thời gian phản hồi chưa chốt                         | Chuyển tiếp theo chính sách                                 | [Cần làm rõ]                              | FR-05, FR-07/BP-02/STEP-05               | BR-10; [P6], [P12]         | [Cần làm rõ]                               |
-| EX-06        | Vị trí tài xế không khả dụng                | Không có dữ liệu vị trí cần cho tìm gần/thời gian dự kiến | Dữ liệu vị trí không khả dụng                        | Cách tiếp tục tìm và hiển thị chưa chốt                     | [Cần làm rõ]                              | FR-04, FR-12/BP-02/STEP-04               | BR-08; [P5], [P12]         | [Cần làm rõ]                               |
-| EX-07        | Cập nhật trạng thái không hợp lệ            | Trạng thái mới không đúng trình tự                        | Không đáp ứng điều kiện trạng thái                   | Từ chối cập nhật và thông báo lỗi                           | Giữ trạng thái trước đó                   | FR-08/FR-08.2/BP-03/STEP-07              | BR-07; [P5]                | [Suy ra]; trình tự cần làm rõ              |
-| EX-08        | Chuyến phát sinh sự cố                      | Chuyến có lỗi/bất thường cần hỗ trợ                       | Luồng thực hiện bình thường không tiếp tục           | Ghi nhận và chuyển vận hành xử lý                           | Có hồ sơ xử lý sự cố                      | FR-11, FR-23/FR-23.1/BP-03,06/STEP-09,16 | BR-16; [P9]                | Đã xác nhận                                |
-| EX-09        | Mất kết nối khi thực hiện chuyến            | Tài xế/khách hàng mất kết nối trong BP-03                 | Chính sách đồng bộ/trạng thái chưa chốt              | Xử lý theo chính sách được xác nhận                         | [Cần làm rõ]                              | FR-08, FR-09/BP-03/STEP-07,08            | [P12]                      | [Cần làm rõ]                               |
-| EX-10        | Không xác định được cước                    | Thiếu dữ liệu hoặc công thức cước chưa được xác nhận      | Không đủ cơ sở xác định tiền phải trả                | Chưa cho phép tiếp tục thanh toán                           | Chờ xác nhận cước                         | FR-13/FR-13.2/BP-04/STEP-10              | BR-12; [P7], [P12]         | [Cần làm rõ]                               |
-| EX-11        | Thanh toán điện tử thất bại                 | Payment Provider trả kết quả thất bại                     | Giao dịch không thành công                           | Thông báo và cho phép xử lý lại theo chính sách             | Giao dịch chưa hoàn tất/thất bại          | FR-16, FR-17/FR-17.1,17.2/BP-04/STEP-12  | BR-14; [P7]                | Đã xác nhận                                |
-| EX-12        | Payment Provider không phản hồi             | Không nhận được kết quả giao dịch                         | Provider không trả kết quả                           | Ghi nhận trạng thái và xử lý retry/đối soát theo chính sách | [Cần làm rõ]                              | FR-16, FR-17/BP-04/STEP-12               | [P7], [P12]                | [Cần làm rõ]                               |
-| EX-13        | Dữ liệu thanh toán không hợp lệ             | Provider từ chối yêu cầu thanh toán                       | Thông tin giao dịch không đáp ứng điều kiện provider | Thông báo lỗi, không xác nhận thành công                    | Giao dịch không thành công                | FR-16/FR-16.2/BP-04/STEP-11,12           | BR-14; [P7]                | [Suy ra]; chi tiết cần làm rõ              |
-| EX-14        | Không gửi được thông báo                    | Notification Provider/kênh gửi lỗi                        | Không thể chuyển thông tin đến người nhận            | Ghi nhận lỗi và xử lý retry/dự phòng theo chính sách        | Lỗi gửi được ghi nhận                     | FR-20/FR-20.1,20.2/BP-05/STEP-14         | BR-11; [P8], [P12]         | [Cần làm rõ]                               |
-| EX-15        | Không xác định người nhận/kênh              | Chưa có chính sách người nhận hoặc kênh                   | Thiếu thông tin định tuyến thông báo                 | Chưa gửi và yêu cầu xác nhận                                | Thông báo chờ xử lý                       | FR-19/FR-19.2,19.3/BP-05/STEP-13         | BR-11; [P8], [P12]         | [Cần làm rõ]                               |
-| EX-16        | Không có quyền thao tác                     | Người dùng không có quyền truy cập chức năng              | Thao tác vượt quyền được cấp                         | Từ chối thao tác                                            | Dữ liệu không bị thay đổi bởi thao tác đó | FR-22/BP-06/STEP-15                      | BR-17; [P11]               | Đã xác nhận                                |
-| EX-17        | Tài khoản không hợp lệ/bị khóa              | Người dùng dùng tài khoản không hợp lệ                    | Không đáp ứng điều kiện tài khoản                    | Không cho sử dụng chức năng yêu cầu tài khoản               | Luồng không tiếp tục                      | FR-01/FR-01.2/BP-01/STEP-01              | BR-01; [P4], [P11]         | [Suy ra]; chi tiết cần làm rõ              |
-| EX-18        | Chuyến cần xử lý vận hành                   | Vận hành phát hiện chuyến lỗi/bất thường                  | Luồng bình thường không thể tiếp tục                 | Tạo/ghi nhận sự cố để xử lý                                 | Sự cố được theo dõi                       | FR-23/FR-23.1/BP-06/STEP-16              | BR-16; [P9]                | Đã xác nhận                                |
-| EX-19        | Dữ liệu báo cáo không đầy đủ                | Thiếu dữ liệu chuyến/giao dịch/KPI                        | Không đủ dữ liệu tổng hợp                            | Ghi nhận thiếu dữ liệu và yêu cầu xác minh                  | Báo cáo chưa hoàn chỉnh                   | FR-26, FR-27/BP-07/STEP-18,19            | BR-18; [P9], [P12]         | [Cần làm rõ]                               |
-| EX-20        | KPI chưa được định nghĩa                    | Chưa có công thức/kỳ báo cáo/tỷ lệ thống nhất             | Không thể tính báo cáo đáng tin cậy                  | Không tự suy đoán; chờ xác nhận                             | Báo cáo chờ định nghĩa                    | FR-27/FR-27.2,27.3/BP-07/STEP-19         | BR-18; [P9], [P12]         | [Cần làm rõ]                               |
-| EX-21        | Không xác định phạm vi thay đổi             | Chưa biết thành phần/chức năng bị ảnh hưởng               | Thiếu cơ sở quyết định triển khai                    | Dừng quyết định và yêu cầu đánh giá                         | Thay đổi chờ xác nhận                     | FR-28/BP-08/STEP-20                      | BR-19, BR-20; [P10], [P12] | [Cần làm rõ]                               |
-| EX-22        | Thay đổi ảnh hưởng chức năng đang hoạt động | Kết quả thay đổi có ảnh hưởng hiện tại                    | Không đáp ứng nguyên tắc hạn chế ảnh hưởng           | Xem xét lại phạm vi/ưu tiên                                 | Chờ quyết định xử lý                      | FR-29, FR-30/BP-08/STEP-21               | BR-19; [P10]               | [Cần làm rõ]                               |
-| EX-23        | Sau thay đổi hoạt động không ổn định        | Hệ thống không ổn định sau mở rộng/thay đổi               | Kết quả triển khai không đạt kỳ vọng                 | Cách xử lý/khôi phục chưa chốt                              | [Cần làm rõ]                              | FR-30/FR-30.1,30.2/BP-08/STEP-21         | BR-19, BR-20; [P10], [P12] | [Cần làm rõ]                               |
+| Exception ID | Tên ngoại lệ                                | Điều kiện xảy ra                                              | Nguyên nhân nghiệp vụ                                | Cách xử lý                                                  | Kết quả                                                | FR/BP/Step                               | Nguồn                      | Trạng thái                                       |
+| ------------ | ------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------- | -------------------------- | ------------------------------------------------ |
+| EX-01        | Thông tin đặt xe không hợp lệ               | Thiếu hoặc không hợp lệ điểm đón, điểm đến, loại xe           | Không đủ dữ liệu để tạo yêu cầu                      | Yêu cầu bổ sung/chỉnh sửa                                   | Chưa tiếp nhận yêu cầu hoàn chỉnh                      | FR-02/FR-02.1/BP-01/STEP-02              | BR-02; [P4]                | Đã xác nhận điều kiện; chi tiết cần làm rõ       |
+| EX-02        | Mất kết nối khi tạo yêu cầu                 | Khách hàng mất kết nối trong BP-01                            | Có nguy cơ mất dữ liệu khi gửi yêu cầu               | Hạn chế mất dữ liệu và đồng bộ lại khi kết nối khôi phục    | Yêu cầu được tiếp tục hoặc chờ đồng bộ theo chính sách | FR-03/BP-01/STEP-03                      | Phản hồi bổ sung           | Đã xác nhận nguyên tắc; cơ chế cụ thể cần làm rõ |
+| EX-03        | Không tìm thấy tài xế                       | Không có tài xế phù hợp/khả dụng                              | Không đáp ứng tiêu chí tìm tài xế                    | Thông báo rõ cho khách hàng                                 | Chuyến không được phân công                            | FR-04, FR-07/FR-07.2/BP-02/STEP-04,06    | BR-10; [P6]                | Đã xác nhận                                      |
+| EX-04        | Tài xế từ chối chuyến                       | Tài xế chọn từ chối                                           | Tài xế không nhận yêu cầu                            | Tiếp tục tìm tài xế khác                                    | Yêu cầu tiếp tục được xử lý                            | FR-05, FR-07/FR-05.2,07.1/BP-02/STEP-05  | BR-10; [P6]                | Đã xác nhận                                      |
+| EX-05        | Tài xế không phản hồi                       | Không nhận phản hồi trong 30 giây                             | Tài xế không nhận yêu cầu                            | Xem như từ chối và tiếp tục tìm tài xế khác                 | Yêu cầu vẫn được xử lý                                 | FR-05, FR-07/BP-02/STEP-05               | BR-10; phản hồi bổ sung    | Đã xác nhận                                      |
+| EX-06        | Vị trí tài xế không khả dụng                | Không có dữ liệu vị trí cần cho tìm gần/thời gian dự kiến     | Dữ liệu vị trí không khả dụng                        | Cách tiếp tục tìm và hiển thị chưa chốt                     | [Cần làm rõ]                                           | FR-04, FR-12/BP-02/STEP-04               | BR-08; [P5], [P12]         | [Cần làm rõ]                                     |
+| EX-07        | Cập nhật trạng thái không hợp lệ            | Trạng thái mới bỏ qua hoặc không đúng chuỗi bảy trạng thái    | Không đáp ứng trình tự nghiệp vụ                     | Từ chối cập nhật và thông báo lỗi                           | Giữ trạng thái trước đó                                | FR-08/FR-08.2/BP-03/STEP-07              | BR-07; phản hồi bổ sung    | Đã xác nhận                                      |
+| EX-08        | Chuyến phát sinh sự cố                      | Chuyến có lỗi/bất thường cần hỗ trợ                           | Luồng thực hiện bình thường không tiếp tục           | Ghi nhận và chuyển vận hành xử lý                           | Có hồ sơ xử lý sự cố                                   | FR-11, FR-23/FR-23.1/BP-03,06/STEP-09,16 | BR-16; [P9]                | Đã xác nhận                                      |
+| EX-09        | Mất kết nối khi thực hiện chuyến            | Tài xế/khách hàng mất kết nối trong BP-03                     | Có nguy cơ mất cập nhật trạng thái                   | Hạn chế mất dữ liệu và đồng bộ lại khi kết nối khôi phục    | Trạng thái được đồng bộ theo chính sách                | FR-08, FR-09/BP-03/STEP-07,08            | Phản hồi bổ sung           | Đã xác nhận nguyên tắc; cơ chế cụ thể cần làm rõ |
+| EX-10        | Không xác định được cước                    | Thiếu dữ liệu bảng giá hoặc dữ liệu chuyến                    | Không đủ cơ sở xác định tiền phải trả                | Chưa cho phép tiếp tục thanh toán                           | Cước chờ bổ sung dữ liệu/cấu hình                      | FR-13/FR-13.2/BP-04/STEP-10              | BR-12; phản hồi bổ sung    | Cần làm rõ công thức chi tiết                    |
+| EX-11        | Thanh toán điện tử thất bại                 | Payment Provider trả kết quả thất bại                         | Giao dịch không thành công                           | Thông báo và cho phép xử lý lại theo chính sách             | Giao dịch chưa hoàn tất/thất bại                       | FR-16, FR-17/FR-17.1,17.2/BP-04/STEP-12  | BR-14; [P7]                | Đã xác nhận                                      |
+| EX-12        | Payment Provider không phản hồi             | Không nhận được kết quả giao dịch                             | Provider không trả kết quả                           | Ghi nhận trạng thái và xử lý retry/đối soát theo chính sách | [Cần làm rõ]                                           | FR-16, FR-17/BP-04/STEP-12               | [P7], [P12]                | [Cần làm rõ]                                     |
+| EX-13        | Dữ liệu thanh toán không hợp lệ             | Provider từ chối yêu cầu thanh toán                           | Thông tin giao dịch không đáp ứng điều kiện provider | Thông báo lỗi, không xác nhận thành công                    | Giao dịch không thành công                             | FR-16/FR-16.2/BP-04/STEP-11,12           | BR-14; [P7]                | [Suy ra]; chi tiết cần làm rõ                    |
+| EX-14        | Không gửi được thông báo                    | Notification Provider/kênh gửi lỗi                            | Không thể chuyển thông tin đến người nhận            | Ghi nhận lỗi và xử lý retry/dự phòng theo chính sách        | Lỗi gửi được ghi nhận                                  | FR-20/FR-20.1,20.2/BP-05/STEP-14         | BR-11; [P8], [P12]         | [Cần làm rõ]                                     |
+| EX-15        | Không xác định người nhận/kênh              | Chưa có chính sách người nhận hoặc kênh                       | Thiếu thông tin định tuyến thông báo                 | Chưa gửi và yêu cầu xác nhận                                | Thông báo chờ xử lý                                    | FR-19/FR-19.2,19.3/BP-05/STEP-13         | BR-11; [P8], [P12]         | [Cần làm rõ]                                     |
+| EX-16        | Không có quyền thao tác                     | Người dùng không có quyền truy cập chức năng                  | Thao tác vượt quyền được cấp                         | Từ chối thao tác                                            | Dữ liệu không bị thay đổi bởi thao tác đó              | FR-22/BP-06/STEP-15                      | BR-17; [P11]               | Đã xác nhận                                      |
+| EX-17        | Tài khoản không hợp lệ/bị khóa              | Người dùng dùng tài khoản không hợp lệ                        | Không đáp ứng điều kiện tài khoản                    | Không cho sử dụng chức năng yêu cầu tài khoản               | Luồng không tiếp tục                                   | FR-01/FR-01.2/BP-01/STEP-01              | BR-01; [P4], [P11]         | [Suy ra]; chi tiết cần làm rõ                    |
+| EX-18        | Chuyến cần xử lý vận hành                   | Vận hành phát hiện chuyến lỗi/bất thường                      | Luồng bình thường không thể tiếp tục                 | Tạo/ghi nhận sự cố để xử lý                                 | Sự cố được theo dõi                                    | FR-23/FR-23.1/BP-06/STEP-16              | BR-16; [P9]                | Đã xác nhận                                      |
+| EX-19        | Dữ liệu báo cáo không đầy đủ                | Thiếu dữ liệu chuyến/giao dịch/KPI                            | Không đủ dữ liệu tổng hợp                            | Ghi nhận thiếu dữ liệu và yêu cầu xác minh                  | Báo cáo chưa hoàn chỉnh                                | FR-26, FR-27/BP-07/STEP-18,19            | BR-18; [P9], [P12]         | [Cần làm rõ]                                     |
+| EX-20        | Công thức KPI chưa được định nghĩa chi tiết | Kỳ báo cáo đã xác định nhưng công thức chỉ số chưa thống nhất | Có nguy cơ tính báo cáo không nhất quán              | Không tự suy đoán công thức; chờ doanh nghiệp phê duyệt     | Báo cáo chờ định nghĩa KPI                             | FR-27/FR-27.2,27.3/BP-07/STEP-19         | BR-18; phản hồi bổ sung    | Cần làm rõ công thức KPI                         |
+| EX-21        | Không xác định phạm vi thay đổi             | Chưa biết thành phần/chức năng bị ảnh hưởng                   | Thiếu cơ sở quyết định triển khai                    | Dừng quyết định và yêu cầu đánh giá                         | Thay đổi chờ xác nhận                                  | FR-28/BP-08/STEP-20                      | BR-19, BR-20; [P10], [P12] | [Cần làm rõ]                                     |
+| EX-22        | Thay đổi ảnh hưởng chức năng đang hoạt động | Kết quả thay đổi có ảnh hưởng hiện tại                        | Không đáp ứng nguyên tắc hạn chế ảnh hưởng           | Xem xét lại phạm vi/ưu tiên                                 | Chờ quyết định xử lý                                   | FR-29, FR-30/BP-08/STEP-21               | BR-19; [P10]               | [Cần làm rõ]                                     |
+| EX-23        | Sau thay đổi hoạt động không ổn định        | Hệ thống không ổn định sau mở rộng/thay đổi                   | Kết quả triển khai không đạt kỳ vọng                 | Cách xử lý/khôi phục chưa chốt                              | [Cần làm rõ]                                           | FR-30/FR-30.1,30.2/BP-08/STEP-21         | BR-19, BR-20; [P10], [P12] | [Cần làm rõ]                                     |
 
 ## IV. Ma trận FR/BP -> Business Rule
 
@@ -2444,7 +2444,7 @@ Kết quả bước 10 là đầu vào cho NFR, Actor/Use Case, đặc tả Use 
 
 Phần này thực hiện bước 11 theo `PROMPTS_BA/11_XacDinhNonFunctionalRequirement_NFR.md`, dựa trên phạm vi, FR/FR con và Rule/Exception đã xác định. NFR chỉ mô tả chất lượng, ràng buộc hoặc điều kiện vận hành; không tạo chức năng nghiệp vụ mới.
 
-Nguồn khách hàng chưa cung cấp các chỉ tiêu định lượng như thời gian phản hồi, số lượng người dùng/chuyến, uptime, cấu hình, công nghệ, thời gian phục hồi hoặc tiêu chuẩn bảo mật cụ thể. Vì vậy các NFR dưới đây dùng tiêu chí đánh giá định tính và ghi `[Cần làm rõ]` khi cần định lượng.
+Phản hồi v2 cung cấp các mục tiêu định lượng và định hướng mới nhất: khoảng 500 người dùng đồng thời ở MVP, thời gian phản hồi thao tác thông thường không quá 3 giây, khả dụng đề xuất 99,5%, sao lưu hằng ngày, RTO không quá 4 giờ và RPO không quá 24 giờ. Các mục tiêu “đề xuất” vẫn cần được phê duyệt trước khi xem là tiêu chí nghiệm thu bắt buộc.
 
 Chuỗi truy xuất:
 
@@ -2452,30 +2452,30 @@ Chuỗi truy xuất:
 
 ## II. Danh sách NFR
 
-| NFR ID | Nhóm              | Yêu cầu phi chức năng                                                                                                                                        | FR/Rule/Exception liên quan                            | Tiêu chí kiểm tra                                                                                                                    | Mức độ     | Nguồn                                 | Trạng thái                                      |
-| ------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------------------------------- | ----------------------------------------------- |
-| NFR-01 | Performance       | Hệ thống cần đáp ứng hoạt động ổn định khi nhu cầu sử dụng tăng cao trong phạm vi tải được doanh nghiệp xác nhận.                                            | FR-04, FR-09, FR-26, BRULE-20                          | Đánh giá hoạt động khi tải tăng theo mức được xác nhận; ngưỡng cụ thể `[Cần làm rõ]`.                                                | Cao        | NEED-18; [P10]                        | [Cần làm rõ]                                    |
-| NFR-02 | Performance       | Việc tìm tài xế và cập nhật trạng thái chuyến cần có thời gian xử lý phù hợp để khách hàng và tài xế tiếp tục nghiệp vụ.                                     | FR-04, FR-05, FR-08, FR-09                             | Đo thời gian xử lý trong kịch bản nghiệp vụ; giới hạn cụ thể `[Cần làm rõ]`.                                                         | Cao        | NEED-03, NEED-09; [P4], [P6]          | [Cần làm rõ]                                    |
-| NFR-03 | Performance       | Hệ thống cần hỗ trợ mở rộng các thành phần độc lập khi tải tăng ở mức doanh nghiệp xác nhận.                                                                 | FR-04, FR-16, FR-20, FR-28, FR-29                      | Kiểm tra khả năng đánh giá/mở rộng từng thành phần; phạm vi và cách đo `[Cần làm rõ]`.                                               | Cao        | NEED-18, NEED-20; [P10], [P12]        | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
-| NFR-04 | Security          | Người dùng phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản.                                                                             | FR-01, FR-02, BRULE-01, EX-17                          | Thử truy cập chức năng yêu cầu tài khoản với tài khoản chưa xác thực và tài khoản hợp lệ.                                            | Cao        | NEED-01, NEED-19; [P4], [P11]         | Đã xác nhận                                     |
-| NFR-05 | Security          | Thao tác quản trị phải được kiểm soát theo quyền truy cập; người không có quyền không được thực hiện thao tác nhạy cảm.                                      | FR-21, FR-22, BRULE-17, EX-16                          | Kiểm tra thao tác được phép/bị từ chối theo quyền; ma trận quyền cụ thể `[Cần làm rõ]`.                                              | Cao        | NEED-16; [P9], [P11]                  | Đã xác nhận; chi tiết cần làm rõ                |
-| NFR-06 | Security          | Thông tin cá nhân, phương tiện, vị trí và giao dịch phải được bảo vệ khỏi truy cập không phù hợp.                                                            | FR-12, FR-18, FR-21, FR-25, BRULE-22                   | Kiểm tra các vai trò không phù hợp không xem được dữ liệu được bảo vệ; mức bảo vệ cụ thể `[Cần làm rõ]`.                             | Cao        | NEED-19; [P11]                        | Đã xác nhận; mức bảo vệ cần làm rõ              |
-| NFR-07 | Security          | Hệ thống không được lưu trực tiếp dữ liệu nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                                              | FR-16, FR-18, BRULE-13                                 | Kiểm tra dữ liệu xử lý/lưu trữ không chứa thông tin nhạy cảm trực tiếp theo phạm vi đã nêu.                                          | Cao        | NEED-13; [P7]                         | Đã xác nhận                                     |
-| NFR-08 | Security          | Các thao tác quan trọng cần có khả năng truy xuất để phục vụ kiểm tra khi xảy ra sự cố.                                                                      | FR-25, BRULE-18                                        | Kiểm tra thao tác quan trọng được ghi nhận và có thể đối chiếu; danh sách/thời gian lưu `[Cần làm rõ]`.                              | Cao        | NEED-19; [P11]                        | Đã xác nhận; chi tiết cần làm rõ                |
-| NFR-09 | Usability         | Trạng thái chuyến, kết quả phân công, cước và thanh toán cần được trình bày rõ để khách hàng nhận biết.                                                      | FR-07, FR-09, FR-13, FR-17                             | Người dùng có thể nhận biết kết quả và trạng thái trong các luồng nghiệp vụ chính; hình thức hiển thị cụ thể không được tự quy định. | Cao        | NEED-03, NEED-11, NEED-12; [P4], [P7] | Đã xác nhận ở mức mục tiêu                      |
-| NFR-10 | Usability         | Thông báo lỗi và kết quả ngoại lệ cần rõ ràng để bên liên quan biết nghiệp vụ có tiếp tục được hay không.                                                    | FR-07, FR-17, FR-20, EX-01, EX-03, EX-11, EX-14        | Kiểm tra mỗi ngoại lệ chính có thông tin kết quả phù hợp; nội dung/kênh cụ thể `[Cần làm rõ]`.                                       | Cao        | NEED-09, NEED-10, NEED-12; [P6]-[P8]  | [Cần làm rõ]                                    |
-| NFR-11 | Reliability       | Lỗi ở chức năng thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động.                                                            | FR-16, FR-17, FR-20, EX-11, EX-14                      | Mô phỏng thanh toán/thông báo lỗi và kiểm tra các nghiệp vụ đặt xe khác vẫn có thể được xử lý trong phạm vi chính sách.              | Cao        | NEED-18; [P10]                        | Đã xác nhận; cách ly và mức phục hồi cần làm rõ |
-| NFR-12 | Reliability       | Hệ thống cần giữ trạng thái chuyến và kết quả giao dịch nhất quán khi xử lý luồng bình thường hoặc ngoại lệ nghiệp vụ.                                       | FR-08, FR-10, FR-16, FR-17, BRULE-07, EX-07, EX-11     | Kiểm tra trạng thái sau các nhánh thành công/thất bại không mâu thuẫn với kết quả nghiệp vụ; chính sách mất kết nối `[Cần làm rõ]`.  | Cao        | NEED-07, NEED-12; [P5], [P7]          | [Suy ra]; cần làm rõ                            |
-| NFR-13 | Reliability       | Hệ thống cần ghi nhận và xử lý các ngoại lệ nghiệp vụ đã xác định thay vì làm luồng kết thúc không có kết quả.                                               | FR-02, FR-07, FR-17, FR-23, EX-01, EX-03, EX-11, EX-18 | Kiểm tra mỗi ngoại lệ chính có trạng thái/kết quả hoặc được đánh dấu chờ chính sách.                                                 | Cao        | BP-01 đến BP-07; [P4]-[P9]            | [Suy ra] từ BP/FR                               |
-| NFR-14 | Reliability       | Khi mất kết nối, hệ thống cần xử lý theo chính sách được doanh nghiệp xác nhận để tránh cập nhật sai trạng thái hoặc mất kết quả nghiệp vụ.                  | FR-08, FR-09, EX-02, EX-09                             | Kiểm tra kịch bản mất kết nối theo chính sách; chính sách hiện `[Cần làm rõ]`.                                                       | Cao        | NEED-18; [P12]                        | [Cần làm rõ]                                    |
-| NFR-15 | Maintainability   | Hệ thống cần cho phép triển khai chức năng mới từng phần và hạn chế ảnh hưởng đến chức năng đang hoạt động.                                                  | FR-28, FR-29, BRULE-20, EX-22                          | Đánh giá một thay đổi từng phần và kiểm tra các chức năng hiện tại; tiêu chí ảnh hưởng `[Cần làm rõ]`.                               | Cao        | NEED-18, NEED-20; [P10]               | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
-| NFR-16 | Maintainability   | Hệ thống cần có khả năng bổ sung loại dịch vụ, phương thức thanh toán và nhà cung cấp thông báo trong tương lai mà không phải xây dựng lại toàn bộ ứng dụng. | FR-16, FR-20, FR-28, FR-29, BRULE-21                   | Đánh giá khả năng thêm một loại/provider trong phạm vi thử nghiệm; mức mở rộng cụ thể `[Cần làm rõ]`.                                | Cao        | NEED-20; [P8], [P12]                  | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
-| NFR-17 | Maintainability   | Các thành phần và quy trình cần đủ rõ để nhóm phát triển có thể tiếp tục sửa lỗi và bổ sung chức năng trong phạm vi được xác nhận.                           | FR-28, FR-29, BRULE-20                                 | Đánh giá khả năng truy xuất thay đổi từ yêu cầu đến chức năng và kết quả; cách tổ chức cụ thể chưa được nguồn quy định.              | Trung bình | NEED-20; [P12], [P14]                 | [Suy ra]; cần làm rõ                            |
-| NFR-18 | Compatibility     | Hệ thống cần phối hợp được với Payment Provider và Notification Provider đã được doanh nghiệp xác nhận.                                                      | FR-16, FR-20, EX-12, EX-14                             | Kiểm tra trao đổi yêu cầu/kết quả với provider trong phạm vi được xác nhận; provider cụ thể `[Cần làm rõ]`.                          | Cao        | NEED-12, NEED-20; [P7], [P8]          | [Cần làm rõ]                                    |
-| NFR-19 | Compatibility     | Việc thay đổi hoặc bổ sung provider/dịch vụ cần hạn chế ảnh hưởng đến các chức năng đang hoạt động theo mục tiêu doanh nghiệp.                               | FR-20, FR-28, FR-29, BRULE-21                          | Đánh giá một kịch bản thay đổi provider/dịch vụ; phạm vi kiểm tra `[Cần làm rõ]`.                                                    | Trung bình | NEED-20; [P10], [P12]                 | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
-| NFR-20 | Backup & Recovery | Chính sách lưu trữ và phục hồi dữ liệu giao dịch, vị trí, audit và lịch sử cần được doanh nghiệp xác nhận trước khi đặc tả.                                  | FR-12, FR-25, FR-26, EX-19                             | Kiểm tra tài liệu/chính sách lưu trữ và phục hồi được phê duyệt; tần suất/thời gian phục hồi `[Cần làm rõ]`.                         | Trung bình | NEED-06, NEED-19; [P9], [P11], [P12]  | [Cần làm rõ]                                    |
+| NFR ID | Nhóm              | Yêu cầu phi chức năng                                                                                                                                                  | FR/Rule/Exception liên quan                            | Tiêu chí kiểm tra                                                                                                                    | Mức độ     | Nguồn                                 | Trạng thái                                      |
+| ------ | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------------------------------- | ----------------------------------------------- |
+| NFR-01 | Performance       | Hệ thống cần hoạt động ổn định với mức tải MVP định hướng khoảng 500 người dùng đồng thời và có khả năng mở rộng khi tải tăng.                                         | FR-04, FR-09, FR-26, BRULE-20                          | Đánh giá hoạt động ở khoảng 500 người dùng đồng thời; khả năng mở rộng tiếp theo cần xác nhận phạm vi đo.                            | Cao        | NEED-18; phản hồi v2                  | Định hướng; cần phê duyệt tiêu chí nghiệm thu   |
+| NFR-02 | Performance       | Các thao tác thông thường nên có thời gian phản hồi không quá 3 giây trong điều kiện tải bình thường.                                                                  | FR-04, FR-05, FR-08, FR-09                             | Đo thời gian xử lý trong kịch bản nghiệp vụ; cách lấy mẫu và ngưỡng nghiệm thu cần xác nhận.                                         | Cao        | NEED-03, NEED-09; phản hồi bổ sung    | Mục tiêu đề xuất; cần làm rõ cách nghiệm thu    |
+| NFR-03 | Performance       | Hệ thống cần hỗ trợ mở rộng các thành phần độc lập khi tải tăng ở mức doanh nghiệp xác nhận.                                                                           | FR-04, FR-16, FR-20, FR-28, FR-29                      | Kiểm tra khả năng đánh giá/mở rộng từng thành phần; phạm vi và cách đo `[Cần làm rõ]`.                                               | Cao        | NEED-18, NEED-20; [P10], [P12]        | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| NFR-04 | Security          | Người dùng phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản.                                                                                       | FR-01, FR-02, BRULE-01, EX-17                          | Thử truy cập chức năng yêu cầu tài khoản với tài khoản chưa xác thực và tài khoản hợp lệ.                                            | Cao        | NEED-01, NEED-19; [P4], [P11]         | Đã xác nhận                                     |
+| NFR-05 | Security          | Thao tác quản trị phải được kiểm soát theo quyền truy cập; người không có quyền không được thực hiện thao tác nhạy cảm.                                                | FR-21, FR-22, BRULE-17, EX-16                          | Kiểm tra thao tác được phép/bị từ chối theo quyền; ma trận quyền cụ thể `[Cần làm rõ]`.                                              | Cao        | NEED-16; [P9], [P11]                  | Đã xác nhận; chi tiết cần làm rõ                |
+| NFR-06 | Security          | Thông tin cá nhân, phương tiện, vị trí và giao dịch phải được bảo vệ khỏi truy cập không phù hợp.                                                                      | FR-12, FR-18, FR-21, FR-25, BRULE-22                   | Kiểm tra các vai trò không phù hợp không xem được dữ liệu được bảo vệ; mức bảo vệ cụ thể `[Cần làm rõ]`.                             | Cao        | NEED-19; [P11]                        | Đã xác nhận; mức bảo vệ cần làm rõ              |
+| NFR-07 | Security          | Hệ thống không được lưu trực tiếp dữ liệu nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB.                                                                        | FR-16, FR-18, BRULE-13                                 | Kiểm tra dữ liệu xử lý/lưu trữ không chứa thông tin nhạy cảm trực tiếp theo phạm vi đã nêu.                                          | Cao        | NEED-13; [P7]                         | Đã xác nhận                                     |
+| NFR-08 | Security          | Các thao tác quan trọng cần có khả năng truy xuất để phục vụ kiểm tra khi xảy ra sự cố.                                                                                | FR-25, BRULE-18                                        | Kiểm tra thao tác quan trọng được ghi nhận và có thể đối chiếu; danh sách/thời gian lưu `[Cần làm rõ]`.                              | Cao        | NEED-19; [P11]                        | Đã xác nhận; chi tiết cần làm rõ                |
+| NFR-09 | Usability         | Trạng thái chuyến, kết quả phân công, cước và thanh toán cần được trình bày rõ để khách hàng nhận biết.                                                                | FR-07, FR-09, FR-13, FR-17                             | Người dùng có thể nhận biết kết quả và trạng thái trong các luồng nghiệp vụ chính; hình thức hiển thị cụ thể không được tự quy định. | Cao        | NEED-03, NEED-11, NEED-12; [P4], [P7] | Đã xác nhận ở mức mục tiêu                      |
+| NFR-10 | Usability         | Thông báo lỗi và kết quả ngoại lệ cần rõ ràng để bên liên quan biết nghiệp vụ có tiếp tục được hay không.                                                              | FR-07, FR-17, FR-20, EX-01, EX-03, EX-11, EX-14        | Kiểm tra mỗi ngoại lệ chính có thông tin kết quả phù hợp; nội dung/kênh cụ thể `[Cần làm rõ]`.                                       | Cao        | NEED-09, NEED-10, NEED-12; [P6]-[P8]  | [Cần làm rõ]                                    |
+| NFR-11 | Reliability       | Lỗi ở chức năng thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động; lỗi phải được ghi nhận và xử lý lại phù hợp.                         | FR-16, FR-17, FR-20, EX-11, EX-14                      | Mô phỏng lỗi và kiểm tra đặt/thực hiện chuyến vẫn tiếp tục; số lần retry và mức phục hồi cần xác nhận.                               | Cao        | NEED-18; phản hồi bổ sung             | Đã xác nhận nguyên tắc                          |
+| NFR-12 | Reliability       | Hệ thống cần giữ trạng thái chuyến và kết quả giao dịch nhất quán khi xử lý luồng bình thường hoặc ngoại lệ nghiệp vụ.                                                 | FR-08, FR-10, FR-16, FR-17, BRULE-07, EX-07, EX-11     | Kiểm tra trạng thái sau các nhánh thành công/thất bại không mâu thuẫn với kết quả nghiệp vụ; chính sách mất kết nối `[Cần làm rõ]`.  | Cao        | NEED-07, NEED-12; [P5], [P7]          | [Suy ra]; cần làm rõ                            |
+| NFR-13 | Reliability       | Hệ thống cần ghi nhận và xử lý các ngoại lệ nghiệp vụ đã xác định thay vì làm luồng kết thúc không có kết quả.                                                         | FR-02, FR-07, FR-17, FR-23, EX-01, EX-03, EX-11, EX-18 | Kiểm tra mỗi ngoại lệ chính có trạng thái/kết quả hoặc được đánh dấu chờ chính sách.                                                 | Cao        | BP-01 đến BP-07; [P4]-[P9]            | [Suy ra] từ BP/FR                               |
+| NFR-14 | Reliability       | Khi mất kết nối, ứng dụng cần hạn chế mất dữ liệu chuyến và đồng bộ lại thông tin khi kết nối được khôi phục.                                                          | FR-08, FR-09, EX-02, EX-09                             | Kiểm tra dữ liệu/trạng thái sau khi mất và khôi phục kết nối; cơ chế đồng bộ chi tiết cần xác nhận.                                  | Cao        | NEED-18; phản hồi bổ sung             | Đã xác nhận nguyên tắc                          |
+| NFR-15 | Maintainability   | Hệ thống cần cho phép triển khai chức năng mới từng phần và hạn chế ảnh hưởng đến chức năng đang hoạt động.                                                            | FR-28, FR-29, BRULE-20, EX-22                          | Đánh giá một thay đổi từng phần và kiểm tra các chức năng hiện tại; tiêu chí ảnh hưởng `[Cần làm rõ]`.                               | Cao        | NEED-18, NEED-20; [P10]               | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| NFR-16 | Maintainability   | Hệ thống cần có khả năng bổ sung loại dịch vụ, phương thức thanh toán và nhà cung cấp thông báo trong tương lai mà không phải xây dựng lại toàn bộ ứng dụng.           | FR-16, FR-20, FR-28, FR-29, BRULE-21                   | Đánh giá khả năng thêm một loại/provider trong phạm vi thử nghiệm; mức mở rộng cụ thể `[Cần làm rõ]`.                                | Cao        | NEED-20; [P8], [P12]                  | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| NFR-17 | Maintainability   | Các thành phần và quy trình cần đủ rõ để nhóm phát triển có thể tiếp tục sửa lỗi và bổ sung chức năng trong phạm vi được xác nhận.                                     | FR-28, FR-29, BRULE-20                                 | Đánh giá khả năng truy xuất thay đổi từ yêu cầu đến chức năng và kết quả; cách tổ chức cụ thể chưa được nguồn quy định.              | Trung bình | NEED-20; [P12], [P14]                 | [Suy ra]; cần làm rõ                            |
+| NFR-18 | Compatibility     | Hệ thống cần phối hợp với Payment Provider và dùng thông báo trong hệ thống/email ở MVP, đồng thời cho phép bổ sung hoặc thay đổi provider/kênh về sau.                | FR-16, FR-20, EX-12, EX-14                             | Kiểm tra trao đổi kết quả với provider và khả năng thay đổi kênh; provider cụ thể và cơ chế tích hợp cần xác nhận.                   | Cao        | NEED-12, NEED-20; phản hồi v2         | Đã xác nhận định hướng                          |
+| NFR-19 | Compatibility     | Việc thay đổi hoặc bổ sung provider/dịch vụ cần hạn chế ảnh hưởng đến các chức năng đang hoạt động theo mục tiêu doanh nghiệp.                                         | FR-20, FR-28, FR-29, BRULE-21                          | Đánh giá một kịch bản thay đổi provider/dịch vụ; phạm vi kiểm tra `[Cần làm rõ]`.                                                    | Trung bình | NEED-20; [P10], [P12]                 | [Có khả năng vượt phạm vi đồ án - cần xác nhận] |
+| NFR-20 | Backup & Recovery | Dữ liệu chuyến và giao dịch lưu đề xuất 24 tháng, vị trí chi tiết 30 ngày, audit log 12 tháng; sao lưu tự động hằng ngày, RTO không quá 4 giờ và RPO không quá 24 giờ. | FR-12, FR-25, FR-26, EX-19                             | Kiểm tra chính sách lưu trữ, bản sao lưu và mục tiêu phục hồi; đây là các mục tiêu đề xuất cần phê duyệt.                            | Cao        | NEED-06, NEED-19; phản hồi v2         | Đề xuất; cần phê duyệt                          |
 
-Không đưa NFR cụ thể cho số người dùng, thời gian phản hồi, uptime, mã hóa, trình duyệt, hệ điều hành, backup tự động hoặc công nghệ vì nguồn chưa cung cấp cơ sở tương ứng.
+Không đưa NFR cụ thể cho mã hóa, trình duyệt, hệ điều hành hoặc công nghệ vì nguồn chưa cung cấp cơ sở tương ứng. Các mục tiêu tải, phản hồi, khả dụng, sao lưu và phục hồi đã được ghi nhận ở mức xác nhận/đề xuất theo phản hồi v2.
 
 ## III. Chi tiết các NFR quan trọng
 
@@ -2711,60 +2711,60 @@ Không tạo Entity riêng cho Payment Provider hoặc Notification Provider vì
 
 ### ENT-05 - Trip
 
-| Attribute      | Ý nghĩa                        | Kiểu dữ liệu dự kiến | PK/FK/Unique                 | Bắt buộc?                           | Giá trị/trạng thái                                           | Nguồn                               | Trạng thái                       |
-| -------------- | ------------------------------ | -------------------- | ---------------------------- | ----------------------------------- | ------------------------------------------------------------ | ----------------------------------- | -------------------------------- |
-| TripID         | Mã yêu cầu/chuyến              | Chuỗi/số             | PK                           | Có                                  | -                                                            | FR-02, FR-06                        | [Suy ra]                         |
-| CustomerID     | Khách hàng tạo yêu cầu         | Chuỗi/số             | FK                           | Có                                  | -                                                            | BR-02; [P4]                         | [Suy ra]                         |
-| DriverID       | Tài xế được phân công          | Chuỗi/số             | FK, tùy chọn trước phân công | Chỉ có sau phân công                | BR-09; [P6]                                                  | [Suy ra]                            |
-| VehicleID      | Phương tiện thực hiện chuyến   | Chuỗi/số             | FK, tùy chọn trước phân công | Chỉ có khi có thông tin phương tiện | NEED-05; [P5]                                                | [Suy ra]                            |
-| PickupLocation | Điểm đón                       | Chuỗi/nhóm vị trí    | -                            | Có                                  | -                                                            | FR-02.1; [P4]                       | Đã xác nhận                      |
-| Destination    | Điểm đến                       | Chuỗi/nhóm vị trí    | -                            | Có                                  | -                                                            | FR-02.1; [P4]                       | Đã xác nhận                      |
-| ServiceType    | Loại xe/loại dịch vụ được chọn | Chuỗi                | -                            | Có                                  | Danh mục ban đầu và mở rộng cần xác nhận                     | FR-02.1, FR-13.2; [P4], [P7], [P12] | [Cần làm rõ]                     |
-| TripStatus     | Trạng thái chuyến              | Chuỗi                | -                            | Có                                  | Đã đến, đã đón khách, đang di chuyển, hoàn thành được đề cập | BRULE-07; [P5]                      | Đã xác nhận; trình tự cần làm rõ |
-| RequestedAt    | Thời điểm gửi yêu cầu          | Ngày/giờ             | -                            | [Suy ra]                            | Thời điểm cụ thể chưa được yêu cầu                           | FR-03/BP-01                         | [Suy ra]                         |
-| CompletedAt    | Thời điểm hoàn thành           | Ngày/giờ             | -                            | [Suy ra]                            | Điều kiện chuyển tính cước                                   | BRULE-09; [P7]                      | [Suy ra]                         |
-| TripNote       | Ghi chú liên quan chuyến       | Văn bản              | -                            | Tùy chọn                            | Chưa được đề cập cụ thể                                      | [P4]                                | [Cần làm rõ]                     |
+| Attribute      | Ý nghĩa                        | Kiểu dữ liệu dự kiến | PK/FK/Unique                 | Bắt buộc?                           | Giá trị/trạng thái                                                                                     | Nguồn                               | Trạng thái                                |
+| -------------- | ------------------------------ | -------------------- | ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------- | ----------------------------------------- |
+| TripID         | Mã yêu cầu/chuyến              | Chuỗi/số             | PK                           | Có                                  | -                                                                                                      | FR-02, FR-06                        | [Suy ra]                                  |
+| CustomerID     | Khách hàng tạo yêu cầu         | Chuỗi/số             | FK                           | Có                                  | -                                                                                                      | BR-02; [P4]                         | [Suy ra]                                  |
+| DriverID       | Tài xế được phân công          | Chuỗi/số             | FK, tùy chọn trước phân công | Chỉ có sau phân công                | BR-09; [P6]                                                                                            | [Suy ra]                            |
+| VehicleID      | Phương tiện thực hiện chuyến   | Chuỗi/số             | FK, tùy chọn trước phân công | Chỉ có khi có thông tin phương tiện | NEED-05; [P5]                                                                                          | [Suy ra]                            |
+| PickupLocation | Điểm đón                       | Chuỗi/nhóm vị trí    | -                            | Có                                  | -                                                                                                      | FR-02.1; [P4]                       | Đã xác nhận                               |
+| Destination    | Điểm đến                       | Chuỗi/nhóm vị trí    | -                            | Có                                  | -                                                                                                      | FR-02.1; [P4]                       | Đã xác nhận                               |
+| ServiceType    | Loại xe/loại dịch vụ được chọn | Chuỗi                | -                            | Có                                  | Danh mục ban đầu và mở rộng cần xác nhận                                                               | FR-02.1, FR-13.2; [P4], [P7], [P12] | [Cần làm rõ]                              |
+| TripStatus     | Trạng thái chuyến              | Chuỗi                | -                            | Có                                  | Đã tiếp nhận, Đang tìm tài xế, Đã phân tài xế, Tài xế đã đến, Đã đón khách, Đang di chuyển, Hoàn thành | BRULE-07; phản hồi bổ sung          | Đã xác nhận; không được bỏ qua trạng thái |
+| RequestedAt    | Thời điểm gửi yêu cầu          | Ngày/giờ             | -                            | [Suy ra]                            | Thời điểm cụ thể chưa được yêu cầu                                                                     | FR-03/BP-01                         | [Suy ra]                                  |
+| CompletedAt    | Thời điểm hoàn thành           | Ngày/giờ             | -                            | [Suy ra]                            | Điều kiện chuyển tính cước                                                                             | BRULE-09; [P7]                      | [Suy ra]                                  |
+| TripNote       | Ghi chú liên quan chuyến       | Văn bản              | -                            | Tùy chọn                            | Chưa được đề cập cụ thể                                                                                | [P4]                                | [Cần làm rõ]                              |
 
 ### ENT-06 - DriverLocation
 
-| Attribute           | Ý nghĩa                   | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                                          | Giá trị/trạng thái | Nguồn                            | Trạng thái   |
-| ------------------- | ------------------------- | -------------------- | ------------ | -------------------------------------------------- | ------------------ | -------------------------------- | ------------ |
-| DriverLocationID    | Mã bản ghi vị trí         | Chuỗi/số             | PK           | Có                                                 | -                  | FR-12; [P5]                      | [Suy ra]     |
-| DriverID            | Tài xế có vị trí          | Chuỗi/số             | FK           | Có                                                 | -                  | NEED-08; [P5]                    | Đã xác nhận  |
-| LocationInformation | Thông tin vị trí          | Nhóm vị trí          | Có           | Vị trí gần nhất được đề cập ở mức nhu cầu thu thập | FR-12; [P5]        | Đã xác nhận; chi tiết cần làm rõ |
-| RecordedAt          | Thời điểm ghi nhận vị trí | Ngày/giờ             | -            | [Cần làm rõ]                                       | Tần suất chưa chốt | NEED-08; [P5], [P12]             | [Cần làm rõ] |
+| Attribute           | Ý nghĩa                   | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                                          | Giá trị/trạng thái                                        | Nguồn                            | Trạng thái                                     |
+| ------------------- | ------------------------- | -------------------- | ------------ | -------------------------------------------------- | --------------------------------------------------------- | -------------------------------- | ---------------------------------------------- |
+| DriverLocationID    | Mã bản ghi vị trí         | Chuỗi/số             | PK           | Có                                                 | -                                                         | FR-12; [P5]                      | [Suy ra]                                       |
+| DriverID            | Tài xế có vị trí          | Chuỗi/số             | FK           | Có                                                 | -                                                         | NEED-08; [P5]                    | Đã xác nhận                                    |
+| LocationInformation | Thông tin vị trí          | Nhóm vị trí          | Có           | Vị trí gần nhất được đề cập ở mức nhu cầu thu thập | FR-12; [P5]                                               | Đã xác nhận; chi tiết cần làm rõ |
+| RecordedAt          | Thời điểm ghi nhận vị trí | Ngày/giờ             | -            | Có                                                 | Cập nhật khoảng 10 giây/lần; lưu chi tiết đề xuất 30 ngày | NEED-08; phản hồi v2             | Đã xác nhận định hướng; thời hạn cần phê duyệt |
 
 ### ENT-07 - Fare
 
-| Attribute  | Ý nghĩa                 | Kiểu dữ liệu dự kiến    | PK/FK/Unique | Bắt buộc?    | Giá trị/trạng thái               | Nguồn          | Trạng thái                        |
-| ---------- | ----------------------- | ----------------------- | ------------ | ------------ | -------------------------------- | -------------- | --------------------------------- |
-| FareID     | Mã cước                 | Chuỗi/số                | PK           | Có           | -                                | FR-13          | [Suy ra]                          |
-| TripID     | Chuyến được tính cước   | Chuỗi/số                | FK           | Có           | -                                | BRULE-09; [P7] | [Suy ra]                          |
-| FareAmount | Số tiền phải trả        | Tiền tệ                 | -            | Có           | -                                | FR-13.3; [P7]  | Đã xác nhận                       |
-| FareBasis  | Cơ sở/dữ liệu tính cước | Văn bản/nhóm thuộc tính | -            | Có           | Loại dịch vụ và thông tin chuyến | BR-12; [P7]    | Đã xác nhận; công thức cần làm rõ |
-| FareStatus | Trạng thái tính cước    | Chuỗi                   | -            | [Cần làm rõ] | Chưa có danh mục trạng thái      | EX-10          | [Cần làm rõ]                      |
+| Attribute  | Ý nghĩa                 | Kiểu dữ liệu dự kiến    | PK/FK/Unique | Bắt buộc?    | Giá trị/trạng thái                                                             | Nguồn                   | Trạng thái                                 |
+| ---------- | ----------------------- | ----------------------- | ------------ | ------------ | ------------------------------------------------------------------------------ | ----------------------- | ------------------------------------------ |
+| FareID     | Mã cước                 | Chuỗi/số                | PK           | Có           | -                                                                              | FR-13                   | [Suy ra]                                   |
+| TripID     | Chuyến được tính cước   | Chuỗi/số                | FK           | Có           | -                                                                              | BRULE-09; [P7]          | [Suy ra]                                   |
+| FareAmount | Số tiền phải trả        | Tiền tệ                 | -            | Có           | -                                                                              | FR-13.3; [P7]           | Đã xác nhận                                |
+| FareBasis  | Cơ sở/dữ liệu tính cước | Văn bản/nhóm thuộc tính | -            | Có           | Bảng giá theo loại dịch vụ/loại xe, giá tối thiểu, phụ phí và thông tin chuyến | BR-12; phản hồi bổ sung | Đã xác nhận; công thức chi tiết cần làm rõ |
+| FareStatus | Trạng thái tính cước    | Chuỗi                   | -            | [Cần làm rõ] | Chưa có danh mục trạng thái                                                    | EX-10                   | [Cần làm rõ]                               |
 
 ### ENT-08 - PaymentTransaction
 
-| Attribute            | Ý nghĩa                            | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?              | Giá trị/trạng thái                            | Nguồn                    | Trạng thái                              |
-| -------------------- | ---------------------------------- | -------------------- | ------------ | ---------------------- | --------------------------------------------- | ------------------------ | --------------------------------------- |
-| PaymentTransactionID | Mã giao dịch                       | Chuỗi/số             | PK           | Có                     | -                                             | FR-16.3; [P7]            | [Suy ra]                                |
-| TripID               | Chuyến liên quan giao dịch         | Chuỗi/số             | FK           | Có                     | -                                             | BRULE-14; [P7]           | [Suy ra]                                |
-| PaymentMethod        | Phương thức thanh toán             | Chuỗi                | -            | Có                     | Tiền mặt/điện tử                              | BRULE-11; [P7]           | Đã xác nhận                             |
-| TransactionStatus    | Trạng thái giao dịch               | Chuỗi                | -            | Có                     | Thành công/thất bại/chưa hoàn tất được đề cập | EX-11, EX-12             | Đã xác nhận; danh mục đầy đủ cần làm rõ |
-| ProviderReference    | Tham chiếu từ provider             | Chuỗi                | -            | [Cần làm rõ]           | Không lưu dữ liệu nhạy cảm trực tiếp          | BRULE-13, BRULE-14; [P7] | [Suy ra]                                |
-| FailureInformation   | Thông tin thất bại ở mức nghiệp vụ | Văn bản              | Tùy chọn     | Khi giao dịch thất bại | EX-11, EX-13                                  | [Suy ra]                 |
+| Attribute            | Ý nghĩa                            | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?              | Giá trị/trạng thái                                                 | Nguồn                                | Trạng thái                              |
+| -------------------- | ---------------------------------- | -------------------- | ------------ | ---------------------- | ------------------------------------------------------------------ | ------------------------------------ | --------------------------------------- |
+| PaymentTransactionID | Mã giao dịch                       | Chuỗi/số             | PK           | Có                     | -                                                                  | FR-16.3; [P7]                        | [Suy ra]                                |
+| TripID               | Chuyến liên quan giao dịch         | Chuỗi/số             | FK           | Có                     | -                                                                  | BRULE-14; [P7]                       | [Suy ra]                                |
+| PaymentMethod        | Phương thức thanh toán             | Chuỗi                | -            | Có                     | Tiền mặt/điện tử                                                   | BRULE-11; [P7]                       | Đã xác nhận                             |
+| TransactionStatus    | Trạng thái giao dịch               | Chuỗi                | -            | Có                     | Thành công/thất bại/chưa hoàn tất được đề cập                      | EX-11, EX-12                         | Đã xác nhận; danh mục đầy đủ cần làm rõ |
+| ProviderReference    | Tham chiếu từ provider             | Chuỗi                | -            | Có                     | Chỉ lưu tham chiếu cần thiết, không lưu dữ liệu nhạy cảm trực tiếp | BRULE-13, BRULE-14; phản hồi bổ sung | Đã xác nhận                             |
+| FailureInformation   | Thông tin thất bại ở mức nghiệp vụ | Văn bản              | Tùy chọn     | Khi giao dịch thất bại | EX-11, EX-13                                                       | [Suy ra]                             |
 
 ### ENT-09 - NotificationRecord
 
-| Attribute          | Ý nghĩa               | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                             | Giá trị/trạng thái                                    | Nguồn                            | Trạng thái   |
-| ------------------ | --------------------- | -------------------- | ------------ | ------------------------------------- | ----------------------------------------------------- | -------------------------------- | ------------ |
-| NotificationID     | Mã thông báo          | Chuỗi/số             | PK           | Có                                    | -                                                     | FR-20                            | [Suy ra]     |
-| EventType          | Sự kiện tạo thông báo | Chuỗi                | Có           | Yêu cầu/chuyến/thanh toán được đề cập | BRULE-15; [P8]                                        | Đã xác nhận                      |
-| RecipientReference | Bên nhận thông báo    | Chuỗi/tham chiếu     | Có           | Khách hàng/tài xế/vận hành            | FR-19.2; [P8]                                         | Đã xác nhận; chi tiết cần làm rõ |
-| ChannelOrProvider  | Kênh/provider gửi     | Chuỗi                | -            | [Cần làm rõ]                          | Chưa chốt kênh/provider                               | FR-19.3; [P8], [P12]             | [Cần làm rõ] |
-| SendingStatus      | Kết quả gửi           | Chuỗi                | Có           | Thành công/lỗi gửi                    | EX-14; [P8]                                           | Đã xác nhận                      |
-| SentAt             | Thời điểm gửi         | Ngày/giờ             | -            | [Suy ra]                              | Cần để ghi nhận kết quả gửi; thời gian lưu cần làm rõ | FR-20.2                          | [Suy ra]     |
+| Attribute          | Ý nghĩa               | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                             | Giá trị/trạng thái                                                                                | Nguồn                            | Trạng thái             |
+| ------------------ | --------------------- | -------------------- | ------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------- |
+| NotificationID     | Mã thông báo          | Chuỗi/số             | PK           | Có                                    | -                                                                                                 | FR-20                            | [Suy ra]               |
+| EventType          | Sự kiện tạo thông báo | Chuỗi                | Có           | Yêu cầu/chuyến/thanh toán được đề cập | BRULE-15; [P8]                                                                                    | Đã xác nhận                      |
+| RecipientReference | Bên nhận thông báo    | Chuỗi/tham chiếu     | Có           | Khách hàng/tài xế/vận hành            | FR-19.2; [P8]                                                                                     | Đã xác nhận; chi tiết cần làm rõ |
+| ChannelOrProvider  | Kênh/provider gửi     | Chuỗi                | -            | Có                                    | Thông báo trong hệ thống và email ở MVP; retry tối đa 3 lần; có thể thay đổi provider/kênh về sau | FR-19.3; phản hồi v2             | Đã xác nhận định hướng |
+| SendingStatus      | Kết quả gửi           | Chuỗi                | Có           | Thành công/lỗi gửi                    | EX-14; [P8]                                                                                       | Đã xác nhận                      |
+| SentAt             | Thời điểm gửi         | Ngày/giờ             | -            | [Suy ra]                              | Cần để ghi nhận kết quả gửi; thời gian lưu cần làm rõ                                             | FR-20.2                          | [Suy ra]               |
 
 ### ENT-10 - Incident
 
@@ -2778,22 +2778,23 @@ Không tạo Entity riêng cho Payment Provider hoặc Notification Provider vì
 
 ### ENT-11 - ReportDefinition
 
-| Attribute          | Ý nghĩa                 | Kiểu dữ liệu dự kiến    | PK/FK/Unique | Bắt buộc?                                              | Giá trị/trạng thái | Nguồn                             | Trạng thái |
-| ------------------ | ----------------------- | ----------------------- | ------------ | ------------------------------------------------------ | ------------------ | --------------------------------- | ---------- |
-| ReportDefinitionID | Mã nhóm báo cáo         | Chuỗi/số                | PK           | Có                                                     | -                  | FR-27                             | [Suy ra]   |
-| ReportScope        | Phạm vi dữ liệu báo cáo | Văn bản/nhóm thuộc tính | Có           | Chuyến, giao dịch, tài xế được đề cập                  | BR-18; [P9]        | Đã xác nhận                       |
-| MetricDefinition   | Định nghĩa chỉ số       | Văn bản                 | Có           | Số chuyến, doanh thu, hoàn thành, hủy, hiệu quả tài xế | BR-18; [P9]        | Đã xác nhận; công thức cần làm rõ |
-| ReportingPeriod    | Kỳ báo cáo              | Chuỗi/ngày giờ          | [Cần làm rõ] | Chưa chốt                                              | FR-27; [P9], [P12] | [Cần làm rõ]                      |
+| Attribute          | Ý nghĩa                 | Kiểu dữ liệu dự kiến    | PK/FK/Unique | Bắt buộc?                                              | Giá trị/trạng thái      | Nguồn                             | Trạng thái |
+| ------------------ | ----------------------- | ----------------------- | ------------ | ------------------------------------------------------ | ----------------------- | --------------------------------- | ---------- |
+| ReportDefinitionID | Mã nhóm báo cáo         | Chuỗi/số                | PK           | Có                                                     | -                       | FR-27                             | [Suy ra]   |
+| ReportScope        | Phạm vi dữ liệu báo cáo | Văn bản/nhóm thuộc tính | Có           | Chuyến, giao dịch, tài xế được đề cập                  | BR-18; [P9]             | Đã xác nhận                       |
+| MetricDefinition   | Định nghĩa chỉ số       | Văn bản                 | Có           | Số chuyến, doanh thu, hoàn thành, hủy, hiệu quả tài xế | BR-18; [P9]             | Đã xác nhận; công thức cần làm rõ |
+| ReportingPeriod    | Kỳ báo cáo              | Chuỗi/ngày giờ          | Có           | Ngày, tuần, tháng hoặc khoảng thời gian tùy chọn       | FR-27; phản hồi bổ sung | Đã xác nhận                       |
 
 ### ENT-12 - AuditRecord
 
-| Attribute              | Ý nghĩa                   | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                    | Giá trị/trạng thái | Nguồn           | Trạng thái   |
-| ---------------------- | ------------------------- | -------------------- | ------------ | ---------------------------- | ------------------ | --------------- | ------------ |
-| AuditRecordID          | Mã bản ghi audit          | Chuỗi/số             | PK           | Có                           | -                  | FR-25           | [Suy ra]     |
-| RelatedUserReference   | Người thực hiện thao tác  | Chuỗi/tham chiếu     | [Cần làm rõ] | Có                           | -                  | BRULE-18; [P11] | [Cần làm rõ] |
-| ActionDescription      | Mô tả thao tác quan trọng | Văn bản              | Có           | Danh sách thao tác chưa chốt | FR-25; [P11]       | [Cần làm rõ]    |
-| RelatedObjectReference | Đối tượng bị tác động     | Chuỗi/tham chiếu     | [Cần làm rõ] | [Cần làm rõ]                 | -                  | FR-25; [P11]    | [Cần làm rõ] |
-| RecordedAt             | Thời điểm ghi vết         | Ngày/giờ             | -            | Có ở mức nhu cầu audit       | BRULE-18; [P11]    | [Suy ra]        |
+| Attribute              | Ý nghĩa                   | Kiểu dữ liệu dự kiến | PK/FK/Unique | Bắt buộc?                    | Giá trị/trạng thái                                            | Nguồn            | Trạng thái             |
+| ---------------------- | ------------------------- | -------------------- | ------------ | ---------------------------- | ------------------------------------------------------------- | ---------------- | ---------------------- |
+| AuditRecordID          | Mã bản ghi audit          | Chuỗi/số             | PK           | Có                           | -                                                             | FR-25            | [Suy ra]               |
+| RelatedUserReference   | Người thực hiện thao tác  | Chuỗi/tham chiếu     | [Cần làm rõ] | Có                           | -                                                             | BRULE-18; [P11]  | [Cần làm rõ]           |
+| ActionDescription      | Mô tả thao tác quan trọng | Văn bản              | Có           | Danh sách thao tác chưa chốt | FR-25; [P11]                                                  | [Cần làm rõ]     |
+| RelatedObjectReference | Đối tượng bị tác động     | Chuỗi/tham chiếu     | [Cần làm rõ] | [Cần làm rõ]                 | -                                                             | FR-25; [P11]     | [Cần làm rõ]           |
+| RecordedAt             | Thời điểm ghi vết         | Ngày/giờ             | -            | Có ở mức nhu cầu audit       | BRULE-18; [P11]                                               | [Suy ra]         |
+| RetentionPeriod        | Thời gian lưu audit log   | Thời lượng           | -            | Có                           | Đề xuất 12 tháng, sau đó theo chính sách lưu trữ doanh nghiệp | Phản hồi bổ sung | Đề xuất; cần phê duyệt |
 
 ## IV. Relationship và Cardinality
 
@@ -3052,27 +3053,27 @@ Không phải mọi Stakeholder đều là Actor. Actor chỉ được xác đ�
 
 ## IV. Danh sách Use Case
 
-| UC ID | Tên Use Case                           | Mục tiêu nghiệp vụ                                                                                    | Actor liên quan                                  | FR/FR con liên quan                                                              | BP/Step liên quan            | Rule/Exception liên quan                   | Trạng thái                                                 |
-| ----- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| UC-01 | Quản lý tài khoản                      | Cho phép khách hàng đăng ký, đăng nhập và cập nhật thông tin cá nhân để sử dụng dịch vụ               | ACT-01                                           | FR-01; FR-01.1, FR-01.2, FR-01.3                                                 | BP-01/STEP-01                | BRULE-01; EX-17                            | Đã xác nhận; tài khoản và thông tin chi tiết cần làm rõ    |
-| UC-02 | Tạo yêu cầu đặt xe                     | Cho phép khách hàng cung cấp thông tin chuyến và gửi yêu cầu đặt xe                                   | ACT-01                                           | FR-02; FR-02.1, FR-02.2; FR-03                                                   | BP-01/STEP-02, STEP-03       | BRULE-02; EX-01, EX-02                     | Đã xác nhận                                                |
-| UC-03 | Tìm và ưu tiên tài xế                  | Xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành                     | ACT-03, ACT-02                                   | FR-04; FR-04.1, FR-04.2, FR-04.3; FR-12                                          | BP-02/STEP-04                | BRULE-03, BRULE-04; EX-03, EX-06           | Đã xác nhận; tiêu chí và dữ liệu vị trí cần làm rõ         |
-| UC-04 | Phản hồi yêu cầu chuyến                | Cho phép tài xế nhận thông tin chuyến và phản hồi chấp nhận, từ chối hoặc không phản hồi              | ACT-02                                           | FR-05; FR-05.1, FR-05.2                                                          | BP-02/STEP-05                | BRULE-05; EX-04, EX-05                     | Đã xác nhận; thời gian phản hồi cần làm rõ                 |
-| UC-05 | Phân công và tìm tiếp tài xế           | Ghi nhận tài xế chấp nhận hoặc tiếp tục tìm tài xế khác khi bị từ chối/không phản hồi                 | ACT-03, ACT-02, ACT-01                           | FR-06, FR-07; FR-07.1, FR-07.2                                                   | BP-02/STEP-05, STEP-06       | BRULE-05, BRULE-06; EX-03, EX-04, EX-05    | Đã xác nhận; chính sách chuyển tiếp cần làm rõ             |
-| UC-06 | Cập nhật tiến trình chuyến             | Cho phép tài xế cập nhật trạng thái chuyến theo tiến trình nghiệp vụ                                  | ACT-02                                           | FR-08; FR-08.1, FR-08.2                                                          | BP-03/STEP-07                | BRULE-07, BRULE-08; EX-07, EX-09           | Đã xác nhận; trình tự trạng thái và mất kết nối cần làm rõ |
-| UC-07 | Theo dõi chuyến xe                     | Cho phép khách hàng xem trạng thái, tài xế, tiến trình và kết quả chuyến                              | ACT-01                                           | FR-09; FR-09.1, FR-09.2, FR-09.3; FR-10                                          | BP-03/STEP-08, STEP-09       | EX-09                                      | Đã xác nhận; thời gian dự kiến cần làm rõ                  |
-| UC-08 | Ghi nhận chuyến có sự cố               | Ghi nhận và chuyển thông tin chuyến lỗi/sự cố cho bộ phận vận hành                                    | ACT-01, ACT-02, ACT-03                           | FR-11                                                                            | BP-03/STEP-09; BP-06/STEP-16 | EX-08, EX-18                               | Đã xác nhận                                                |
-| UC-09 | Tính cước chuyến xe                    | Xác định số tiền khách hàng phải trả sau khi chuyến hoàn thành                                        | ACT-03                                           | FR-13; FR-13.1, FR-13.2, FR-13.3                                                 | BP-04/STEP-10                | BRULE-09, BRULE-10; EX-10                  | Đã xác nhận; công thức cước cần làm rõ                     |
-| UC-10 | Thanh toán tiền mặt                    | Ghi nhận khách hàng đã chọn và thực hiện thanh toán tiền mặt theo chính sách doanh nghiệp             | ACT-01, ACT-03                                   | FR-14, FR-15                                                                     | BP-04/STEP-11, STEP-12       | BRULE-11; EX-13                            | Đã xác nhận; chính sách tiền mặt cần làm rõ                |
-| UC-11 | Thanh toán điện tử                     | Gửi yêu cầu đến Payment Provider, nhận và ghi nhận kết quả giao dịch điện tử                          | ACT-01, ACT-04                                   | FR-14, FR-16, FR-17, FR-18; FR-16.1, FR-16.2, FR-16.3; FR-17.1, FR-17.2, FR-17.3 | BP-04/STEP-11, STEP-12       | BRULE-11 đến BRULE-14; EX-11, EX-12, EX-13 | Đã xác nhận; provider, retry và đối soát cần làm rõ        |
-| UC-12 | Gửi thông báo sự kiện                  | Xác định người nhận/kênh, gửi thông báo và ghi nhận kết quả gửi                                       | ACT-03, ACT-05, ACT-01, ACT-02                   | FR-19, FR-20; FR-19.1, FR-19.2, FR-19.3; FR-20.1, FR-20.2                        | BP-05/STEP-13, STEP-14       | BRULE-15, BRULE-16; EX-14, EX-15           | Đã xác nhận; kênh và retry cần làm rõ                      |
-| UC-13 | Quản lý dữ liệu vận hành               | Cho phép nhân viên vận hành xem và quản lý khách hàng, tài xế, phương tiện và chuyến theo quyền       | ACT-03                                           | FR-21; FR-21.1, FR-21.2                                                          | BP-06/STEP-15                | BRULE-17, BRULE-22; EX-16, EX-17           | Đã xác nhận; ma trận quyền cần làm rõ                      |
-| UC-14 | Xử lý sự cố chuyến xe                  | Cho phép nhân viên vận hành ghi nhận, cập nhật và cung cấp kết quả xử lý sự cố                        | ACT-03, ACT-01, ACT-02                           | FR-23, FR-24; FR-23.1, FR-23.2                                                   | BP-06/STEP-16                | EX-18                                      | Đã xác nhận; trạng thái và cách thông báo cần làm rõ       |
-| UC-15 | Lưu vết thao tác quan trọng            | Lưu dấu vết thao tác quản trị quan trọng để kiểm tra khi có sự cố                                     | ACT-03                                           | FR-25                                                                            | BP-06/STEP-17                | BRULE-18, BRULE-22                         | Đã xác nhận; danh sách và thời gian lưu cần làm rõ         |
-| UC-16 | Cung cấp báo cáo hoạt động             | Tổng hợp và cung cấp dữ liệu về chuyến, doanh thu, tỷ lệ và hiệu quả tài xế                           | ACT-03; STK-05 là bên nhận/quan tâm [Cần làm rõ] | FR-26, FR-27; FR-27.1, FR-27.2, FR-27.3                                          | BP-07/STEP-18, STEP-19       | BRULE-19; EX-19, EX-20                     | Đã xác nhận; người sử dụng trực tiếp và KPI cần làm rõ     |
-| UC-17 | Ghi nhận nhu cầu thay đổi nền tảng     | Ghi nhận nhu cầu mở rộng/thay đổi cùng phạm vi ảnh hưởng và ưu tiên                                   | ACT-06                                           | FR-28; FR-28.1, FR-28.2                                                          | BP-08/STEP-20                | BRULE-20, BRULE-21; EX-21                  | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
-| UC-18 | Theo dõi triển khai thay đổi từng phần | Ghi nhận việc triển khai và kiểm tra kết quả thay đổi theo phạm vi được xác nhận                      | ACT-06                                           | FR-29; FR-29.1, FR-29.2                                                          | BP-08/STEP-21                | BRULE-20; EX-22                            | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
-| UC-19 | Đánh giá ảnh hưởng sau thay đổi        | Ghi nhận thay đổi ảnh hưởng chức năng đang hoạt động hoặc làm hệ thống không ổn định để xem xét xử lý | ACT-06                                           | FR-30; FR-30.1, FR-30.2                                                          | BP-08/STEP-21                | BRULE-20, BRULE-21; EX-22, EX-23           | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
+| UC ID | Tên Use Case                           | Mục tiêu nghiệp vụ                                                                                      | Actor liên quan                                  | FR/FR con liên quan                                                              | BP/Step liên quan            | Rule/Exception liên quan                   | Trạng thái                                                 |
+| ----- | -------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| UC-01 | Quản lý tài khoản                      | Cho phép khách hàng đăng ký, đăng nhập và cập nhật thông tin cá nhân để sử dụng dịch vụ                 | ACT-01                                           | FR-01; FR-01.1, FR-01.2, FR-01.3                                                 | BP-01/STEP-01                | BRULE-01; EX-17                            | Đã xác nhận; tài khoản và thông tin chi tiết cần làm rõ    |
+| UC-02 | Tạo yêu cầu đặt xe                     | Cho phép khách hàng cung cấp thông tin chuyến và gửi yêu cầu đặt xe                                     | ACT-01                                           | FR-02; FR-02.1, FR-02.2; FR-03                                                   | BP-01/STEP-02, STEP-03       | BRULE-02; EX-01, EX-02                     | Đã xác nhận                                                |
+| UC-03 | Tìm và ưu tiên tài xế                  | Xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành                       | ACT-03, ACT-02                                   | FR-04; FR-04.1, FR-04.2, FR-04.3; FR-12                                          | BP-02/STEP-04                | BRULE-03, BRULE-04; EX-03, EX-06           | Đã xác nhận; tiêu chí và dữ liệu vị trí cần làm rõ         |
+| UC-04 | Phản hồi yêu cầu chuyến                | Cho phép tài xế nhận thông tin chuyến và phản hồi trong 30 giây: chấp nhận, từ chối hoặc không phản hồi | ACT-02                                           | FR-05; FR-05.1, FR-05.2                                                          | BP-02/STEP-05                | BRULE-05; EX-04, EX-05                     | Đã xác nhận                                                |
+| UC-05 | Phân công và tìm tiếp tài xế           | Ghi nhận tài xế chấp nhận hoặc tiếp tục tìm tài xế khác khi bị từ chối/không phản hồi                   | ACT-03, ACT-02, ACT-01                           | FR-06, FR-07; FR-07.1, FR-07.2                                                   | BP-02/STEP-05, STEP-06       | BRULE-05, BRULE-06; EX-03, EX-04, EX-05    | Đã xác nhận; chính sách chuyển tiếp cần làm rõ             |
+| UC-06 | Cập nhật tiến trình chuyến             | Cho phép tài xế cập nhật trạng thái chuyến theo tiến trình nghiệp vụ                                    | ACT-02                                           | FR-08; FR-08.1, FR-08.2                                                          | BP-03/STEP-07                | BRULE-07, BRULE-08; EX-07, EX-09           | Đã xác nhận; trình tự trạng thái và mất kết nối cần làm rõ |
+| UC-07 | Theo dõi chuyến xe                     | Cho phép khách hàng xem trạng thái, tài xế, tiến trình và kết quả chuyến                                | ACT-01                                           | FR-09; FR-09.1, FR-09.2, FR-09.3; FR-10                                          | BP-03/STEP-08, STEP-09       | EX-09                                      | Đã xác nhận; thời gian dự kiến cần làm rõ                  |
+| UC-08 | Ghi nhận chuyến có sự cố               | Ghi nhận và chuyển thông tin chuyến lỗi/sự cố cho bộ phận vận hành                                      | ACT-01, ACT-02, ACT-03                           | FR-11                                                                            | BP-03/STEP-09; BP-06/STEP-16 | EX-08, EX-18                               | Đã xác nhận                                                |
+| UC-09 | Tính cước chuyến xe                    | Xác định số tiền khách hàng phải trả sau khi chuyến hoàn thành                                          | ACT-03                                           | FR-13; FR-13.1, FR-13.2, FR-13.3                                                 | BP-04/STEP-10                | BRULE-09, BRULE-10; EX-10                  | Đã xác nhận; công thức cước cần làm rõ                     |
+| UC-10 | Thanh toán tiền mặt                    | Ghi nhận khách hàng đã chọn và thực hiện thanh toán tiền mặt theo chính sách doanh nghiệp               | ACT-01, ACT-03                                   | FR-14, FR-15                                                                     | BP-04/STEP-11, STEP-12       | BRULE-11; EX-13                            | Đã xác nhận; chính sách tiền mặt cần làm rõ                |
+| UC-11 | Thanh toán điện tử                     | Gửi yêu cầu đến Payment Provider, nhận và ghi nhận kết quả giao dịch điện tử                            | ACT-01, ACT-04                                   | FR-14, FR-16, FR-17, FR-18; FR-16.1, FR-16.2, FR-16.3; FR-17.1, FR-17.2, FR-17.3 | BP-04/STEP-11, STEP-12       | BRULE-11 đến BRULE-14; EX-11, EX-12, EX-13 | Đã xác nhận; provider, retry và đối soát cần làm rõ        |
+| UC-12 | Gửi thông báo sự kiện                  | Xác định người nhận/kênh, gửi thông báo và ghi nhận kết quả gửi                                         | ACT-03, ACT-05, ACT-01, ACT-02                   | FR-19, FR-20; FR-19.1, FR-19.2, FR-19.3; FR-20.1, FR-20.2                        | BP-05/STEP-13, STEP-14       | BRULE-15, BRULE-16; EX-14, EX-15           | Đã xác nhận; kênh và retry cần làm rõ                      |
+| UC-13 | Quản lý dữ liệu vận hành               | Cho phép nhân viên vận hành xem và quản lý khách hàng, tài xế, phương tiện và chuyến theo quyền         | ACT-03                                           | FR-21; FR-21.1, FR-21.2                                                          | BP-06/STEP-15                | BRULE-17, BRULE-22; EX-16, EX-17           | Đã xác nhận; ma trận quyền cần làm rõ                      |
+| UC-14 | Xử lý sự cố chuyến xe                  | Cho phép nhân viên vận hành ghi nhận, cập nhật và cung cấp kết quả xử lý sự cố                          | ACT-03, ACT-01, ACT-02                           | FR-23, FR-24; FR-23.1, FR-23.2                                                   | BP-06/STEP-16                | EX-18                                      | Đã xác nhận; trạng thái và cách thông báo cần làm rõ       |
+| UC-15 | Lưu vết thao tác quan trọng            | Lưu dấu vết thao tác quản trị quan trọng để kiểm tra khi có sự cố                                       | ACT-03                                           | FR-25                                                                            | BP-06/STEP-17                | BRULE-18, BRULE-22                         | Đã xác nhận; danh sách và thời gian lưu cần làm rõ         |
+| UC-16 | Cung cấp báo cáo hoạt động             | Tổng hợp và cung cấp dữ liệu về chuyến, doanh thu, tỷ lệ và hiệu quả tài xế                             | ACT-03; STK-05 là bên nhận/quan tâm [Cần làm rõ] | FR-26, FR-27; FR-27.1, FR-27.2, FR-27.3                                          | BP-07/STEP-18, STEP-19       | BRULE-19; EX-19, EX-20                     | Đã xác nhận; người sử dụng trực tiếp và KPI cần làm rõ     |
+| UC-17 | Ghi nhận nhu cầu thay đổi nền tảng     | Ghi nhận nhu cầu mở rộng/thay đổi cùng phạm vi ảnh hưởng và ưu tiên                                     | ACT-06                                           | FR-28; FR-28.1, FR-28.2                                                          | BP-08/STEP-20                | BRULE-20, BRULE-21; EX-21                  | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
+| UC-18 | Theo dõi triển khai thay đổi từng phần | Ghi nhận việc triển khai và kiểm tra kết quả thay đổi theo phạm vi được xác nhận                        | ACT-06                                           | FR-29; FR-29.1, FR-29.2                                                          | BP-08/STEP-21                | BRULE-20; EX-22                            | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
+| UC-19 | Đánh giá ảnh hưởng sau thay đổi        | Ghi nhận thay đổi ảnh hưởng chức năng đang hoạt động hoặc làm hệ thống không ổn định để xem xét xử lý   | ACT-06                                           | FR-30; FR-30.1, FR-30.2                                                          | BP-08/STEP-21                | BRULE-20, BRULE-21; EX-22, EX-23           | [Cần làm rõ]; có khả năng vượt phạm vi đồ án               |
 
 FR-10 được gắn với UC-07 vì đây là điểm kết thúc theo dõi chuyến và chuyển sang tính cước; UC-09 thực hiện mục tiêu tính cước riêng. FR-14 được tham chiếu ở cả UC-10 và UC-11 vì đây là hai phương thức thanh toán có mục tiêu và Actor hỗ trợ khác nhau.
 
@@ -3169,20 +3170,20 @@ Mỗi FR từ FR-01 đến FR-30 đều được ánh xạ vào ít nhất một
 
 ## IX. Use Case cần làm rõ
 
-| Issue ID | Thành phần              | Nội dung chưa rõ                                                                       | Ảnh hưởng                | Cần xác nhận |
-| -------- | ----------------------- | -------------------------------------------------------------------------------------- | ------------------------ | ------------ |
-| UC-I01   | ACT-06/UC-17 đến UC-19  | Ai là người trực tiếp nhập, phê duyệt và theo dõi thay đổi nền tảng?                   | Actor/UC/Scope           | Có           |
-| UC-I02   | ACT-03/UC-03            | Nhân viên vận hành có trực tiếp điều phối/tìm tài xế hay hệ thống tự thực hiện?        | Actor/UC/BP              | Có           |
-| UC-I03   | ACT-03/UC-09            | Ai khởi tạo hoặc kiểm tra việc tính cước: hệ thống tự động, vận hành hay doanh nghiệp? | Actor/UC/FR              | Có           |
-| UC-I04   | STK-05/UC-16            | Ban lãnh đạo có trực tiếp đăng nhập xem báo cáo hay chỉ nhận báo cáo từ vận hành?      | Actor/UC/FR              | Có           |
-| UC-I05   | UC-03                   | Tiêu chí ưu tiên tài xế, cách dùng vị trí và ngưỡng thời gian dự kiến chưa chốt        | UC/Rule/NFR              | Có           |
-| UC-I06   | UC-04, UC-05            | Thời gian không phản hồi và chính sách tìm tiếp tài xế chưa chốt                       | UC/Exception             | Có           |
-| UC-I07   | UC-06, UC-07            | Trình tự trạng thái chuyến và chính sách mất kết nối chưa chốt                         | UC/Rule/Exception        | Có           |
-| UC-I08   | UC-09                   | Công thức cước và dữ liệu đầu vào chưa chốt                                            | UC/Rule/Data             | Có           |
-| UC-I09   | UC-10, UC-11            | Chính sách tiền mặt, retry/đối soát và provider thanh toán chưa chốt                   | UC/Exception/Integration | Có           |
-| UC-I10   | UC-12                   | Kênh, người nhận, provider và retry thông báo chưa chốt                                | UC/Exception/NFR         | Có           |
-| UC-I11   | UC-13, UC-15            | Ma trận quyền, thao tác nhạy cảm và thời gian lưu audit chưa chốt                      | Actor/UC/Security        | Có           |
-| UC-I12   | REL-UC-01 đến REL-UC-05 | Ranh giới include/extend cần được xác nhận khi vẽ sơ đồ và đặc tả Use Case             | UC Diagram/UC Spec       | Có           |
+| Issue ID | Thành phần              | Nội dung chưa rõ                                                                              | Ảnh hưởng                | Cần xác nhận |
+| -------- | ----------------------- | --------------------------------------------------------------------------------------------- | ------------------------ | ------------ |
+| UC-I01   | ACT-06/UC-17 đến UC-19  | Ai là người trực tiếp nhập, phê duyệt và theo dõi thay đổi nền tảng?                          | Actor/UC/Scope           | Có           |
+| UC-I02   | ACT-03/UC-03            | Nhân viên vận hành có trực tiếp điều phối/tìm tài xế hay hệ thống tự thực hiện?               | Actor/UC/BP              | Có           |
+| UC-I03   | ACT-03/UC-09            | Ai khởi tạo hoặc kiểm tra việc tính cước: hệ thống tự động, vận hành hay doanh nghiệp?        | Actor/UC/FR              | Có           |
+| UC-I04   | STK-05/UC-16            | Ban lãnh đạo có trực tiếp đăng nhập xem báo cáo hay chỉ nhận báo cáo từ vận hành?             | Actor/UC/FR              | Có           |
+| UC-I05   | UC-03                   | Tiêu chí ưu tiên tài xế, cách dùng vị trí và ngưỡng thời gian dự kiến chưa chốt               | UC/Rule/NFR              | Có           |
+| UC-I06   | UC-04, UC-05            | Thời gian không phản hồi và chính sách tìm tiếp tài xế chưa chốt                              | UC/Exception             | Có           |
+| UC-I07   | UC-06, UC-07            | Chuỗi trạng thái chuyến đã chốt; chỉ còn cơ chế đồng bộ chi tiết khi mất kết nối cần xác nhận | UC/Rule/Exception        | Có           |
+| UC-I08   | UC-09                   | Công thức cước và dữ liệu đầu vào chưa chốt                                                   | UC/Rule/Data             | Có           |
+| UC-I09   | UC-10, UC-11            | Chính sách tiền mặt, retry/đối soát và provider thanh toán chưa chốt                          | UC/Exception/Integration | Có           |
+| UC-I10   | UC-12                   | Kênh, người nhận, provider và retry thông báo chưa chốt                                       | UC/Exception/NFR         | Có           |
+| UC-I11   | UC-13, UC-15            | Ma trận quyền, thao tác nhạy cảm và thời gian lưu audit chưa chốt                             | Actor/UC/Security        | Có           |
+| UC-I12   | REL-UC-01 đến REL-UC-05 | Ranh giới include/extend cần được xác nhận khi vẽ sơ đồ và đặc tả Use Case                    | UC Diagram/UC Spec       | Có           |
 
 ## X. Kiểm tra tính đầy đủ và nhất quán
 
@@ -3565,33 +3566,33 @@ Trong mỗi đặc tả, bảng **Kiểm tra** xác nhận các thành phần b�
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-01` — Quản lý tài khoản |
-| Mục tiêu | Cho phép khách hàng đăng ký, đăng nhập và cập nhật thông tin cá nhân để sử dụng dịch vụ. |
-| Phạm vi/nguồn | `NEED-01 -> STK-02 -> S-F01 -> BR-01 -> BP-01/STEP-01 -> FR-01, FR-01.1 đến FR-01.3`. |
-| Actor chính | `ACT-01` — Khách hàng. |
-| Actor phụ | Không có. |
-| Trigger | Khách hàng cần đăng ký, đăng nhập hoặc cập nhật thông tin tài khoản. |
-| Precondition | Khách hàng có thể cung cấp thông tin tài khoản; các điều kiện hợp lệ chi tiết `[Cần làm rõ]`. |
+| Thành phần    | Nội dung                                                                                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-01` — Quản lý tài khoản                                                                                             |
+| Mục tiêu      | Cho phép khách hàng đăng ký, đăng nhập và cập nhật thông tin cá nhân để sử dụng dịch vụ.                                |
+| Phạm vi/nguồn | `NEED-01 -> STK-02 -> S-F01 -> BR-01 -> BP-01/STEP-01 -> FR-01, FR-01.1 đến FR-01.3`.                                   |
+| Actor chính   | `ACT-01` — Khách hàng.                                                                                                  |
+| Actor phụ     | Không có.                                                                                                               |
+| Trigger       | Khách hàng cần đăng ký, đăng nhập hoặc cập nhật thông tin tài khoản.                                                    |
+| Precondition  | Khách hàng có thể cung cấp thông tin tài khoản; các điều kiện hợp lệ chi tiết `[Cần làm rõ]`.                           |
 | Postcondition | Tài khoản/thông tin được tạo, xác thực hoặc cập nhật hợp lệ để khách hàng tiếp tục sử dụng chức năng yêu cầu tài khoản. |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-01 UserAccount`, `ENT-02 CustomerProfile`: tạo/xem/cập nhật trạng thái tài khoản và thông tin cá nhân. |
-| Rule | `BRULE-01`: chỉ tài khoản hợp lệ sử dụng chức năng yêu cầu tài khoản. |
-| Exception | `EX-17`: tài khoản không hợp lệ/bị khóa thì không tiếp tục chức năng yêu cầu tài khoản. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-01 UserAccount`, `ENT-02 CustomerProfile`: tạo/xem/cập nhật trạng thái tài khoản và thông tin cá nhân. |
+| Rule           | `BRULE-01`: chỉ tài khoản hợp lệ sử dụng chức năng yêu cầu tài khoản.                                       |
+| Exception      | `EX-17`: tài khoản không hợp lệ/bị khóa thì không tiếp tục chức năng yêu cầu tài khoản.                     |
+| Include/Extend | Include: Không có. Extend: Không có.                                                                        |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng chọn đăng ký, đăng nhập hoặc cập nhật thông tin. | Tiếp nhận yêu cầu quản lý tài khoản. |
-| 2 | Khách hàng cung cấp hoặc chỉnh sửa thông tin cần thiết. | Kiểm tra thông tin theo điều kiện đã xác nhận. |
-| 3 | Khách hàng xác nhận gửi thông tin. | Ghi nhận kết quả hợp lệ và cho phép sử dụng chức năng phù hợp. |
+| Bước | Actor                                                       | Hệ thống                                                       |
+| ---: | ----------------------------------------------------------- | -------------------------------------------------------------- |
+|    1 | Khách hàng chọn đăng ký, đăng nhập hoặc cập nhật thông tin. | Tiếp nhận yêu cầu quản lý tài khoản.                           |
+|    2 | Khách hàng cung cấp hoặc chỉnh sửa thông tin cần thiết.     | Kiểm tra thông tin theo điều kiện đã xác nhận.                 |
+|    3 | Khách hàng xác nhận gửi thông tin.                          | Ghi nhận kết quả hợp lệ và cho phép sử dụng chức năng phù hợp. |
 
 ### 4. Alternative Flow
 
@@ -3603,42 +3604,42 @@ Trong mỗi đặc tả, bảng **Kiểm tra** xác nhận các thành phần b�
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Có; chi tiết điều kiện tài khoản cần làm rõ |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                          |
+| Alternative/Exception Flow                             | Có; chi tiết điều kiện tài khoản cần làm rõ |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                        |
 
 ## UC-02 — Tạo yêu cầu đặt xe
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-02` — Tạo yêu cầu đặt xe |
-| Mục tiêu | Gửi yêu cầu với điểm đón, điểm đến và loại xe để hệ thống tiếp nhận và chuyển tìm tài xế. |
-| Phạm vi/nguồn | `NEED-02 -> STK-02 -> S-F02 -> BR-02 -> BP-01/STEP-02, STEP-03 -> FR-02, FR-02.1, FR-02.2, FR-03`. |
-| Actor chính/phụ | Chính: `ACT-01` — Khách hàng. Phụ: Không có. |
-| Trigger | Khách hàng có nhu cầu đặt xe. |
-| Precondition | Khách hàng có tài khoản hợp lệ theo `BRULE-01`; có điểm đón, điểm đến và loại xe. |
-| Postcondition | Yêu cầu được tiếp nhận để tìm tài xế. |
+| Thành phần      | Nội dung                                                                                           |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-02` — Tạo yêu cầu đặt xe                                                                       |
+| Mục tiêu        | Gửi yêu cầu với điểm đón, điểm đến và loại xe để hệ thống tiếp nhận và chuyển tìm tài xế.          |
+| Phạm vi/nguồn   | `NEED-02 -> STK-02 -> S-F02 -> BR-02 -> BP-01/STEP-02, STEP-03 -> FR-02, FR-02.1, FR-02.2, FR-03`. |
+| Actor chính/phụ | Chính: `ACT-01` — Khách hàng. Phụ: Không có.                                                       |
+| Trigger         | Khách hàng có nhu cầu đặt xe.                                                                      |
+| Precondition    | Khách hàng có tài khoản hợp lệ theo `BRULE-01`; có điểm đón, điểm đến và loại xe.                  |
+| Postcondition   | Yêu cầu được tiếp nhận để tìm tài xế.                                                              |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`: tạo yêu cầu với PickupLocation, Destination, ServiceType. |
-| Rule | `BRULE-02`: yêu cầu phải có điểm đón, điểm đến và loại xe. |
-| Exception | `EX-01` thông tin không hợp lệ; `EX-02` mất kết nối khi tạo yêu cầu. |
-| Include/Extend | Include: `UC-01` theo `REL-UC-01`. Extend: Không có. |
+| Loại           | Nội dung                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
+| Dữ liệu        | `ENT-05 Trip`: tạo yêu cầu với PickupLocation, Destination, ServiceType. |
+| Rule           | `BRULE-02`: yêu cầu phải có điểm đón, điểm đến và loại xe.               |
+| Exception      | `EX-01` thông tin không hợp lệ; `EX-02` mất kết nối khi tạo yêu cầu.     |
+| Include/Extend | Include: `UC-01` theo `REL-UC-01`. Extend: Không có.                     |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng nhập điểm đón, điểm đến và chọn loại xe. | Hiển thị/tiếp nhận thông tin yêu cầu. |
-| 2 | Khách hàng gửi yêu cầu. | Kiểm tra thông tin bắt buộc theo `BRULE-02`. |
-| 3 |  | Ghi nhận yêu cầu chuyến `[Suy ra]` và chuyển yêu cầu sang quá trình tìm tài xế. |
+| Bước | Actor                                               | Hệ thống                                                                        |
+| ---: | --------------------------------------------------- | ------------------------------------------------------------------------------- |
+|    1 | Khách hàng nhập điểm đón, điểm đến và chọn loại xe. | Hiển thị/tiếp nhận thông tin yêu cầu.                                           |
+|    2 | Khách hàng gửi yêu cầu.                             | Kiểm tra thông tin bắt buộc theo `BRULE-02`.                                    |
+|    3 |                                                     | Ghi nhận yêu cầu chuyến `[Suy ra]` và chuyển yêu cầu sang quá trình tìm tài xế. |
 
 ### 4. Alternative Flow
 
@@ -3652,43 +3653,43 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; include `UC-01` |
+| Thành phần                                             | Kết quả                           |
+| ------------------------------------------------------ | --------------------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                |
+| Alternative/Exception Flow                             | Không có alternative; 2 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; include `UC-01`               |
 
 ## UC-03 — Tìm và ưu tiên tài xế
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-03` — Tìm và ưu tiên tài xế |
-| Mục tiêu | Xác định tài xế phù hợp theo vị trí, trạng thái sẵn sàng và tiêu chí vận hành. |
+| Thành phần    | Nội dung                                                                                                                            |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-03` — Tìm và ưu tiên tài xế                                                                                                     |
+| Mục tiêu      | Xác định tài xế phù hợp theo vị trí, trạng thái sẵn sàng và tiêu chí vận hành.                                                      |
 | Phạm vi/nguồn | `NEED-08, NEED-09 -> STK-01, STK-03, STK-04 -> S-F03, S-F05 -> BR-08, BR-09 -> BP-02/STEP-04 -> FR-04, FR-04.1 đến FR-04.3, FR-12`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành; vai trò trực tiếp cần xác nhận. |
-| Actor phụ | `ACT-02` — Tài xế, cung cấp trạng thái/vị trí. |
-| Trigger | Có yêu cầu đặt xe đã tiếp nhận. |
-| Precondition | Có yêu cầu chuyến; dữ liệu vị trí và trạng thái sẵn sàng khả dụng nếu có. |
-| Postcondition | Có danh sách/đề xuất tài xế phù hợp hoặc ghi nhận không thể tìm tài xế. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành; vai trò trực tiếp cần xác nhận.                                                                      |
+| Actor phụ     | `ACT-02` — Tài xế, cung cấp trạng thái/vị trí.                                                                                      |
+| Trigger       | Có yêu cầu đặt xe đã tiếp nhận.                                                                                                     |
+| Precondition  | Có yêu cầu chuyến; dữ liệu vị trí và trạng thái sẵn sàng khả dụng nếu có.                                                           |
+| Postcondition | Có danh sách/đề xuất tài xế phù hợp hoặc ghi nhận không thể tìm tài xế.                                                             |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-03 DriverProfile`, `ENT-05 Trip`, `ENT-06 DriverLocation`: xem trạng thái sẵn sàng, yêu cầu và vị trí. |
-| Rule | `BRULE-03` tài xế đủ điều kiện; `BRULE-04` ưu tiên theo tiêu chí doanh nghiệp `[Cần làm rõ]`. |
-| Exception | `EX-03` không tìm thấy tài xế; `EX-06` vị trí không khả dụng. |
-| Include/Extend | Include: Không có. Extend: Không có. UC này được `UC-05` include theo `REL-UC-02`. |
+| Loại           | Nội dung                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-03 DriverProfile`, `ENT-05 Trip`, `ENT-06 DriverLocation`: xem trạng thái sẵn sàng, yêu cầu và vị trí. |
+| Rule           | `BRULE-03` tài xế đủ điều kiện; `BRULE-04` ưu tiên theo tiêu chí doanh nghiệp `[Cần làm rõ]`.               |
+| Exception      | `EX-03` không tìm thấy tài xế; `EX-06` vị trí không khả dụng.                                               |
+| Include/Extend | Include: Không có. Extend: Không có. UC này được `UC-05` include theo `REL-UC-02`.                          |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành khởi tạo/tổ chức tìm tài xế khi cần `[Cần làm rõ]`. | Xác định nhóm tài xế có khả năng phù hợp. |
-| 2 | Tài xế duy trì trạng thái sẵn sàng và thông tin vị trí khi khả dụng. | Xem xét vị trí, trạng thái và tiêu chí vận hành. |
-| 3 |  | Ưu tiên hoặc đề xuất tài xế phù hợp để chuyển đến phản hồi yêu cầu. |
+| Bước | Actor                                                                  | Hệ thống                                                            |
+| ---: | ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
+|    1 | Nhân viên vận hành khởi tạo/tổ chức tìm tài xế khi cần `[Cần làm rõ]`. | Xác định nhóm tài xế có khả năng phù hợp.                           |
+|    2 | Tài xế duy trì trạng thái sẵn sàng và thông tin vị trí khi khả dụng.   | Xem xét vị trí, trạng thái và tiêu chí vận hành.                    |
+|    3 |                                                                        | Ưu tiên hoặc đề xuất tài xế phù hợp để chuyển đến phản hồi yêu cầu. |
 
 ### 4. Alternative Flow
 
@@ -3702,42 +3703,42 @@ Không có Alternative Flow được xác định từ nguồn; tiêu chí ưu t
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; Actor chính cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; Actor chính cần xác nhận               |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception |
+| Rule, FR/FR con, Include/Extend                        | Có                                         |
 
 ## UC-04 — Phản hồi yêu cầu chuyến
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-04` — Phản hồi yêu cầu chuyến |
-| Mục tiêu | Cho phép tài xế chấp nhận hoặc từ chối yêu cầu chuyến được đề xuất. |
-| Phạm vi/nguồn | `NEED-06, NEED-09 -> STK-03 -> S-F03, S-F07 -> BR-06, BR-10 -> BP-02/STEP-05 -> FR-05, FR-05.1, FR-05.2`. |
-| Actor chính/phụ | Chính: `ACT-02` — Tài xế. Phụ: Không có. |
-| Trigger | Tài xế nhận thông tin yêu cầu chuyến phù hợp. |
-| Precondition | Có yêu cầu được gửi đến tài xế. |
-| Postcondition | Phản hồi chấp nhận/từ chối được ghi nhận hoặc quá thời gian phản hồi theo chính sách chưa chốt. |
+| Thành phần      | Nội dung                                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-04` — Phản hồi yêu cầu chuyến                                                                         |
+| Mục tiêu        | Cho phép tài xế chấp nhận hoặc từ chối yêu cầu chuyến được đề xuất.                                       |
+| Phạm vi/nguồn   | `NEED-06, NEED-09 -> STK-03 -> S-F03, S-F07 -> BR-06, BR-10 -> BP-02/STEP-05 -> FR-05, FR-05.1, FR-05.2`. |
+| Actor chính/phụ | Chính: `ACT-02` — Tài xế. Phụ: Không có.                                                                  |
+| Trigger         | Tài xế nhận thông tin yêu cầu chuyến phù hợp.                                                             |
+| Precondition    | Có yêu cầu được gửi đến tài xế.                                                                           |
+| Postcondition   | Phản hồi chấp nhận/từ chối được ghi nhận hoặc quá thời gian phản hồi theo chính sách chưa chốt.           |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-03 DriverProfile`, `ENT-05 Trip`: xem yêu cầu và cập nhật phản hồi. |
-| Rule | `BRULE-05`: yêu cầu tiếp tục xử lý khi tài xế từ chối/không phản hồi. |
-| Exception | `EX-04` tài xế từ chối; `EX-05` không phản hồi. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
+| Dữ liệu        | `ENT-03 DriverProfile`, `ENT-05 Trip`: xem yêu cầu và cập nhật phản hồi. |
+| Rule           | `BRULE-05`: yêu cầu tiếp tục xử lý khi tài xế từ chối/không phản hồi.    |
+| Exception      | `EX-04` tài xế từ chối; `EX-05` không phản hồi.                          |
+| Include/Extend | Include: Không có. Extend: Không có.                                     |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Tài xế nhận thông tin yêu cầu chuyến. | Cung cấp thông tin yêu cầu để tài xế phản hồi. |
-| 2 | Tài xế chọn chấp nhận chuyến. | Ghi nhận phản hồi chấp nhận. |
-| 3 |  | Chuyển kết quả sang `UC-05` để ghi nhận phân công. |
+| Bước | Actor                                 | Hệ thống                                           |
+| ---: | ------------------------------------- | -------------------------------------------------- |
+|    1 | Tài xế nhận thông tin yêu cầu chuyến. | Cung cấp thông tin yêu cầu để tài xế phản hồi.     |
+|    2 | Tài xế chọn chấp nhận chuyến.         | Ghi nhận phản hồi chấp nhận.                       |
+|    3 |                                       | Chuyển kết quả sang `UC-05` để ghi nhận phân công. |
 
 ### 4. Alternative Flow
 
@@ -3749,43 +3750,43 @@ Không có Alternative Flow được xác định từ nguồn; tiêu chí ưu t
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Có |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả              |
+| ------------------------------------------------------ | -------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                   |
+| Alternative/Exception Flow                             | Có                   |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ |
 
 ## UC-05 — Phân công và tìm tiếp tài xế
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-05` — Phân công và tìm tiếp tài xế |
-| Mục tiêu | Ghi nhận tài xế chấp nhận hoặc tiếp tục tìm tài xế khác khi chưa phân công được. |
+| Thành phần    | Nội dung                                                                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-05` — Phân công và tìm tiếp tài xế                                                                                           |
+| Mục tiêu      | Ghi nhận tài xế chấp nhận hoặc tiếp tục tìm tài xế khác khi chưa phân công được.                                                 |
 | Phạm vi/nguồn | `NEED-09 -> STK-02, STK-03, STK-04 -> S-F03, S-F07 -> BR-09, BR-10 -> BP-02/STEP-05, STEP-06 -> FR-06, FR-07, FR-07.1, FR-07.2`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành; vai trò tìm/phân công trực tiếp `[Cần làm rõ]`. |
-| Actor phụ | `ACT-01` — Khách hàng nhận kết quả; `ACT-02` — Tài xế phản hồi. |
-| Trigger | Có phản hồi từ tài xế hoặc kết quả tìm tài xế. |
-| Precondition | Có yêu cầu đặt xe chưa được phân công. |
-| Postcondition | Chuyến được phân công hoặc khách hàng được thông báo không thể phân công. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành; vai trò tìm/phân công trực tiếp `[Cần làm rõ]`.                                                   |
+| Actor phụ     | `ACT-01` — Khách hàng nhận kết quả; `ACT-02` — Tài xế phản hồi.                                                                  |
+| Trigger       | Có phản hồi từ tài xế hoặc kết quả tìm tài xế.                                                                                   |
+| Precondition  | Có yêu cầu đặt xe chưa được phân công.                                                                                           |
+| Postcondition | Chuyến được phân công hoặc khách hàng được thông báo không thể phân công.                                                        |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`, `ENT-03 DriverProfile`: cập nhật tài xế được phân công và trạng thái yêu cầu. |
-| Rule | `BRULE-05` tiếp tục tìm; `BRULE-06` ghi nhận phân công trước khi thực hiện chuyến. |
-| Exception | `EX-03`, `EX-04`, `EX-05`. |
-| Include/Extend | Include: `UC-03` theo `REL-UC-02` `[Suy ra]`; Extend: Không có. |
+| Loại           | Nội dung                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-05 Trip`, `ENT-03 DriverProfile`: cập nhật tài xế được phân công và trạng thái yêu cầu. |
+| Rule           | `BRULE-05` tiếp tục tìm; `BRULE-06` ghi nhận phân công trước khi thực hiện chuyến.           |
+| Exception      | `EX-03`, `EX-04`, `EX-05`.                                                                   |
+| Include/Extend | Include: `UC-03` theo `REL-UC-02` `[Suy ra]`; Extend: Không có.                              |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Tài xế chấp nhận yêu cầu. | Nhận kết quả từ `UC-04`. |
-| 2 |  | Ghi nhận tài xế được phân công theo `BRULE-06`. |
-| 3 | Khách hàng nhận kết quả phân công. | Thông báo kết quả cho các bên liên quan và chuyển chuyến sang thực hiện. |
+| Bước | Actor                              | Hệ thống                                                                 |
+| ---: | ---------------------------------- | ------------------------------------------------------------------------ |
+|    1 | Tài xế chấp nhận yêu cầu.          | Nhận kết quả từ `UC-04`.                                                 |
+|    2 |                                    | Ghi nhận tài xế được phân công theo `BRULE-06`.                          |
+|    3 | Khách hàng nhận kết quả phân công. | Thông báo kết quả cho các bên liên quan và chuyển chuyến sang thực hiện. |
 
 ### 4. Alternative Flow
 
@@ -3799,42 +3800,42 @@ Không có Alternative Flow được xác định từ nguồn; tiêu chí ưu t
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
+| Thành phần                                             | Kết quả                         |
+| ------------------------------------------------------ | ------------------------------- |
 | Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; Actor vận hành cần xác nhận |
-| Alternative/Exception Flow | Có |
-| Rule, FR/FR con, Include/Extend | Có; include `UC-03` |
+| Alternative/Exception Flow                             | Có                              |
+| Rule, FR/FR con, Include/Extend                        | Có; include `UC-03`             |
 
 ## UC-06 — Cập nhật tiến trình chuyến
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-06` — Cập nhật tiến trình chuyến |
-| Mục tiêu | Tài xế cập nhật trạng thái chuyến trong quá trình thực hiện. |
-| Phạm vi/nguồn | `NEED-07 -> STK-03 -> S-F04 -> BR-07 -> BP-03/STEP-07 -> FR-08, FR-08.1, FR-08.2`. |
-| Actor chính/phụ | Chính: `ACT-02` — Tài xế. Phụ: Không có. |
-| Trigger | Tài xế thực hiện chuyến đã được phân công. |
-| Precondition | Tài xế được phân công chuyến; trạng thái mới phù hợp tiến trình hợp lệ. |
-| Postcondition | Trạng thái chuyến được cập nhật hoặc trạng thái cũ được giữ nếu cập nhật không hợp lệ. |
+| Thành phần      | Nội dung                                                                               |
+| --------------- | -------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-06` — Cập nhật tiến trình chuyến                                                   |
+| Mục tiêu        | Tài xế cập nhật trạng thái chuyến trong quá trình thực hiện.                           |
+| Phạm vi/nguồn   | `NEED-07 -> STK-03 -> S-F04 -> BR-07 -> BP-03/STEP-07 -> FR-08, FR-08.1, FR-08.2`.     |
+| Actor chính/phụ | Chính: `ACT-02` — Tài xế. Phụ: Không có.                                               |
+| Trigger         | Tài xế thực hiện chuyến đã được phân công.                                             |
+| Precondition    | Tài xế được phân công chuyến; trạng thái mới phù hợp tiến trình hợp lệ.                |
+| Postcondition   | Trạng thái chuyến được cập nhật hoặc trạng thái cũ được giữ nếu cập nhật không hợp lệ. |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`: cập nhật TripStatus và thời điểm liên quan. |
-| Rule | `BRULE-07` chuyển trạng thái đúng trình tự; `BRULE-08` chỉ cập nhật chuyến được phân công `[Suy ra]`. |
-| Exception | `EX-07` trạng thái không hợp lệ; `EX-09` mất kết nối. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-05 Trip`: cập nhật TripStatus và thời điểm liên quan.                                            |
+| Rule           | `BRULE-07` chuyển trạng thái đúng trình tự; `BRULE-08` chỉ cập nhật chuyến được phân công `[Suy ra]`. |
+| Exception      | `EX-07` trạng thái không hợp lệ; `EX-09` mất kết nối.                                                 |
+| Include/Extend | Include: Không có. Extend: Không có.                                                                  |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Tài xế chọn cập nhật trạng thái chuyến. | Tiếp nhận trạng thái mới. |
-| 2 | Tài xế lần lượt cập nhật đã đến điểm đón, đã đón khách, đang di chuyển và hoàn thành theo thực tế. | Kiểm tra trạng thái theo `BRULE-07`, `BRULE-08`. |
-| 3 |  | Cập nhật trạng thái hợp lệ để khách hàng theo dõi; khi hoàn thành, chuyển kết quả sang tính cước. |
+| Bước | Actor                                                                                              | Hệ thống                                                                                          |
+| ---: | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+|    1 | Tài xế chọn cập nhật trạng thái chuyến.                                                            | Tiếp nhận trạng thái mới.                                                                         |
+|    2 | Tài xế lần lượt cập nhật đã đến điểm đón, đã đón khách, đang di chuyển và hoàn thành theo thực tế. | Kiểm tra trạng thái theo `BRULE-07`, `BRULE-08`.                                                  |
+|    3 |                                                                                                    | Cập nhật trạng thái hợp lệ để khách hàng theo dõi; khi hoàn thành, chuyển kết quả sang tính cước. |
 
 ### 4. Alternative Flow
 
@@ -3848,42 +3849,42 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                       |
 
 ## UC-07 — Theo dõi chuyến xe
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-07` — Theo dõi chuyến xe |
-| Mục tiêu | Cho phép khách hàng xem trạng thái, tài xế, tiến trình và kết quả chuyến. |
-| Phạm vi/nguồn | `NEED-03, NEED-04 -> STK-02 -> S-F04, S-F06 -> BR-03, BR-04 -> BP-03/STEP-08, STEP-09 -> FR-09, FR-09.1 đến FR-09.3, FR-10`. |
-| Actor chính/phụ | Chính: `ACT-01` — Khách hàng. Phụ: Không có. |
-| Trigger | Khách hàng cần xem yêu cầu/chuyến đã tạo. |
-| Precondition | Có yêu cầu hoặc chuyến thuộc khách hàng. |
-| Postcondition | Khách hàng nhận được thông tin tiến trình hiện có; chuyến hoàn thành được chuyển sang tính cước. |
+| Thành phần      | Nội dung                                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-07` — Theo dõi chuyến xe                                                                                                 |
+| Mục tiêu        | Cho phép khách hàng xem trạng thái, tài xế, tiến trình và kết quả chuyến.                                                    |
+| Phạm vi/nguồn   | `NEED-03, NEED-04 -> STK-02 -> S-F04, S-F06 -> BR-03, BR-04 -> BP-03/STEP-08, STEP-09 -> FR-09, FR-09.1 đến FR-09.3, FR-10`. |
+| Actor chính/phụ | Chính: `ACT-01` — Khách hàng. Phụ: Không có.                                                                                 |
+| Trigger         | Khách hàng cần xem yêu cầu/chuyến đã tạo.                                                                                    |
+| Precondition    | Có yêu cầu hoặc chuyến thuộc khách hàng.                                                                                     |
+| Postcondition   | Khách hàng nhận được thông tin tiến trình hiện có; chuyến hoàn thành được chuyển sang tính cước.                             |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`, `ENT-03 DriverProfile`: xem trạng thái chuyến và thông tin tài xế. |
-| Rule | `BRULE-09` áp dụng khi chuyến hoàn thành để chuyển sang tính cước. |
-| Exception | `EX-09`: mất kết nối khi theo dõi. |
+| Loại           | Nội dung                                                                            |
+| -------------- | ----------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-05 Trip`, `ENT-03 DriverProfile`: xem trạng thái chuyến và thông tin tài xế.   |
+| Rule           | `BRULE-09` áp dụng khi chuyến hoàn thành để chuyển sang tính cước.                  |
+| Exception      | `EX-09`: mất kết nối khi theo dõi.                                                  |
 | Include/Extend | Include: Không có. Extend: `UC-08` theo `REL-UC-04` `[Suy ra]` khi phát sinh sự cố. |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng yêu cầu xem thông tin chuyến. | Xác định chuyến/yêu cầu liên quan. |
-| 2 |  | Hiển thị trạng thái, tiến trình và thông tin tài xế hiện có. |
-| 3 | Khách hàng theo dõi đến khi chuyến hoàn thành. | Tiếp nhận kết quả hoàn thành và chuyển sang tính cước/thanh toán theo `FR-10`. |
+| Bước | Actor                                          | Hệ thống                                                                       |
+| ---: | ---------------------------------------------- | ------------------------------------------------------------------------------ |
+|    1 | Khách hàng yêu cầu xem thông tin chuyến.       | Xác định chuyến/yêu cầu liên quan.                                             |
+|    2 |                                                | Hiển thị trạng thái, tiến trình và thông tin tài xế hiện có.                   |
+|    3 | Khách hàng theo dõi đến khi chuyến hoàn thành. | Tiếp nhận kết quả hoàn thành và chuyển sang tính cước/thanh toán theo `FR-10`. |
 
 ### 4. Alternative Flow
 
@@ -3895,43 +3896,43 @@ Không có Alternative Flow được xác định từ nguồn. Cách xác đị
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có; extend `UC-08` |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; extend `UC-08`                         |
 
 ## UC-08 — Ghi nhận chuyến có sự cố
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-08` — Ghi nhận chuyến có sự cố |
-| Mục tiêu | Ghi nhận/chuyển thông tin chuyến lỗi hoặc bất thường cho vận hành xử lý. |
+| Thành phần    | Nội dung                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| Mã/Tên        | `UC-08` — Ghi nhận chuyến có sự cố                                                                     |
+| Mục tiêu      | Ghi nhận/chuyển thông tin chuyến lỗi hoặc bất thường cho vận hành xử lý.                               |
 | Phạm vi/nguồn | `NEED-15 -> STK-02, STK-03, STK-04 -> S-F04, S-F08 -> BR-16 -> BP-03/STEP-09, BP-06/STEP-16 -> FR-11`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành. |
-| Actor phụ | `ACT-01` — Khách hàng; `ACT-02` — Tài xế. |
-| Trigger | Khách hàng, tài xế hoặc vận hành phát hiện chuyến lỗi/bất thường. |
-| Precondition | Có chuyến cần hỗ trợ. |
-| Postcondition | Có thông tin sự cố để vận hành theo dõi/xử lý. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành.                                                                         |
+| Actor phụ     | `ACT-01` — Khách hàng; `ACT-02` — Tài xế.                                                              |
+| Trigger       | Khách hàng, tài xế hoặc vận hành phát hiện chuyến lỗi/bất thường.                                      |
+| Precondition  | Có chuyến cần hỗ trợ.                                                                                  |
+| Postcondition | Có thông tin sự cố để vận hành theo dõi/xử lý.                                                         |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`, `ENT-10 Incident`: tạo/cập nhật thông tin sự cố. |
-| Rule | Không có Rule riêng được xác định; áp dụng xử lý theo `BR-16`. |
-| Exception | `EX-08`, `EX-18`: chuyến phát sinh/cần xử lý sự cố. |
-| Include/Extend | Include: Không có. Extend: mở rộng `UC-07` theo `REL-UC-04`. |
+| Loại           | Nội dung                                                        |
+| -------------- | --------------------------------------------------------------- |
+| Dữ liệu        | `ENT-05 Trip`, `ENT-10 Incident`: tạo/cập nhật thông tin sự cố. |
+| Rule           | Không có Rule riêng được xác định; áp dụng xử lý theo `BR-16`.  |
+| Exception      | `EX-08`, `EX-18`: chuyến phát sinh/cần xử lý sự cố.             |
+| Include/Extend | Include: Không có. Extend: mở rộng `UC-07` theo `REL-UC-04`.    |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng/tài xế/vận hành cung cấp thông tin chuyến có sự cố. | Tiếp nhận và liên kết thông tin với chuyến. |
-| 2 | Nhân viên vận hành tiếp nhận nội dung cần xử lý. | Ghi nhận sự cố để theo dõi. |
-| 3 |  | Chuyển thông tin sang `UC-14` xử lý sự cố. |
+| Bước | Actor                                                          | Hệ thống                                    |
+| ---: | -------------------------------------------------------------- | ------------------------------------------- |
+|    1 | Khách hàng/tài xế/vận hành cung cấp thông tin chuyến có sự cố. | Tiếp nhận và liên kết thông tin với chuyến. |
+|    2 | Nhân viên vận hành tiếp nhận nội dung cần xử lý.               | Ghi nhận sự cố để theo dõi.                 |
+|    3 |                                                                | Chuyển thông tin sang `UC-14` xử lý sự cố.  |
 
 ### 4. Alternative Flow
 
@@ -3943,43 +3944,43 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có; extend `UC-07` |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; extend `UC-07`                         |
 
 ## UC-09 — Tính cước chuyến xe
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-09` — Tính cước chuyến xe |
-| Mục tiêu | Xác định số tiền khách hàng phải trả sau khi chuyến hoàn thành. |
+| Thành phần    | Nội dung                                                                                      |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-09` — Tính cước chuyến xe                                                                 |
+| Mục tiêu      | Xác định số tiền khách hàng phải trả sau khi chuyến hoàn thành.                               |
 | Phạm vi/nguồn | `NEED-11 -> STK-01, STK-02 -> S-F06 -> BR-12 -> BP-04/STEP-10 -> FR-13, FR-13.1 đến FR-13.3`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành; người khởi tạo/kiểm tra `[Cần làm rõ]`. |
-| Actor phụ | Không có. |
-| Trigger | Chuyến hoàn thành hoặc đạt điều kiện tính cước. |
-| Precondition | Có thông tin loại dịch vụ và thông tin chuyến cần tính cước. |
-| Postcondition | Số tiền phải trả được xác định, hoặc cước chờ xác nhận nếu không đủ dữ liệu/công thức. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành; người khởi tạo/kiểm tra `[Cần làm rõ]`.                        |
+| Actor phụ     | Không có.                                                                                     |
+| Trigger       | Chuyến hoàn thành hoặc đạt điều kiện tính cước.                                               |
+| Precondition  | Có thông tin loại dịch vụ và thông tin chuyến cần tính cước.                                  |
+| Postcondition | Số tiền phải trả được xác định, hoặc cước chờ xác nhận nếu không đủ dữ liệu/công thức.        |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-05 Trip`, `ENT-07 Fare`: xem thông tin chuyến, tạo/cập nhật FareAmount và FareBasis. |
-| Rule | `BRULE-09` tính sau hoàn thành; `BRULE-10` xác định tiền trước thanh toán. |
-| Exception | `EX-10`: không xác định được cước. |
-| Include/Extend | Include: Không có. Extend: Không có. UC này được `UC-11` include theo `REL-UC-03`. |
+| Loại           | Nội dung                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-05 Trip`, `ENT-07 Fare`: xem thông tin chuyến, tạo/cập nhật FareAmount và FareBasis. |
+| Rule           | `BRULE-09` tính sau hoàn thành; `BRULE-10` xác định tiền trước thanh toán.                |
+| Exception      | `EX-10`: không xác định được cước.                                                        |
+| Include/Extend | Include: Không có. Extend: Không có. UC này được `UC-11` include theo `REL-UC-03`.        |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành khởi tạo/kiểm tra tính cước khi cần `[Cần làm rõ]`. | Tiếp nhận thông tin chuyến hoàn thành. |
-| 2 |  | Xác định số tiền dựa trên loại dịch vụ và thông tin chuyến. |
-| 3 |  | Cung cấp số tiền phải trả để khách hàng chọn phương thức thanh toán. |
+| Bước | Actor                                                                  | Hệ thống                                                             |
+| ---: | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
+|    1 | Nhân viên vận hành khởi tạo/kiểm tra tính cước khi cần `[Cần làm rõ]`. | Tiếp nhận thông tin chuyến hoàn thành.                               |
+|    2 |                                                                        | Xác định số tiền dựa trên loại dịch vụ và thông tin chuyến.          |
+|    3 |                                                                        | Cung cấp số tiền phải trả để khách hàng chọn phương thức thanh toán. |
 
 ### 4. Alternative Flow
 
@@ -3991,43 +3992,43 @@ Không có Alternative Flow được xác định từ nguồn; công thức cư
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor trực tiếp cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor trực tiếp cần xác nhận           |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có                                         |
 
 ## UC-10 — Thanh toán tiền mặt
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-10` — Thanh toán tiền mặt |
-| Mục tiêu | Ghi nhận kết quả thanh toán tiền mặt theo chính sách doanh nghiệp. |
+| Thành phần    | Nội dung                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-10` — Thanh toán tiền mặt                                                            |
+| Mục tiêu      | Ghi nhận kết quả thanh toán tiền mặt theo chính sách doanh nghiệp.                       |
 | Phạm vi/nguồn | `NEED-12 -> STK-01, STK-02 -> S-F06 -> BR-13 -> BP-04/STEP-11, STEP-12 -> FR-14, FR-15`. |
-| Actor chính | `ACT-01` — Khách hàng. |
-| Actor phụ | `ACT-03` — Nhân viên vận hành. |
-| Trigger | Khách hàng đã có số tiền phải trả và chọn tiền mặt. |
-| Precondition | Cước đã được xác định; phương thức tiền mặt được chọn. |
-| Postcondition | Kết quả thanh toán tiền mặt được ghi nhận theo chính sách doanh nghiệp `[Cần làm rõ]`. |
+| Actor chính   | `ACT-01` — Khách hàng.                                                                   |
+| Actor phụ     | `ACT-03` — Nhân viên vận hành.                                                           |
+| Trigger       | Khách hàng đã có số tiền phải trả và chọn tiền mặt.                                      |
+| Precondition  | Cước đã được xác định; phương thức tiền mặt được chọn.                                   |
+| Postcondition | Kết quả thanh toán tiền mặt được ghi nhận theo chính sách doanh nghiệp `[Cần làm rõ]`.   |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-07 Fare`, `ENT-08 PaymentTransaction`: xem số tiền và ghi nhận phương thức/kết quả. |
-| Rule | `BRULE-11`: hỗ trợ tiền mặt và điện tử. |
-| Exception | `EX-13` được ghi nhận ở mức dữ liệu thanh toán không hợp lệ, chi tiết áp dụng tiền mặt `[Cần làm rõ]`. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------ |
+| Dữ liệu        | `ENT-07 Fare`, `ENT-08 PaymentTransaction`: xem số tiền và ghi nhận phương thức/kết quả.               |
+| Rule           | `BRULE-11`: hỗ trợ tiền mặt và điện tử.                                                                |
+| Exception      | `EX-13` được ghi nhận ở mức dữ liệu thanh toán không hợp lệ, chi tiết áp dụng tiền mặt `[Cần làm rõ]`. |
+| Include/Extend | Include: Không có. Extend: Không có.                                                                   |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng chọn thanh toán tiền mặt. | Tiếp nhận phương thức đã chọn. |
-| 2 | Khách hàng thực hiện thanh toán theo chính sách doanh nghiệp. | Ghi nhận kết quả tiền mặt ở mức nghiệp vụ. |
-| 3 | Nhân viên vận hành kiểm tra/hỗ trợ khi cần. | Cung cấp kết quả thanh toán cho các bên liên quan theo chính sách. |
+| Bước | Actor                                                         | Hệ thống                                                           |
+| ---: | ------------------------------------------------------------- | ------------------------------------------------------------------ |
+|    1 | Khách hàng chọn thanh toán tiền mặt.                          | Tiếp nhận phương thức đã chọn.                                     |
+|    2 | Khách hàng thực hiện thanh toán theo chính sách doanh nghiệp. | Ghi nhận kết quả tiền mặt ở mức nghiệp vụ.                         |
+|    3 | Nhân viên vận hành kiểm tra/hỗ trợ khi cần.                   | Cung cấp kết quả thanh toán cho các bên liên quan theo chính sách. |
 
 ### 4. Alternative Flow
 
@@ -4039,44 +4040,44 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; exception cần làm rõ phạm vi |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                                     |
+| ------------------------------------------------------ | ----------------------------------------------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                                          |
+| Alternative/Exception Flow                             | Không có alternative xác định; exception cần làm rõ phạm vi |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                                        |
 
 ## UC-11 — Thanh toán điện tử
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-11` — Thanh toán điện tử |
-| Mục tiêu | Gửi yêu cầu thanh toán đến provider và ghi nhận kết quả giao dịch điện tử. |
+| Thành phần    | Nội dung                                                                                                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-11` — Thanh toán điện tử                                                                                                                                               |
+| Mục tiêu      | Gửi yêu cầu thanh toán đến provider và ghi nhận kết quả giao dịch điện tử.                                                                                                 |
 | Phạm vi/nguồn | `NEED-12, NEED-13 -> STK-02, STK-06 -> S-F06, S-F09 -> BR-13, BR-14, BR-15 -> BP-04/STEP-11, STEP-12 -> FR-14, FR-16 đến FR-18; FR-16.1 đến FR-16.3; FR-17.1 đến FR-17.3`. |
-| Actor chính | `ACT-01` — Khách hàng. |
-| Actor phụ | `ACT-04` — Payment Provider. |
-| Trigger | Khách hàng có số tiền phải trả và chọn thanh toán điện tử. |
-| Precondition | Cước đã xác định; Payment Provider khả dụng theo chính sách. |
-| Postcondition | Giao dịch thành công, thất bại hoặc chờ xử lý; CAB không lưu dữ liệu thanh toán nhạy cảm trực tiếp. |
+| Actor chính   | `ACT-01` — Khách hàng.                                                                                                                                                     |
+| Actor phụ     | `ACT-04` — Payment Provider.                                                                                                                                               |
+| Trigger       | Khách hàng có số tiền phải trả và chọn thanh toán điện tử.                                                                                                                 |
+| Precondition  | Cước đã xác định; Payment Provider khả dụng theo chính sách.                                                                                                               |
+| Postcondition | Giao dịch thành công, thất bại hoặc chờ xử lý; CAB không lưu dữ liệu thanh toán nhạy cảm trực tiếp.                                                                        |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-07 Fare`, `ENT-08 PaymentTransaction`: ghi nhận phương thức, trạng thái và ProviderReference; không ghi dữ liệu thẻ/tài khoản nhạy cảm. |
-| Rule | `BRULE-11`, `BRULE-12`, `BRULE-13`, `BRULE-14`. |
-| Exception | `EX-11` giao dịch thất bại; `EX-12` provider không phản hồi; `EX-13` dữ liệu không hợp lệ. |
-| Include/Extend | Include: `UC-09` theo `REL-UC-03` `[Suy ra]`. Extend: Không có. |
+| Loại           | Nội dung                                                                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-07 Fare`, `ENT-08 PaymentTransaction`: ghi nhận phương thức, trạng thái và ProviderReference; không ghi dữ liệu thẻ/tài khoản nhạy cảm. |
+| Rule           | `BRULE-11`, `BRULE-12`, `BRULE-13`, `BRULE-14`.                                                                                              |
+| Exception      | `EX-11` giao dịch thất bại; `EX-12` provider không phản hồi; `EX-13` dữ liệu không hợp lệ.                                                   |
+| Include/Extend | Include: `UC-09` theo `REL-UC-03` `[Suy ra]`. Extend: Không có.                                                                              |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Khách hàng chọn phương thức điện tử và xác nhận thanh toán. | Có số tiền từ include `UC-09`; tiếp nhận lựa chọn. |
-| 2 | Payment Provider tiếp nhận yêu cầu và xử lý giao dịch. | Gửi yêu cầu qua provider theo `BRULE-12`. |
-| 3 | Payment Provider trả kết quả giao dịch. | Ghi nhận kết quả gắn với chuyến theo `BRULE-14`, không lưu dữ liệu nhạy cảm. |
-| 4 | Khách hàng nhận kết quả. | Thông báo kết quả theo chính sách. |
+| Bước | Actor                                                       | Hệ thống                                                                     |
+| ---: | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+|    1 | Khách hàng chọn phương thức điện tử và xác nhận thanh toán. | Có số tiền từ include `UC-09`; tiếp nhận lựa chọn.                           |
+|    2 | Payment Provider tiếp nhận yêu cầu và xử lý giao dịch.      | Gửi yêu cầu qua provider theo `BRULE-12`.                                    |
+|    3 | Payment Provider trả kết quả giao dịch.                     | Ghi nhận kết quả gắn với chuyến theo `BRULE-14`, không lưu dữ liệu nhạy cảm. |
+|    4 | Khách hàng nhận kết quả.                                    | Thông báo kết quả theo chính sách.                                           |
 
 ### 4. Alternative Flow
 
@@ -4092,44 +4093,44 @@ Không có Alternative Flow được xác định từ nguồn ngoài việc kh�
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Có; retry/đối soát cần làm rõ |
-| Rule, FR/FR con, Include/Extend | Có; include `UC-09` |
+| Thành phần                                             | Kết quả                       |
+| ------------------------------------------------------ | ----------------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                            |
+| Alternative/Exception Flow                             | Có; retry/đối soát cần làm rõ |
+| Rule, FR/FR con, Include/Extend                        | Có; include `UC-09`           |
 
 ## UC-12 — Gửi thông báo sự kiện
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-12` — Gửi thông báo sự kiện |
-| Mục tiêu | Xác định người nhận/kênh, gửi thông báo sự kiện và ghi nhận kết quả. |
+| Thành phần    | Nội dung                                                                                                                                        |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-12` — Gửi thông báo sự kiện                                                                                                                 |
+| Mục tiêu      | Xác định người nhận/kênh, gửi thông báo sự kiện và ghi nhận kết quả.                                                                            |
 | Phạm vi/nguồn | `NEED-10 -> STK-02, STK-03, STK-04, STK-07 -> S-F07 -> BR-11 -> BP-05/STEP-13, STEP-14 -> FR-19, FR-20; FR-19.1 đến FR-19.3; FR-20.1, FR-20.2`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành. |
-| Actor phụ | `ACT-05` — Notification Provider; `ACT-01` — Khách hàng; `ACT-02` — Tài xế. |
-| Trigger | Phát sinh sự kiện quan trọng về yêu cầu, chuyến hoặc thanh toán. |
-| Precondition | Có sự kiện cần thông báo; người nhận/kênh được xác định theo chính sách. |
-| Postcondition | Thông báo được gửi hoặc lỗi gửi được ghi nhận. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành.                                                                                                                  |
+| Actor phụ     | `ACT-05` — Notification Provider; `ACT-01` — Khách hàng; `ACT-02` — Tài xế.                                                                     |
+| Trigger       | Phát sinh sự kiện quan trọng về yêu cầu, chuyến hoặc thanh toán.                                                                                |
+| Precondition  | Có sự kiện cần thông báo; người nhận/kênh được xác định theo chính sách.                                                                        |
+| Postcondition | Thông báo được gửi hoặc lỗi gửi được ghi nhận.                                                                                                  |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-09 Notification`: EventType, RecipientReference, SendingStatus. |
-| Rule | `BRULE-15` thông báo sự kiện quan trọng; `BRULE-16` xác định người nhận/kênh `[Cần làm rõ]`. |
-| Exception | `EX-14` không gửi được; `EX-15` không xác định người nhận/kênh. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-09 Notification`: EventType, RecipientReference, SendingStatus.                         |
+| Rule           | `BRULE-15` thông báo sự kiện quan trọng; `BRULE-16` xác định người nhận/kênh `[Cần làm rõ]`. |
+| Exception      | `EX-14` không gửi được; `EX-15` không xác định người nhận/kênh.                              |
+| Include/Extend | Include: Không có. Extend: Không có.                                                         |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành theo dõi sự kiện khi cần. | Ghi nhận sự kiện cần thông báo. |
-| 2 |  | Xác định bên liên quan, thông tin và kênh theo chính sách. |
-| 3 | Notification Provider gửi thông báo. | Gửi thông báo qua provider/kênh được xác định. |
-| 4 |  | Ghi nhận kết quả gửi ở mức nghiệp vụ. |
+| Bước | Actor                                        | Hệ thống                                                   |
+| ---: | -------------------------------------------- | ---------------------------------------------------------- |
+|    1 | Nhân viên vận hành theo dõi sự kiện khi cần. | Ghi nhận sự kiện cần thông báo.                            |
+|    2 |                                              | Xác định bên liên quan, thông tin và kênh theo chính sách. |
+|    3 | Notification Provider gửi thông báo.         | Gửi thông báo qua provider/kênh được xác định.             |
+|    4 |                                              | Ghi nhận kết quả gửi ở mức nghiệp vụ.                      |
 
 ### 4. Alternative Flow
 
@@ -4143,42 +4144,42 @@ Không có Alternative Flow được xác định từ nguồn; kênh/provider t
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                       |
 
 ## UC-13 — Quản lý dữ liệu vận hành
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-13` — Quản lý dữ liệu vận hành |
-| Mục tiêu | Cho phép vận hành xem và quản lý khách hàng, tài xế, phương tiện và chuyến theo quyền. |
-| Phạm vi/nguồn | `NEED-14, NEED-15, NEED-16 -> STK-04 -> S-F08, S-F09 -> BR-05, BR-16, BR-17 -> BP-06/STEP-15 -> FR-21, FR-21.1, FR-21.2, FR-22`. |
-| Actor chính/phụ | Chính: `ACT-03` — Nhân viên vận hành. Phụ: Không có. |
-| Trigger | Nhân viên vận hành cần quản lý đối tượng hoặc chuyến. |
-| Precondition | Nhân viên có tài khoản hợp lệ và được kiểm tra quyền. |
-| Postcondition | Dữ liệu được xem/cập nhật trong quyền, hoặc bị từ chối khi vượt quyền. |
+| Thành phần      | Nội dung                                                                                                                         |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-13` — Quản lý dữ liệu vận hành                                                                                               |
+| Mục tiêu        | Cho phép vận hành xem và quản lý khách hàng, tài xế, phương tiện và chuyến theo quyền.                                           |
+| Phạm vi/nguồn   | `NEED-14, NEED-15, NEED-16 -> STK-04 -> S-F08, S-F09 -> BR-05, BR-16, BR-17 -> BP-06/STEP-15 -> FR-21, FR-21.1, FR-21.2, FR-22`. |
+| Actor chính/phụ | Chính: `ACT-03` — Nhân viên vận hành. Phụ: Không có.                                                                             |
+| Trigger         | Nhân viên vận hành cần quản lý đối tượng hoặc chuyến.                                                                            |
+| Precondition    | Nhân viên có tài khoản hợp lệ và được kiểm tra quyền.                                                                            |
+| Postcondition   | Dữ liệu được xem/cập nhật trong quyền, hoặc bị từ chối khi vượt quyền.                                                           |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-01`, `ENT-02`, `ENT-03`, `ENT-04 Vehicle`, `ENT-05 Trip`: xem/cập nhật theo quyền. |
-| Rule | `BRULE-17` kiểm soát quyền; `BRULE-22` bảo vệ dữ liệu nghiệp vụ. |
-| Exception | `EX-16` không có quyền; `EX-17` tài khoản không hợp lệ/bị khóa. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-01`, `ENT-02`, `ENT-03`, `ENT-04 Vehicle`, `ENT-05 Trip`: xem/cập nhật theo quyền. |
+| Rule           | `BRULE-17` kiểm soát quyền; `BRULE-22` bảo vệ dữ liệu nghiệp vụ.                        |
+| Exception      | `EX-16` không có quyền; `EX-17` tài khoản không hợp lệ/bị khóa.                         |
+| Include/Extend | Include: Không có. Extend: Không có.                                                    |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành chọn đối tượng/chuyến cần quản lý. | Kiểm tra quyền thao tác. |
-| 2 | Nhân viên xem hoặc cập nhật thông tin trong phạm vi quyền. | Cung cấp và ghi nhận thay đổi hợp lệ. |
-| 3 |  | Chuyển thao tác quan trọng sang `UC-15` để lưu vết khi áp dụng. |
+| Bước | Actor                                                      | Hệ thống                                                        |
+| ---: | ---------------------------------------------------------- | --------------------------------------------------------------- |
+|    1 | Nhân viên vận hành chọn đối tượng/chuyến cần quản lý.      | Kiểm tra quyền thao tác.                                        |
+|    2 | Nhân viên xem hoặc cập nhật thông tin trong phạm vi quyền. | Cung cấp và ghi nhận thay đổi hợp lệ.                           |
+|    3 |                                                            | Chuyển thao tác quan trọng sang `UC-15` để lưu vết khi áp dụng. |
 
 ### 4. Alternative Flow
 
@@ -4192,43 +4193,43 @@ Không có Alternative Flow được xác định từ nguồn; ma trận quyề
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                       |
 
 ## UC-14 — Xử lý sự cố chuyến xe
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-14` — Xử lý sự cố chuyến xe |
-| Mục tiêu | Vận hành ghi nhận, cập nhật quá trình xử lý và cung cấp kết quả sự cố cho bên liên quan. |
+| Thành phần    | Nội dung                                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-14` — Xử lý sự cố chuyến xe                                                                                  |
+| Mục tiêu      | Vận hành ghi nhận, cập nhật quá trình xử lý và cung cấp kết quả sự cố cho bên liên quan.                         |
 | Phạm vi/nguồn | `NEED-15 -> STK-02, STK-03, STK-04 -> S-F07, S-F08 -> BR-16 -> BP-06/STEP-16 -> FR-23, FR-24; FR-23.1, FR-23.2`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành. |
-| Actor phụ | `ACT-01` — Khách hàng; `ACT-02` — Tài xế. |
-| Trigger | Có thông tin chuyến lỗi/sự cố từ `UC-08` hoặc vận hành phát hiện. |
-| Precondition | Có chuyến/sự cố cần xử lý. |
-| Postcondition | Kết quả xử lý được cập nhật; bên liên quan nhận thông tin theo chính sách được xác nhận. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành.                                                                                   |
+| Actor phụ     | `ACT-01` — Khách hàng; `ACT-02` — Tài xế.                                                                        |
+| Trigger       | Có thông tin chuyến lỗi/sự cố từ `UC-08` hoặc vận hành phát hiện.                                                |
+| Precondition  | Có chuyến/sự cố cần xử lý.                                                                                       |
+| Postcondition | Kết quả xử lý được cập nhật; bên liên quan nhận thông tin theo chính sách được xác nhận.                         |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-10 Incident`, `ENT-05 Trip`: tạo/cập nhật nội dung và trạng thái xử lý. |
-| Rule | Không có Business Rule riêng được xác định; áp dụng `BR-16`. |
-| Exception | `EX-18`: chuyến cần xử lý vận hành. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                     |
+| -------------- | ---------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-10 Incident`, `ENT-05 Trip`: tạo/cập nhật nội dung và trạng thái xử lý. |
+| Rule           | Không có Business Rule riêng được xác định; áp dụng `BR-16`.                 |
+| Exception      | `EX-18`: chuyến cần xử lý vận hành.                                          |
+| Include/Extend | Include: Không có. Extend: Không có.                                         |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành tiếp nhận sự cố. | Cung cấp thông tin sự cố/chuyến liên quan. |
-| 2 | Nhân viên ghi nhận và cập nhật quá trình xử lý. | Lưu thông tin xử lý để theo dõi. |
-| 3 | Nhân viên phối hợp với khách hàng/tài xế khi cần. | Cung cấp kết quả cho bên liên quan theo chính sách. |
+| Bước | Actor                                             | Hệ thống                                            |
+| ---: | ------------------------------------------------- | --------------------------------------------------- |
+|    1 | Nhân viên vận hành tiếp nhận sự cố.               | Cung cấp thông tin sự cố/chuyến liên quan.          |
+|    2 | Nhân viên ghi nhận và cập nhật quá trình xử lý.   | Lưu thông tin xử lý để theo dõi.                    |
+|    3 | Nhân viên phối hợp với khách hàng/tài xế khi cần. | Cung cấp kết quả cho bên liên quan theo chính sách. |
 
 ### 4. Alternative Flow
 
@@ -4240,42 +4241,42 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                                         |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                       |
 
 ## UC-15 — Lưu vết thao tác quan trọng
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-15` — Lưu vết thao tác quan trọng |
-| Mục tiêu | Lưu dấu vết thao tác quan trọng để kiểm tra khi có sự cố. |
-| Phạm vi/nguồn | `NEED-19 -> STK-01, STK-04 -> S-F09 -> BR-17 -> BP-06/STEP-17 -> FR-25`. |
-| Actor chính/phụ | Chính: `ACT-03` — Nhân viên vận hành. Phụ: Không có. |
-| Trigger | Có thao tác được xác định là quan trọng. |
-| Precondition | Thao tác quản trị hợp lệ đã/đang được thực hiện. Danh sách thao tác quan trọng `[Cần làm rõ]`. |
-| Postcondition | Dấu vết thao tác được lưu để phục vụ kiểm tra. |
+| Thành phần      | Nội dung                                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-15` — Lưu vết thao tác quan trọng                                                          |
+| Mục tiêu        | Lưu dấu vết thao tác quan trọng để kiểm tra khi có sự cố.                                      |
+| Phạm vi/nguồn   | `NEED-19 -> STK-01, STK-04 -> S-F09 -> BR-17 -> BP-06/STEP-17 -> FR-25`.                       |
+| Actor chính/phụ | Chính: `ACT-03` — Nhân viên vận hành. Phụ: Không có.                                           |
+| Trigger         | Có thao tác được xác định là quan trọng.                                                       |
+| Precondition    | Thao tác quản trị hợp lệ đã/đang được thực hiện. Danh sách thao tác quan trọng `[Cần làm rõ]`. |
+| Postcondition   | Dấu vết thao tác được lưu để phục vụ kiểm tra.                                                 |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-12 AuditRecord`: tạo dấu vết và liên kết người thực hiện. |
-| Rule | `BRULE-18` lưu vết thao tác quan trọng; `BRULE-22` bảo vệ dữ liệu. |
-| Exception | Không có Exception riêng được xác định từ nguồn. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                           |
+| -------------- | ------------------------------------------------------------------ |
+| Dữ liệu        | `ENT-12 AuditRecord`: tạo dấu vết và liên kết người thực hiện.     |
+| Rule           | `BRULE-18` lưu vết thao tác quan trọng; `BRULE-22` bảo vệ dữ liệu. |
+| Exception      | Không có Exception riêng được xác định từ nguồn.                   |
+| Include/Extend | Include: Không có. Extend: Không có.                               |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành thực hiện thao tác quan trọng. | Xác định thao tác thuộc phạm vi lưu vết theo chính sách. |
-| 2 |  | Ghi nhận dấu vết thao tác để phục vụ kiểm tra khi có sự cố. |
-| 3 |  | Hoàn tất lưu vết ở mức nghiệp vụ. |
+| Bước | Actor                                             | Hệ thống                                                    |
+| ---: | ------------------------------------------------- | ----------------------------------------------------------- |
+|    1 | Nhân viên vận hành thực hiện thao tác quan trọng. | Xác định thao tác thuộc phạm vi lưu vết theo chính sách.    |
+|    2 |                                                   | Ghi nhận dấu vết thao tác để phục vụ kiểm tra khi có sự cố. |
+|    3 |                                                   | Hoàn tất lưu vết ở mức nghiệp vụ.                           |
 
 ### 4. Alternative Flow
 
@@ -4287,43 +4288,43 @@ Không có Exception Flow được xác định từ nguồn. Danh sách thao t�
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có |
-| Alternative/Exception Flow | Không có theo nguồn |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả              |
+| ------------------------------------------------------ | -------------------- |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có                   |
+| Alternative/Exception Flow                             | Không có theo nguồn  |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ |
 
 ## UC-16 — Cung cấp báo cáo hoạt động
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-16` — Cung cấp báo cáo hoạt động |
-| Mục tiêu | Tổng hợp và cung cấp dữ liệu chuyến, doanh thu, tỷ lệ và hiệu quả tài xế. |
+| Thành phần    | Nội dung                                                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Mã/Tên        | `UC-16` — Cung cấp báo cáo hoạt động                                                                                  |
+| Mục tiêu      | Tổng hợp và cung cấp dữ liệu chuyến, doanh thu, tỷ lệ và hiệu quả tài xế.                                             |
 | Phạm vi/nguồn | `NEED-17 -> STK-01, STK-05, STK-04 -> S-F10 -> BR-18 -> BP-07/STEP-18, STEP-19 -> FR-26, FR-27; FR-27.1 đến FR-27.3`. |
-| Actor chính | `ACT-03` — Nhân viên vận hành. |
-| Actor phụ | Không có; `STK-05` Ban lãnh đạo là bên nhận/quan tâm, tương tác trực tiếp `[Cần làm rõ]`. |
-| Trigger | Có yêu cầu cung cấp báo cáo hoặc đến kỳ báo cáo `[Cần làm rõ]`. |
-| Precondition | Có dữ liệu hoạt động; KPI và kỳ báo cáo được doanh nghiệp xác nhận. |
-| Postcondition | Báo cáo với chỉ số được xác nhận được cung cấp, hoặc ghi nhận chưa hoàn chỉnh/chờ định nghĩa. |
+| Actor chính   | `ACT-03` — Nhân viên vận hành.                                                                                        |
+| Actor phụ     | Không có; `STK-05` Ban lãnh đạo là bên nhận/quan tâm, tương tác trực tiếp `[Cần làm rõ]`.                             |
+| Trigger       | Có yêu cầu cung cấp báo cáo hoặc đến kỳ báo cáo `[Cần làm rõ]`.                                                       |
+| Precondition  | Có dữ liệu hoạt động; KPI và kỳ báo cáo được doanh nghiệp xác nhận.                                                   |
+| Postcondition | Báo cáo với chỉ số được xác nhận được cung cấp, hoặc ghi nhận chưa hoàn chỉnh/chờ định nghĩa.                         |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-11 ReportDefinition`, `ENT-05 Trip`, `ENT-07 Fare`, `ENT-08 PaymentTransaction`: tổng hợp dữ liệu báo cáo. |
-| Rule | `BRULE-19`: chỉ tổng hợp chỉ số có dữ liệu và định nghĩa xác nhận. |
-| Exception | `EX-19` dữ liệu không đầy đủ; `EX-20` KPI chưa định nghĩa. |
-| Include/Extend | Include: Không có. Extend: Không có; `REL-UC-05` không được xác nhận nên không dùng. |
+| Loại           | Nội dung                                                                                                        |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-11 ReportDefinition`, `ENT-05 Trip`, `ENT-07 Fare`, `ENT-08 PaymentTransaction`: tổng hợp dữ liệu báo cáo. |
+| Rule           | `BRULE-19`: chỉ tổng hợp chỉ số có dữ liệu và định nghĩa xác nhận.                                              |
+| Exception      | `EX-19` dữ liệu không đầy đủ; `EX-20` KPI chưa định nghĩa.                                                      |
+| Include/Extend | Include: Không có. Extend: Không có; `REL-UC-05` không được xác nhận nên không dùng.                            |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | Nhân viên vận hành yêu cầu/cung cấp báo cáo khi cần. | Tập hợp dữ liệu hoạt động liên quan. |
-| 2 |  | Tổng hợp số chuyến, doanh thu, trạng thái và các chỉ số đã xác nhận. |
-| 3 | Nhân viên vận hành cung cấp báo cáo cho bên được chỉ định. | Cung cấp báo cáo để ban lãnh đạo theo dõi hoạt động. |
+| Bước | Actor                                                      | Hệ thống                                                             |
+| ---: | ---------------------------------------------------------- | -------------------------------------------------------------------- |
+|    1 | Nhân viên vận hành yêu cầu/cung cấp báo cáo khi cần.       | Tập hợp dữ liệu hoạt động liên quan.                                 |
+|    2 |                                                            | Tổng hợp số chuyến, doanh thu, trạng thái và các chỉ số đã xác nhận. |
+|    3 | Nhân viên vận hành cung cấp báo cáo cho bên được chỉ định. | Cung cấp báo cáo để ban lãnh đạo theo dõi hoạt động.                 |
 
 ### 4. Alternative Flow
 
@@ -4337,43 +4338,43 @@ Không có Alternative Flow được xác định từ nguồn; kỳ báo cáo, 
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
+| Thành phần                                             | Kết quả                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
 | Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor người nhận trực tiếp cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; không dùng `REL-UC-05` |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception  |
+| Rule, FR/FR con, Include/Extend                        | Có; không dùng `REL-UC-05`                  |
 
 ## UC-17 — Ghi nhận nhu cầu thay đổi nền tảng
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-17` — Ghi nhận nhu cầu thay đổi nền tảng |
-| Mục tiêu | Ghi nhận nhu cầu mở rộng/thay đổi cùng phạm vi ảnh hưởng và ưu tiên. |
+| Thành phần    | Nội dung                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Mã/Tên        | `UC-17` — Ghi nhận nhu cầu thay đổi nền tảng                                                                       |
+| Mục tiêu      | Ghi nhận nhu cầu mở rộng/thay đổi cùng phạm vi ảnh hưởng và ưu tiên.                                               |
 | Phạm vi/nguồn | `NEED-18, NEED-20 -> STK-01, STK-05, STK-09 -> S-F11 -> BR-19, BR-20 -> BP-08/STEP-20 -> FR-28, FR-28.1, FR-28.2`. |
-| Actor chính | `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`. |
-| Actor phụ | Không có. |
-| Trigger | Doanh nghiệp có nhu cầu tăng quy mô, bổ sung dịch vụ/phương thức/provider hoặc thay đổi thành phần. |
-| Precondition | Nhu cầu thay đổi được xác định ở mức ban đầu. |
-| Postcondition | Nhu cầu, phạm vi ảnh hưởng và ưu tiên được ghi nhận hoặc chờ đánh giá thêm. |
+| Actor chính   | `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`.                                                   |
+| Actor phụ     | Không có.                                                                                                          |
+| Trigger       | Doanh nghiệp có nhu cầu tăng quy mô, bổ sung dịch vụ/phương thức/provider hoặc thay đổi thành phần.                |
+| Precondition  | Nhu cầu thay đổi được xác định ở mức ban đầu.                                                                      |
+| Postcondition | Nhu cầu, phạm vi ảnh hưởng và ưu tiên được ghi nhận hoặc chờ đánh giá thêm.                                        |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | `ENT-11` chỉ được tham chiếu ở mức phân tích; dữ liệu thay đổi chi tiết chưa được mô hình hóa `[Cần làm rõ]`. |
-| Rule | `BRULE-20` triển khai từng phần; `BRULE-21` bổ sung provider/dịch vụ theo phạm vi xác nhận. |
-| Exception | `EX-21`: không xác định phạm vi/thành phần ảnh hưởng. |
-| Include/Extend | Include: Không có. Extend: Không có; `REL-UC-05` chỉ là ứng viên, không áp dụng. |
+| Loại           | Nội dung                                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | `ENT-11` chỉ được tham chiếu ở mức phân tích; dữ liệu thay đổi chi tiết chưa được mô hình hóa `[Cần làm rõ]`. |
+| Rule           | `BRULE-20` triển khai từng phần; `BRULE-21` bổ sung provider/dịch vụ theo phạm vi xác nhận.                   |
+| Exception      | `EX-21`: không xác định phạm vi/thành phần ảnh hưởng.                                                         |
+| Include/Extend | Include: Không có. Extend: Không có; `REL-UC-05` chỉ là ứng viên, không áp dụng.                              |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | ACT-06 ghi nhận nhu cầu mở rộng/thay đổi `[Cần làm rõ actor trực tiếp]`. | Tiếp nhận nhu cầu. |
-| 2 | ACT-06 cung cấp phạm vi ảnh hưởng và ưu tiên khi xác định được. | Ghi nhận thông tin để phục vụ đánh giá. |
-| 3 |  | Chuyển nhu cầu đã ghi nhận sang theo dõi triển khai từng phần. |
+| Bước | Actor                                                                    | Hệ thống                                                       |
+| ---: | ------------------------------------------------------------------------ | -------------------------------------------------------------- |
+|    1 | ACT-06 ghi nhận nhu cầu mở rộng/thay đổi `[Cần làm rõ actor trực tiếp]`. | Tiếp nhận nhu cầu.                                             |
+|    2 | ACT-06 cung cấp phạm vi ảnh hưởng và ưu tiên khi xác định được.          | Ghi nhận thông tin để phục vụ đánh giá.                        |
+|    3 |                                                                          | Chuyển nhu cầu đã ghi nhận sang theo dõi triển khai từng phần. |
 
 ### 4. Alternative Flow
 
@@ -4385,42 +4386,42 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor và phạm vi cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có; quan hệ `REL-UC-05` không áp dụng |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor và phạm vi cần xác nhận          |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; quan hệ `REL-UC-05` không áp dụng      |
 
 ## UC-18 — Theo dõi triển khai thay đổi từng phần
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-18` — Theo dõi triển khai thay đổi từng phần |
-| Mục tiêu | Ghi nhận triển khai và kiểm tra kết quả thay đổi theo phạm vi được xác nhận. |
-| Phạm vi/nguồn | `NEED-18, NEED-20 -> STK-09 -> S-F11 -> BR-19, BR-20 -> BP-08/STEP-21 -> FR-29, FR-29.1, FR-29.2`. |
-| Actor chính/phụ | Chính: `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`. Phụ: Không có. |
-| Trigger | Có thay đổi được chấp thuận và phạm vi/ưu tiên được xác nhận. |
-| Precondition | Phạm vi thay đổi đã được xác định đủ để triển khai từng phần. |
-| Postcondition | Trạng thái triển khai và kết quả kiểm tra được ghi nhận, hoặc cần xem xét lại phạm vi. |
+| Thành phần      | Nội dung                                                                                           |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| Mã/Tên          | `UC-18` — Theo dõi triển khai thay đổi từng phần                                                   |
+| Mục tiêu        | Ghi nhận triển khai và kiểm tra kết quả thay đổi theo phạm vi được xác nhận.                       |
+| Phạm vi/nguồn   | `NEED-18, NEED-20 -> STK-09 -> S-F11 -> BR-19, BR-20 -> BP-08/STEP-21 -> FR-29, FR-29.1, FR-29.2`. |
+| Actor chính/phụ | Chính: `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`. Phụ: Không có.             |
+| Trigger         | Có thay đổi được chấp thuận và phạm vi/ưu tiên được xác nhận.                                      |
+| Precondition    | Phạm vi thay đổi đã được xác định đủ để triển khai từng phần.                                      |
+| Postcondition   | Trạng thái triển khai và kết quả kiểm tra được ghi nhận, hoặc cần xem xét lại phạm vi.             |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | Dữ liệu triển khai chi tiết chưa được mô hình hóa; chỉ ghi nhận trạng thái ở mức nghiệp vụ `[Cần làm rõ]`. |
-| Rule | `BRULE-20`: triển khai thay đổi từng phần, hạn chế ảnh hưởng chức năng đang hoạt động. |
-| Exception | `EX-22`: thay đổi ảnh hưởng chức năng đang hoạt động. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Dữ liệu        | Dữ liệu triển khai chi tiết chưa được mô hình hóa; chỉ ghi nhận trạng thái ở mức nghiệp vụ `[Cần làm rõ]`. |
+| Rule           | `BRULE-20`: triển khai thay đổi từng phần, hạn chế ảnh hưởng chức năng đang hoạt động.                     |
+| Exception      | `EX-22`: thay đổi ảnh hưởng chức năng đang hoạt động.                                                      |
+| Include/Extend | Include: Không có. Extend: Không có.                                                                       |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | ACT-06 xác nhận phạm vi thay đổi để triển khai `[Cần làm rõ]`. | Tiếp nhận phạm vi/ưu tiên đã xác nhận. |
-| 2 | ACT-06 ghi nhận việc triển khai từng phần và kiểm tra kết quả. | Ghi nhận trạng thái triển khai/kết quả kiểm tra. |
-| 3 |  | Cung cấp thông tin để đánh giá ảnh hưởng sau thay đổi. |
+| Bước | Actor                                                          | Hệ thống                                               |
+| ---: | -------------------------------------------------------------- | ------------------------------------------------------ |
+|    1 | ACT-06 xác nhận phạm vi thay đổi để triển khai `[Cần làm rõ]`. | Tiếp nhận phạm vi/ưu tiên đã xác nhận.                 |
+|    2 | ACT-06 ghi nhận việc triển khai từng phần và kiểm tra kết quả. | Ghi nhận trạng thái triển khai/kết quả kiểm tra.       |
+|    3 |                                                                | Cung cấp thông tin để đánh giá ảnh hưởng sau thay đổi. |
 
 ### 4. Alternative Flow
 
@@ -4432,42 +4433,42 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
-| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor/phạm vi cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 1 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Thành phần                                             | Kết quả                                    |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor/phạm vi cần xác nhận             |
+| Alternative/Exception Flow                             | Không có alternative xác định; 1 exception |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                       |
 
 ## UC-19 — Đánh giá ảnh hưởng sau thay đổi
 
 ### 1. Thông tin chung
 
-| Thành phần | Nội dung |
-| --- | --- |
-| Mã/Tên | `UC-19` — Đánh giá ảnh hưởng sau thay đổi |
-| Mục tiêu | Ghi nhận ảnh hưởng của thay đổi đến chức năng hoạt động hoặc tình trạng không ổn định. |
-| Phạm vi/nguồn | `NEED-18, NEED-20 -> STK-01, STK-05, STK-09 -> S-F11 -> BR-19, BR-20 -> BP-08/STEP-21 -> FR-30, FR-30.1, FR-30.2`. |
-| Actor chính/phụ | Chính: `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`. Phụ: Không có. |
-| Trigger | Sau khi triển khai/kiểm tra thay đổi. |
-| Precondition | Có thay đổi đã được triển khai hoặc có kết quả kiểm tra sau thay đổi. |
-| Postcondition | Ảnh hưởng/trạng thái không ổn định được ghi nhận để xem xét xử lý hoặc xác nhận hoạt động ổn định. |
+| Thành phần      | Nội dung                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Mã/Tên          | `UC-19` — Đánh giá ảnh hưởng sau thay đổi                                                                          |
+| Mục tiêu        | Ghi nhận ảnh hưởng của thay đổi đến chức năng hoạt động hoặc tình trạng không ổn định.                             |
+| Phạm vi/nguồn   | `NEED-18, NEED-20 -> STK-01, STK-05, STK-09 -> S-F11 -> BR-19, BR-20 -> BP-08/STEP-21 -> FR-30, FR-30.1, FR-30.2`. |
+| Actor chính/phụ | Chính: `ACT-06` — Đại diện doanh nghiệp/nhóm phát triển `[Cần làm rõ]`. Phụ: Không có.                             |
+| Trigger         | Sau khi triển khai/kiểm tra thay đổi.                                                                              |
+| Precondition    | Có thay đổi đã được triển khai hoặc có kết quả kiểm tra sau thay đổi.                                              |
+| Postcondition   | Ảnh hưởng/trạng thái không ổn định được ghi nhận để xem xét xử lý hoặc xác nhận hoạt động ổn định.                 |
 
 ### 2. Dữ liệu, Rule, Exception và quan hệ
 
-| Loại | Nội dung |
-| --- | --- |
-| Dữ liệu | Dữ liệu đánh giá chi tiết chưa được mô hình hóa `[Cần làm rõ]`. |
-| Rule | `BRULE-20`, `BRULE-21`. |
-| Exception | `EX-22` ảnh hưởng chức năng đang hoạt động; `EX-23` hệ thống không ổn định sau mở rộng. |
-| Include/Extend | Include: Không có. Extend: Không có. |
+| Loại           | Nội dung                                                                                |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Dữ liệu        | Dữ liệu đánh giá chi tiết chưa được mô hình hóa `[Cần làm rõ]`.                         |
+| Rule           | `BRULE-20`, `BRULE-21`.                                                                 |
+| Exception      | `EX-22` ảnh hưởng chức năng đang hoạt động; `EX-23` hệ thống không ổn định sau mở rộng. |
+| Include/Extend | Include: Không có. Extend: Không có.                                                    |
 
 ### 3. Main Flow
 
-| Bước | Actor | Hệ thống |
-| ---: | --- | --- |
-| 1 | ACT-06 kiểm tra hoạt động sau thay đổi `[Cần làm rõ]`. | Tiếp nhận kết quả kiểm tra. |
-| 2 | ACT-06 ghi nhận ảnh hưởng hoặc xác nhận trạng thái hoạt động. | Lưu trạng thái/kết quả ở mức nghiệp vụ. |
-| 3 |  | Cung cấp thông tin để các bên xem xét xử lý khi có ảnh hưởng. |
+| Bước | Actor                                                         | Hệ thống                                                      |
+| ---: | ------------------------------------------------------------- | ------------------------------------------------------------- |
+|    1 | ACT-06 kiểm tra hoạt động sau thay đổi `[Cần làm rõ]`.        | Tiếp nhận kết quả kiểm tra.                                   |
+|    2 | ACT-06 ghi nhận ảnh hưởng hoặc xác nhận trạng thái hoạt động. | Lưu trạng thái/kết quả ở mức nghiệp vụ.                       |
+|    3 |                                                               | Cung cấp thông tin để các bên xem xét xử lý khi có ảnh hưởng. |
 
 ### 4. Alternative Flow
 
@@ -4481,65 +4482,65 @@ Không có Alternative Flow được xác định từ nguồn.
 
 ### 6. Kiểm tra
 
-| Thành phần | Kết quả |
-| --- | --- |
+| Thành phần                                             | Kết quả                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
 | Mục tiêu, Actor, Trigger, Pre/Postcondition, Main Flow | Có; actor và tiêu chí đánh giá cần xác nhận |
-| Alternative/Exception Flow | Không có alternative xác định; 2 exception |
-| Rule, FR/FR con, Include/Extend | Có; không có quan hệ |
+| Alternative/Exception Flow                             | Không có alternative xác định; 2 exception  |
+| Rule, FR/FR con, Include/Extend                        | Có; không có quan hệ                        |
 
 ## III. Ma trận Use Case → nguồn
 
-| UC ID | Actor ID | FR/FR con | BP/Step | Rule | Exception | Có đặc tả? | Bao phủ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| UC-01 | ACT-01 | FR-01/FR-01.1–01.3 | BP-01/STEP-01 | BRULE-01 | EX-17 | Có | Có |
-| UC-02 | ACT-01 | FR-02/FR-02.1–02.2; FR-03 | BP-01/STEP-02–03 | BRULE-02 | EX-01, EX-02 | Có | Có |
-| UC-03 | ACT-03, ACT-02 | FR-04/FR-04.1–04.3; FR-12 | BP-02/STEP-04 | BRULE-03, BRULE-04 | EX-03, EX-06 | Có | Có; actor/tiêu chí cần làm rõ |
-| UC-04 | ACT-02 | FR-05/FR-05.1–05.2 | BP-02/STEP-05 | BRULE-05 | EX-04, EX-05 | Có | Có |
-| UC-05 | ACT-03, ACT-02, ACT-01 | FR-06; FR-07/FR-07.1–07.2 | BP-02/STEP-05–06 | BRULE-05, BRULE-06 | EX-03–EX-05 | Có | Có |
-| UC-06 | ACT-02 | FR-08/FR-08.1–08.2 | BP-03/STEP-07 | BRULE-07, BRULE-08 | EX-07, EX-09 | Có | Có |
-| UC-07 | ACT-01 | FR-09/FR-09.1–09.3; FR-10 | BP-03/STEP-08–09 | BRULE-09 | EX-09 | Có | Có |
-| UC-08 | ACT-03, ACT-01, ACT-02 | FR-11 | BP-03/STEP-09; BP-06/STEP-16 | — | EX-08, EX-18 | Có | Có |
-| UC-09 | ACT-03 | FR-13/FR-13.1–13.3 | BP-04/STEP-10 | BRULE-09, BRULE-10 | EX-10 | Có | Có; actor/công thức cần làm rõ |
-| UC-10 | ACT-01, ACT-03 | FR-14, FR-15 | BP-04/STEP-11–12 | BRULE-11 | EX-13 | Có | Có; chính sách tiền mặt cần làm rõ |
-| UC-11 | ACT-01, ACT-04 | FR-14; FR-16–18 | BP-04/STEP-11–12 | BRULE-11–14 | EX-11–EX-13 | Có | Có |
-| UC-12 | ACT-03, ACT-05, ACT-01, ACT-02 | FR-19–20 | BP-05/STEP-13–14 | BRULE-15, BRULE-16 | EX-14, EX-15 | Có | Có |
-| UC-13 | ACT-03 | FR-21, FR-22 | BP-06/STEP-15 | BRULE-17, BRULE-22 | EX-16, EX-17 | Có | Có |
-| UC-14 | ACT-03, ACT-01, ACT-02 | FR-23, FR-24 | BP-06/STEP-16 | — | EX-18 | Có | Có |
-| UC-15 | ACT-03 | FR-25 | BP-06/STEP-17 | BRULE-18, BRULE-22 | — | Có | Có |
-| UC-16 | ACT-03 | FR-26, FR-27 | BP-07/STEP-18–19 | BRULE-19 | EX-19, EX-20 | Có | Có; người nhận/KPI cần làm rõ |
-| UC-17 | ACT-06 | FR-28/FR-28.1–28.2 | BP-08/STEP-20 | BRULE-20, BRULE-21 | EX-21 | Có | Một phần; cần xác nhận |
-| UC-18 | ACT-06 | FR-29/FR-29.1–29.2 | BP-08/STEP-21 | BRULE-20 | EX-22 | Có | Một phần; cần xác nhận |
-| UC-19 | ACT-06 | FR-30/FR-30.1–30.2 | BP-08/STEP-21 | BRULE-20, BRULE-21 | EX-22, EX-23 | Có | Một phần; cần xác nhận |
+| UC ID | Actor ID                       | FR/FR con                 | BP/Step                      | Rule               | Exception    | Có đặc tả? | Bao phủ                            |
+| ----- | ------------------------------ | ------------------------- | ---------------------------- | ------------------ | ------------ | ---------- | ---------------------------------- |
+| UC-01 | ACT-01                         | FR-01/FR-01.1–01.3        | BP-01/STEP-01                | BRULE-01           | EX-17        | Có         | Có                                 |
+| UC-02 | ACT-01                         | FR-02/FR-02.1–02.2; FR-03 | BP-01/STEP-02–03             | BRULE-02           | EX-01, EX-02 | Có         | Có                                 |
+| UC-03 | ACT-03, ACT-02                 | FR-04/FR-04.1–04.3; FR-12 | BP-02/STEP-04                | BRULE-03, BRULE-04 | EX-03, EX-06 | Có         | Có; actor/tiêu chí cần làm rõ      |
+| UC-04 | ACT-02                         | FR-05/FR-05.1–05.2        | BP-02/STEP-05                | BRULE-05           | EX-04, EX-05 | Có         | Có                                 |
+| UC-05 | ACT-03, ACT-02, ACT-01         | FR-06; FR-07/FR-07.1–07.2 | BP-02/STEP-05–06             | BRULE-05, BRULE-06 | EX-03–EX-05  | Có         | Có                                 |
+| UC-06 | ACT-02                         | FR-08/FR-08.1–08.2        | BP-03/STEP-07                | BRULE-07, BRULE-08 | EX-07, EX-09 | Có         | Có                                 |
+| UC-07 | ACT-01                         | FR-09/FR-09.1–09.3; FR-10 | BP-03/STEP-08–09             | BRULE-09           | EX-09        | Có         | Có                                 |
+| UC-08 | ACT-03, ACT-01, ACT-02         | FR-11                     | BP-03/STEP-09; BP-06/STEP-16 | —                  | EX-08, EX-18 | Có         | Có                                 |
+| UC-09 | ACT-03                         | FR-13/FR-13.1–13.3        | BP-04/STEP-10                | BRULE-09, BRULE-10 | EX-10        | Có         | Có; actor/công thức cần làm rõ     |
+| UC-10 | ACT-01, ACT-03                 | FR-14, FR-15              | BP-04/STEP-11–12             | BRULE-11           | EX-13        | Có         | Có; chính sách tiền mặt cần làm rõ |
+| UC-11 | ACT-01, ACT-04                 | FR-14; FR-16–18           | BP-04/STEP-11–12             | BRULE-11–14        | EX-11–EX-13  | Có         | Có                                 |
+| UC-12 | ACT-03, ACT-05, ACT-01, ACT-02 | FR-19–20                  | BP-05/STEP-13–14             | BRULE-15, BRULE-16 | EX-14, EX-15 | Có         | Có                                 |
+| UC-13 | ACT-03                         | FR-21, FR-22              | BP-06/STEP-15                | BRULE-17, BRULE-22 | EX-16, EX-17 | Có         | Có                                 |
+| UC-14 | ACT-03, ACT-01, ACT-02         | FR-23, FR-24              | BP-06/STEP-16                | —                  | EX-18        | Có         | Có                                 |
+| UC-15 | ACT-03                         | FR-25                     | BP-06/STEP-17                | BRULE-18, BRULE-22 | —            | Có         | Có                                 |
+| UC-16 | ACT-03                         | FR-26, FR-27              | BP-07/STEP-18–19             | BRULE-19           | EX-19, EX-20 | Có         | Có; người nhận/KPI cần làm rõ      |
+| UC-17 | ACT-06                         | FR-28/FR-28.1–28.2        | BP-08/STEP-20                | BRULE-20, BRULE-21 | EX-21        | Có         | Một phần; cần xác nhận             |
+| UC-18 | ACT-06                         | FR-29/FR-29.1–29.2        | BP-08/STEP-21                | BRULE-20           | EX-22        | Có         | Một phần; cần xác nhận             |
+| UC-19 | ACT-06                         | FR-30/FR-30.1–30.2        | BP-08/STEP-21                | BRULE-20, BRULE-21 | EX-22, EX-23 | Có         | Một phần; cần xác nhận             |
 
 ## IV. Các vấn đề cần làm rõ
 
-| Issue ID | UC ID | Thành phần | Nội dung chưa rõ | Ảnh hưởng | Cần xác nhận |
-| --- | --- | --- | --- | --- | --- |
-| UCS-I01 | UC-03, UC-05 | Actor/Flow | Vận hành hay cơ chế tự động trực tiếp tìm/phân công tài xế. | Actor chính, Main Flow | Có |
-| UCS-I02 | UC-03 đến UC-05 | Rule/Exception | Tiêu chí ưu tiên, dữ liệu vị trí, thời gian phản hồi và chính sách tìm tiếp. | Rule, Exception Flow | Có |
-| UCS-I03 | UC-06, UC-07 | Rule/Exception | Trình tự trạng thái, xử lý mất kết nối và cách xác định thời gian dự kiến. | Main/Exception Flow | Có |
-| UCS-I04 | UC-09 | Actor/Rule | Ai khởi tạo/kiểm tra tính cước; công thức và dữ liệu đầu vào. | Actor, Main/Exception Flow | Có |
-| UCS-I05 | UC-10, UC-11 | Flow/Exception | Chính sách tiền mặt, provider, retry và đối soát thanh toán. | Main/Exception Flow | Có |
-| UCS-I06 | UC-12, UC-14 | Rule/Exception | Kênh/người nhận/retry thông báo và cách thông báo kết quả sự cố. | Main/Exception Flow | Có |
-| UCS-I07 | UC-13, UC-15 | Rule/Data | Ma trận quyền, thao tác cần audit và thời gian lưu vết. | Precondition, Rule | Có |
-| UCS-I08 | UC-16 | Actor/Rule | Ban lãnh đạo có tương tác trực tiếp; KPI, kỳ báo cáo, bộ lọc và quyền xem. | Actor, Main/Exception Flow | Có |
-| UCS-I09 | UC-17 đến UC-19 | Actor/Scope/Flow | Actor trực tiếp, dữ liệu nghiệp vụ và phạm vi triển khai thay đổi nền tảng. | Toàn bộ đặc tả | Có |
-| UCS-I10 | UC-02, UC-05, UC-07, UC-11 | Include/Extend | Xác nhận lại ranh giới các quan hệ `REL-UC-01` đến `REL-UC-04`; `REL-UC-05` vẫn không áp dụng. | Quan hệ Use Case | Có |
+| Issue ID | UC ID                      | Thành phần       | Nội dung chưa rõ                                                                               | Ảnh hưởng                  | Cần xác nhận |
+| -------- | -------------------------- | ---------------- | ---------------------------------------------------------------------------------------------- | -------------------------- | ------------ |
+| UCS-I01  | UC-03, UC-05               | Actor/Flow       | Vận hành hay cơ chế tự động trực tiếp tìm/phân công tài xế.                                    | Actor chính, Main Flow     | Có           |
+| UCS-I02  | UC-03 đến UC-05            | Rule/Exception   | Tiêu chí ưu tiên, dữ liệu vị trí, thời gian phản hồi và chính sách tìm tiếp.                   | Rule, Exception Flow       | Có           |
+| UCS-I03  | UC-06, UC-07               | Rule/Exception   | Trình tự trạng thái, xử lý mất kết nối và cách xác định thời gian dự kiến.                     | Main/Exception Flow        | Có           |
+| UCS-I04  | UC-09                      | Actor/Rule       | Ai khởi tạo/kiểm tra tính cước; công thức và dữ liệu đầu vào.                                  | Actor, Main/Exception Flow | Có           |
+| UCS-I05  | UC-10, UC-11               | Flow/Exception   | Chính sách tiền mặt, provider, retry và đối soát thanh toán.                                   | Main/Exception Flow        | Có           |
+| UCS-I06  | UC-12, UC-14               | Rule/Exception   | Kênh/người nhận/retry thông báo và cách thông báo kết quả sự cố.                               | Main/Exception Flow        | Có           |
+| UCS-I07  | UC-13, UC-15               | Rule/Data        | Ma trận quyền, thao tác cần audit và thời gian lưu vết.                                        | Precondition, Rule         | Có           |
+| UCS-I08  | UC-16                      | Actor/Rule       | Ban lãnh đạo có tương tác trực tiếp; KPI, kỳ báo cáo, bộ lọc và quyền xem.                     | Actor, Main/Exception Flow | Có           |
+| UCS-I09  | UC-17 đến UC-19            | Actor/Scope/Flow | Actor trực tiếp, dữ liệu nghiệp vụ và phạm vi triển khai thay đổi nền tảng.                    | Toàn bộ đặc tả             | Có           |
+| UCS-I10  | UC-02, UC-05, UC-07, UC-11 | Include/Extend   | Xác nhận lại ranh giới các quan hệ `REL-UC-01` đến `REL-UC-04`; `REL-UC-05` vẫn không áp dụng. | Quan hệ Use Case           | Có           |
 
 ## V. Tổng hợp đặc tả Use Case
 
-| Thành phần | Số lượng |
-| --- | ---: |
-| Tổng số Use Case trong Diagram | 19 |
-| Use Case đã đặc tả | 19 |
-| Use Case chưa đặc tả | 0 |
-| Use Case có Main Flow | 19 |
-| Use Case có Alternative Flow xác định | 3 |
-| Use Case có Exception Flow | 17 |
-| Use Case có Business Rule liên quan | 16 |
-| Use Case cần làm rõ | 10 |
-| FR quan trọng đã liên kết | FR-01 đến FR-30 |
-| BP/Step quan trọng đã bao phủ | BP-01 đến BP-08; STEP-01 đến STEP-21 |
+| Thành phần                            |                             Số lượng |
+| ------------------------------------- | -----------------------------------: |
+| Tổng số Use Case trong Diagram        |                                   19 |
+| Use Case đã đặc tả                    |                                   19 |
+| Use Case chưa đặc tả                  |                                    0 |
+| Use Case có Main Flow                 |                                   19 |
+| Use Case có Alternative Flow xác định |                                    3 |
+| Use Case có Exception Flow            |                                   17 |
+| Use Case có Business Rule liên quan   |                                   16 |
+| Use Case cần làm rõ                   |                                   10 |
+| FR quan trọng đã liên kết             |                      FR-01 đến FR-30 |
+| BP/Step quan trọng đã bao phủ         | BP-01 đến BP-08; STEP-01 đến STEP-21 |
 
 ### Use Case đã đặc tả đầy đủ
 
@@ -4566,135 +4567,135 @@ Không tạo AC NFR-related độc lập: các NFR hiện có chưa cung cấp n
 
 ## II. Danh sách Acceptance Criteria
 
-| AC ID | Loại | FR/FR con | UC ID | Given | When | Then | Rule/Exception; BP/Step | Trạng thái |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Happy Path | FR-01/FR-01.1–01.3 | UC-01 | Khách hàng cung cấp thông tin tài khoản hợp lệ. | Đăng ký, đăng nhập hoặc cập nhật thông tin. | Hệ thống ghi nhận kết quả hợp lệ để khách hàng dùng chức năng yêu cầu tài khoản. | BRULE-01; BP-01/STEP-01 | Đã xác nhận |
-| AC-02 | Business Rule | FR-01/FR-01.2 | UC-01 | Tài khoản không hợp lệ hoặc bị khóa. | Khách hàng dùng chức năng yêu cầu tài khoản. | Hệ thống không cho tiếp tục chức năng đó. | BRULE-01; EX-17 | [Suy ra]; điều kiện chi tiết cần làm rõ |
-| AC-03 | Happy Path | FR-02/FR-02.1–02.2; FR-03 | UC-02 | Khách hàng có tài khoản hợp lệ, điểm đón, điểm đến và loại xe. | Gửi yêu cầu đặt xe. | Hệ thống tiếp nhận yêu cầu và chuyển sang quá trình tìm tài xế. | BRULE-02; BP-01/STEP-02–03 | Đã xác nhận; ghi nhận yêu cầu là [Suy ra] |
-| AC-04 | Validation | FR-02/FR-02.1 | UC-02 | Thiếu hoặc không hợp lệ điểm đón, điểm đến hoặc loại xe. | Khách hàng gửi yêu cầu. | Hệ thống yêu cầu bổ sung/chỉnh sửa và chưa tiếp nhận yêu cầu hoàn chỉnh. | BRULE-02; EX-01 | Đã xác nhận điều kiện |
-| AC-05 | Exception | FR-03 | UC-02 | Khách hàng mất kết nối khi tạo yêu cầu. | Đang gửi yêu cầu. | Kết quả giữ/gửi lại thông tin được đánh dấu cần xác nhận, không được xác nhận là tạo yêu cầu thành công. | EX-02; BP-01/STEP-03 | [Cần làm rõ] |
-| AC-06 | Happy Path | FR-04/FR-04.1–04.3; FR-12 | UC-03 | Có yêu cầu đã tiếp nhận và có dữ liệu tài xế khả dụng. | Thực hiện tìm tài xế. | Hệ thống xác định và ưu tiên tài xế theo vị trí, trạng thái sẵn sàng và tiêu chí đã xác nhận. | BRULE-03, BRULE-04; BP-02/STEP-04 | Đã xác nhận; tiêu chí ưu tiên cần làm rõ |
-| AC-07 | Exception | FR-04; FR-07/FR-07.2 | UC-03, UC-05 | Không có tài xế phù hợp/khả dụng. | Hoàn tất tìm tài xế. | Hệ thống ghi nhận không thể phân công và thông báo rõ cho khách hàng. | EX-03; BP-02/STEP-04,06 | Đã xác nhận |
-| AC-08 | Exception | FR-04; FR-12 | UC-03 | Không có dữ liệu vị trí cần cho tìm gần/thời gian dự kiến. | Tìm tài xế. | Hệ thống không tự giả định cách tìm tiếp hoặc thời gian dự kiến; chính sách được đánh dấu cần xác nhận. | EX-06 | [Cần làm rõ] |
-| AC-09 | Happy Path | FR-05/FR-05.1; FR-06 | UC-04, UC-05 | Tài xế nhận yêu cầu chuyến phù hợp. | Tài xế chấp nhận. | Hệ thống ghi nhận phản hồi và kết quả phân công trước khi chuyển sang thực hiện chuyến. | BRULE-06; BP-02/STEP-05–06 | Đã xác nhận; BRULE-06 [Suy ra] |
-| AC-10 | Alternative | FR-05/FR-05.2; FR-07/FR-07.1 | UC-04, UC-05 | Tài xế nhận yêu cầu. | Tài xế từ chối. | Hệ thống giữ yêu cầu để tiếp tục tìm tài xế khác, không yêu cầu khách hàng tạo lại yêu cầu. | BRULE-05; EX-04 | Đã xác nhận |
-| AC-11 | Exception | FR-05; FR-07 | UC-04, UC-05 | Không nhận phản hồi trong thời gian quy định. | Hết thời gian phản hồi. | Hệ thống xử lý chuyển tiếp theo chính sách; thời gian và cách chuyển tiếp cần xác nhận. | BRULE-05; EX-05 | [Cần làm rõ] |
-| AC-12 | Business Rule | FR-06 | UC-05 | Tài xế đã chấp nhận chuyến. | Hoàn tất phân công. | Hệ thống ghi nhận tài xế được phân công trước khi chuyển chuyến sang thực hiện. | BRULE-06; BP-02/STEP-06 | [Suy ra] |
-| AC-13 | Business Rule | FR-07/FR-07.1 | UC-05 | Tài xế từ chối hoặc không phản hồi. | Thực hiện phân công tiếp. | Hệ thống quay lại tìm tài xế khác mà không tạo yêu cầu mới. | BRULE-05; REL-UC-02 | Đã xác nhận; quan hệ include [Suy ra] |
-| AC-14 | Happy Path | FR-08/FR-08.1 | UC-06 | Tài xế được phân công chuyến và chọn trạng thái kế tiếp hợp lệ. | Cập nhật tiến trình chuyến. | Hệ thống cập nhật trạng thái để khách hàng theo dõi; khi hoàn thành, chuyển kết quả sang tính cước. | BRULE-07, BRULE-08; BP-03/STEP-07 | Đã xác nhận; trình tự chi tiết cần làm rõ |
-| AC-15 | Validation | FR-08/FR-08.2 | UC-06 | Trạng thái mới không đúng trình tự nghiệp vụ. | Tài xế gửi cập nhật trạng thái. | Hệ thống từ chối cập nhật, thông báo lỗi và giữ trạng thái trước đó. | BRULE-07; EX-07 | [Suy ra]; trình tự cần làm rõ |
-| AC-16 | Exception | FR-08; FR-09 | UC-06, UC-07 | Tài xế/khách hàng mất kết nối trong khi thực hiện hoặc theo dõi chuyến. | Phát sinh mất kết nối. | Hệ thống chỉ xử lý theo chính sách được xác nhận; cơ chế đồng bộ chưa được xác định. | EX-09 | [Cần làm rõ] |
-| AC-17 | Happy Path | FR-09/FR-09.1–09.3; FR-10 | UC-07 | Khách hàng có yêu cầu/chuyến liên quan. | Xem thông tin chuyến. | Hệ thống hiển thị trạng thái, tiến trình và thông tin tài xế hiện có; khi hoàn thành, tiếp nhận kết quả cho tính cước. | BP-03/STEP-08–09 | Đã xác nhận; thời gian dự kiến cần làm rõ |
-| AC-18 | Exception | FR-11 | UC-08 | Chuyến có lỗi hoặc bất thường cần hỗ trợ. | Khách hàng, tài xế hoặc vận hành ghi nhận sự cố. | Hệ thống liên kết sự cố với chuyến và chuyển thông tin cho vận hành xử lý. | EX-08, EX-18; REL-UC-04 | Đã xác nhận; extend [Suy ra] |
-| AC-19 | Happy Path | FR-13/FR-13.1–13.3 | UC-09 | Chuyến hoàn thành, có loại dịch vụ và thông tin chuyến. | Thực hiện tính cước. | Hệ thống xác định số tiền phải trả trước khi thanh toán. | BRULE-09, BRULE-10; BP-04/STEP-10 | Đã xác nhận; actor/công thức cần làm rõ |
-| AC-20 | Exception | FR-13/FR-13.2 | UC-09 | Thiếu dữ liệu hoặc công thức cước chưa xác nhận. | Thực hiện tính cước. | Hệ thống không cho tiếp tục thanh toán và ghi nhận cước chờ xác nhận. | EX-10 | [Cần làm rõ] |
-| AC-21 | Happy Path | FR-14, FR-15 | UC-10 | Cước đã xác định và khách hàng chọn tiền mặt. | Thực hiện thanh toán tiền mặt. | Hệ thống ghi nhận kết quả thanh toán theo chính sách doanh nghiệp. | BRULE-11; BP-04/STEP-11–12 | Đã xác nhận; chính sách tiền mặt cần làm rõ |
-| AC-22 | Validation | FR-15 | UC-10 | Kết quả/dữ liệu thanh toán không hợp lệ. | Ghi nhận thanh toán tiền mặt. | Hệ thống không xác nhận thanh toán thành công và thông báo lỗi. | EX-13 | [Suy ra]; áp dụng tiền mặt cần làm rõ |
-| AC-23 | Happy Path | FR-14; FR-16/FR-16.1–16.3 | UC-11 | Cước đã xác định, khách hàng chọn điện tử và provider khả dụng. | Khách hàng xác nhận thanh toán. | Hệ thống gửi yêu cầu qua Payment Provider và ghi nhận kết quả giao dịch liên quan đến chuyến. | BRULE-11, BRULE-12, BRULE-14; REL-UC-03 | Đã xác nhận; include [Suy ra] |
-| AC-24 | Exception | FR-17/FR-17.1–17.3 | UC-11 | Payment Provider trả kết quả thất bại. | Nhận kết quả giao dịch. | Hệ thống ghi nhận thất bại, thông báo khách hàng và cho phép xử lý lại theo chính sách. | EX-11 | Đã xác nhận; chính sách xử lý lại cần làm rõ |
-| AC-25 | Exception | FR-16, FR-17 | UC-11 | Không nhận được kết quả từ Payment Provider. | Chờ kết quả giao dịch. | Hệ thống ghi nhận trạng thái; retry/đối soát chỉ thực hiện theo chính sách được xác nhận. | EX-12 | [Cần làm rõ] |
-| AC-26 | Business Rule | FR-18 | UC-11 | CAB xử lý thanh toán điện tử. | Ghi nhận kết quả giao dịch. | CAB chỉ ghi nhận kết quả/tham chiếu giao dịch cần thiết, không lưu trực tiếp thông tin thẻ/tài khoản nhạy cảm. | BRULE-13 | Đã xác nhận |
-| AC-27 | Happy Path | FR-19/FR-19.1–19.3; FR-20/FR-20.1–20.2 | UC-12 | Phát sinh sự kiện quan trọng và đã xác định người nhận/kênh. | Gửi thông báo. | Hệ thống gửi qua provider/kênh được xác định và ghi nhận kết quả gửi. | BRULE-15, BRULE-16; BP-05/STEP-13–14 | Đã xác nhận; chính sách kênh cần làm rõ |
-| AC-28 | Exception | FR-19/FR-19.2–19.3 | UC-12 | Chưa xác định người nhận hoặc kênh. | Chuẩn bị gửi thông báo. | Hệ thống chưa gửi và ghi nhận cần xác nhận chính sách. | EX-15 | [Cần làm rõ] |
-| AC-29 | Exception | FR-20/FR-20.1–20.2 | UC-12 | Notification Provider/kênh trả lỗi gửi. | Gửi thông báo. | Hệ thống ghi nhận lỗi; retry/dự phòng chỉ áp dụng khi có chính sách xác nhận. | EX-14 | [Cần làm rõ] |
-| AC-30 | Happy Path | FR-21/FR-21.1–21.2; FR-22 | UC-13 | Nhân viên vận hành có quyền cần thiết. | Xem hoặc cập nhật khách hàng, tài xế, phương tiện hoặc chuyến. | Hệ thống cho phép thao tác trong phạm vi quyền và ghi nhận thay đổi hợp lệ. | BRULE-17, BRULE-22; BP-06/STEP-15 | Đã xác nhận; ma trận quyền cần làm rõ |
-| AC-31 | Permission | FR-22 | UC-13 | Nhân viên không có quyền thao tác. | Yêu cầu thao tác quản trị. | Hệ thống từ chối và dữ liệu không bị thay đổi bởi thao tác đó. | BRULE-17; EX-16 | Đã xác nhận |
-| AC-32 | Happy Path | FR-23/FR-23.1–23.2; FR-24 | UC-14 | Có chuyến/sự cố cần vận hành xử lý. | Nhân viên ghi nhận, cập nhật và phối hợp xử lý. | Hệ thống lưu thông tin xử lý và cung cấp kết quả cho bên liên quan theo chính sách. | EX-18; BP-06/STEP-16 | Đã xác nhận; trạng thái/thông báo cần làm rõ |
-| AC-33 | Business Rule | FR-25 | UC-15 | Phát sinh thao tác được xác định là quan trọng. | Hoàn tất thao tác. | Hệ thống lưu dấu vết thao tác để phục vụ kiểm tra khi có sự cố. | BRULE-18; BP-06/STEP-17 | Đã xác nhận; danh sách/thời gian lưu cần làm rõ |
-| AC-34 | Happy Path | FR-26; FR-27/FR-27.1–27.3 | UC-16 | Có dữ liệu hoạt động, KPI và kỳ báo cáo đã xác nhận. | Yêu cầu/tổng hợp báo cáo. | Hệ thống cung cấp số chuyến, doanh thu, trạng thái và các chỉ số đã xác nhận cho bên được chỉ định. | BRULE-19; BP-07/STEP-18–19 | Đã xác nhận; actor người nhận cần làm rõ |
-| AC-35 | Exception | FR-26, FR-27 | UC-16 | Dữ liệu báo cáo thiếu hoặc KPI chưa có định nghĩa. | Tổng hợp báo cáo. | Hệ thống ghi nhận báo cáo chưa hoàn chỉnh/chờ định nghĩa và không tự tính theo giả định. | EX-19, EX-20 | [Cần làm rõ] |
-| AC-36 | Happy Path | FR-28/FR-28.1–28.2 | UC-17 | Có nhu cầu mở rộng/thay đổi nền tảng. | ACT-06 ghi nhận nhu cầu, phạm vi ảnh hưởng và ưu tiên. | Hệ thống ghi nhận thông tin để đánh giá/triển khai theo phạm vi xác nhận. | BRULE-20, BRULE-21; BP-08/STEP-20 | [Cần làm rõ]; actor/phạm vi chưa chốt |
-| AC-37 | Exception | FR-28 | UC-17 | Chưa xác định được thành phần/chức năng bị ảnh hưởng. | Đánh giá phạm vi thay đổi. | Hệ thống dừng quyết định triển khai và ghi nhận cần đánh giá thêm. | EX-21 | [Cần làm rõ] |
-| AC-38 | Happy Path | FR-29/FR-29.1–29.2 | UC-18 | Có thay đổi được chấp thuận và phạm vi đã xác nhận. | Ghi nhận triển khai/kiểm tra thay đổi từng phần. | Hệ thống ghi nhận trạng thái triển khai và kết quả kiểm tra. | BRULE-20; BP-08/STEP-21 | [Cần làm rõ]; phạm vi có thể vượt đồ án |
-| AC-39 | Exception | FR-29 | UC-18 | Thay đổi ảnh hưởng chức năng đang hoạt động. | Kiểm tra thay đổi. | Hệ thống ghi nhận để xem xét lại phạm vi và ưu tiên; quyết định tiếp theo cần xác nhận. | EX-22 | [Cần làm rõ] |
-| AC-40 | Happy Path | FR-30/FR-30.1–30.2 | UC-19 | Có kết quả kiểm tra sau thay đổi. | ACT-06 đánh giá ảnh hưởng. | Hệ thống ghi nhận ảnh hưởng hoặc trạng thái hoạt động để các bên xem xét. | BRULE-20, BRULE-21; BP-08/STEP-21 | [Cần làm rõ]; actor/tiêu chí chưa chốt |
-| AC-41 | Exception | FR-30 | UC-19 | Sau thay đổi hệ thống hoạt động không ổn định. | Ghi nhận kết quả đánh giá. | Hệ thống ghi nhận tình trạng cần xử lý; cách khôi phục/xử lý cần xác nhận. | EX-23 | [Cần làm rõ] |
+| AC ID | Loại          | FR/FR con                              | UC ID        | Given                                                                                                      | When                                                             | Then                                                                                                                                                                                  | Rule/Exception; BP/Step                 | Trạng thái                                            |
+| ----- | ------------- | -------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
+| AC-01 | Happy Path    | FR-01/FR-01.1–01.3                     | UC-01        | Khách hàng cung cấp thông tin tài khoản hợp lệ.                                                            | Đăng ký, đăng nhập hoặc cập nhật thông tin.                      | Hệ thống ghi nhận kết quả hợp lệ để khách hàng dùng chức năng yêu cầu tài khoản.                                                                                                      | BRULE-01; BP-01/STEP-01                 | Đã xác nhận                                           |
+| AC-02 | Business Rule | FR-01/FR-01.2                          | UC-01        | Tài khoản không hợp lệ hoặc bị khóa.                                                                       | Khách hàng dùng chức năng yêu cầu tài khoản.                     | Hệ thống không cho tiếp tục chức năng đó.                                                                                                                                             | BRULE-01; EX-17                         | [Suy ra]; điều kiện chi tiết cần làm rõ               |
+| AC-03 | Happy Path    | FR-02/FR-02.1–02.2; FR-03              | UC-02        | Khách hàng có tài khoản hợp lệ, điểm đón, điểm đến và loại xe.                                             | Gửi yêu cầu đặt xe.                                              | Hệ thống tiếp nhận yêu cầu và chuyển sang quá trình tìm tài xế.                                                                                                                       | BRULE-02; BP-01/STEP-02–03              | Đã xác nhận; ghi nhận yêu cầu là [Suy ra]             |
+| AC-04 | Validation    | FR-02/FR-02.1                          | UC-02        | Thiếu hoặc không hợp lệ điểm đón, điểm đến hoặc loại xe.                                                   | Khách hàng gửi yêu cầu.                                          | Hệ thống yêu cầu bổ sung/chỉnh sửa và chưa tiếp nhận yêu cầu hoàn chỉnh.                                                                                                              | BRULE-02; EX-01                         | Đã xác nhận điều kiện                                 |
+| AC-05 | Exception     | FR-03                                  | UC-02        | Khách hàng mất kết nối khi tạo yêu cầu.                                                                    | Đang gửi yêu cầu.                                                | Kết quả giữ/gửi lại thông tin được đánh dấu cần xác nhận, không được xác nhận là tạo yêu cầu thành công.                                                                              | EX-02; BP-01/STEP-03                    | [Cần làm rõ]                                          |
+| AC-06 | Happy Path    | FR-04/FR-04.1–04.3; FR-12              | UC-03        | Có yêu cầu đã tiếp nhận và có dữ liệu tài xế khả dụng.                                                     | Thực hiện tìm tài xế tự động.                                    | Hệ thống lọc theo vị trí, trạng thái sẵn sàng và loại xe; nếu có nhiều ứng viên thì ưu tiên khoảng cách hoặc thời gian dự kiến thấp nhất.                                             | BRULE-03, BRULE-04; BP-02/STEP-04       | Đã xác nhận; cách tính ETA cần làm rõ                 |
+| AC-07 | Exception     | FR-04; FR-07/FR-07.2                   | UC-03, UC-05 | Không có tài xế phù hợp/khả dụng.                                                                          | Hoàn tất tìm tài xế.                                             | Hệ thống ghi nhận không thể phân công và thông báo rõ cho khách hàng.                                                                                                                 | EX-03; BP-02/STEP-04,06                 | Đã xác nhận                                           |
+| AC-08 | Exception     | FR-04; FR-12                           | UC-03        | Không có dữ liệu vị trí cần cho tìm gần/thời gian dự kiến.                                                 | Tìm tài xế.                                                      | Hệ thống không tự giả định cách tìm tiếp hoặc thời gian dự kiến; chính sách được đánh dấu cần xác nhận.                                                                               | EX-06                                   | [Cần làm rõ]                                          |
+| AC-09 | Happy Path    | FR-05/FR-05.1; FR-06                   | UC-04, UC-05 | Tài xế nhận yêu cầu chuyến phù hợp.                                                                        | Tài xế chấp nhận.                                                | Hệ thống ghi nhận phản hồi và kết quả phân công trước khi chuyển sang thực hiện chuyến.                                                                                               | BRULE-06; BP-02/STEP-05–06              | Đã xác nhận; BRULE-06 [Suy ra]                        |
+| AC-10 | Alternative   | FR-05/FR-05.2; FR-07/FR-07.1           | UC-04, UC-05 | Tài xế nhận yêu cầu.                                                                                       | Tài xế từ chối.                                                  | Hệ thống giữ yêu cầu để tiếp tục tìm tài xế khác, không yêu cầu khách hàng tạo lại yêu cầu.                                                                                           | BRULE-05; EX-04                         | Đã xác nhận                                           |
+| AC-11 | Exception     | FR-05; FR-07                           | UC-04, UC-05 | Tài xế không phản hồi trong 30 giây.                                                                       | Hết 30 giây chờ phản hồi.                                        | Hệ thống xem như tài xế không nhận chuyến và tiếp tục tìm tài xế khác.                                                                                                                | BRULE-05; EX-05                         | Đã xác nhận                                           |
+| AC-12 | Business Rule | FR-06                                  | UC-05        | Tài xế đã chấp nhận chuyến.                                                                                | Hoàn tất phân công.                                              | Hệ thống ghi nhận tài xế được phân công trước khi chuyển chuyến sang thực hiện.                                                                                                       | BRULE-06; BP-02/STEP-06                 | [Suy ra]                                              |
+| AC-13 | Business Rule | FR-07/FR-07.1                          | UC-05        | Tài xế từ chối hoặc không phản hồi.                                                                        | Thực hiện phân công tiếp.                                        | Hệ thống quay lại tìm tài xế khác mà không tạo yêu cầu mới.                                                                                                                           | BRULE-05; REL-UC-02                     | Đã xác nhận; quan hệ include [Suy ra]                 |
+| AC-14 | Happy Path    | FR-08/FR-08.1                          | UC-06        | Tài xế được phân công chuyến và chọn trạng thái kế tiếp hợp lệ.                                            | Cập nhật tiến trình chuyến.                                      | Hệ thống chỉ cho phép chuỗi Đã tiếp nhận -> Đang tìm tài xế -> Đã phân tài xế -> Tài xế đã đến -> Đã đón khách -> Đang di chuyển -> Hoàn thành; khi hoàn thành chuyển sang tính cước. | BRULE-07, BRULE-08; BP-03/STEP-07       | Đã xác nhận                                           |
+| AC-15 | Validation    | FR-08/FR-08.2                          | UC-06        | Trạng thái mới bỏ qua hoặc không đúng chuỗi nghiệp vụ.                                                     | Tài xế gửi cập nhật trạng thái.                                  | Hệ thống từ chối cập nhật, thông báo lỗi và giữ trạng thái trước đó.                                                                                                                  | BRULE-07; EX-07                         | Đã xác nhận                                           |
+| AC-16 | Exception     | FR-08; FR-09                           | UC-06, UC-07 | Tài xế/khách hàng mất kết nối trong khi thực hiện hoặc theo dõi chuyến.                                    | Phát sinh mất kết nối.                                           | Hệ thống chỉ xử lý theo chính sách được xác nhận; cơ chế đồng bộ chưa được xác định.                                                                                                  | EX-09                                   | [Cần làm rõ]                                          |
+| AC-17 | Happy Path    | FR-09/FR-09.1–09.3; FR-10              | UC-07        | Khách hàng có yêu cầu/chuyến liên quan.                                                                    | Xem thông tin chuyến.                                            | Hệ thống hiển thị trạng thái, tiến trình và thông tin tài xế hiện có; khi hoàn thành, tiếp nhận kết quả cho tính cước.                                                                | BP-03/STEP-08–09                        | Đã xác nhận; thời gian dự kiến cần làm rõ             |
+| AC-18 | Exception     | FR-11                                  | UC-08        | Chuyến có lỗi hoặc bất thường cần hỗ trợ.                                                                  | Khách hàng, tài xế hoặc vận hành ghi nhận sự cố.                 | Hệ thống liên kết sự cố với chuyến và chuyển thông tin cho vận hành xử lý.                                                                                                            | EX-08, EX-18; REL-UC-04                 | Đã xác nhận; extend [Suy ra]                          |
+| AC-19 | Happy Path    | FR-13/FR-13.1–13.3                     | UC-09        | Chuyến hoàn thành, có loại dịch vụ và thông tin chuyến.                                                    | Thực hiện tính cước.                                             | Hệ thống áp dụng bảng giá theo loại dịch vụ/loại xe, giá tối thiểu và phụ phí nếu được cấu hình, xác định số tiền trước thanh toán và lưu kết quả.                                    | BRULE-09, BRULE-10; BP-04/STEP-10       | Đã xác nhận; công thức chi tiết cần làm rõ            |
+| AC-20 | Exception     | FR-13/FR-13.2                          | UC-09        | Thiếu dữ liệu hoặc công thức cước chưa xác nhận.                                                           | Thực hiện tính cước.                                             | Hệ thống không cho tiếp tục thanh toán và ghi nhận cước chờ xác nhận.                                                                                                                 | EX-10                                   | [Cần làm rõ]                                          |
+| AC-21 | Happy Path    | FR-14, FR-15                           | UC-10        | Cước đã xác định và khách hàng chọn tiền mặt.                                                              | Thực hiện thanh toán tiền mặt.                                   | Hệ thống ghi nhận kết quả thanh toán theo chính sách doanh nghiệp.                                                                                                                    | BRULE-11; BP-04/STEP-11–12              | Đã xác nhận; chính sách tiền mặt cần làm rõ           |
+| AC-22 | Validation    | FR-15                                  | UC-10        | Kết quả/dữ liệu thanh toán không hợp lệ.                                                                   | Ghi nhận thanh toán tiền mặt.                                    | Hệ thống không xác nhận thanh toán thành công và thông báo lỗi.                                                                                                                       | EX-13                                   | [Suy ra]; áp dụng tiền mặt cần làm rõ                 |
+| AC-23 | Happy Path    | FR-14; FR-16/FR-16.1–16.3              | UC-11        | Cước đã xác định, khách hàng chọn điện tử và provider khả dụng.                                            | Khách hàng xác nhận thanh toán.                                  | Hệ thống gửi yêu cầu qua Payment Provider và ghi nhận kết quả giao dịch liên quan đến chuyến.                                                                                         | BRULE-11, BRULE-12, BRULE-14; REL-UC-03 | Đã xác nhận; include [Suy ra]                         |
+| AC-24 | Exception     | FR-17/FR-17.1–17.3                     | UC-11        | Payment Provider trả kết quả thất bại.                                                                     | Nhận kết quả giao dịch.                                          | Hệ thống ghi nhận thất bại, thông báo khách hàng và cho phép xử lý lại theo chính sách.                                                                                               | EX-11                                   | Đã xác nhận; chính sách xử lý lại cần làm rõ          |
+| AC-25 | Exception     | FR-16, FR-17                           | UC-11        | Thanh toán điện tử thất bại hoặc không nhận được kết quả.                                                  | Thực hiện retry.                                                 | Hệ thống cho phép tối đa 3 lần retry trong 30 phút kể từ lần thất bại đầu tiên; sau đó ghi nhận thất bại/chưa hoàn tất và thông báo khách hàng.                                       | EX-11, EX-12                            | Đã xác nhận; xử lý tiếp theo theo chính sách vận hành |
+| AC-26 | Business Rule | FR-18                                  | UC-11        | CAB xử lý thanh toán điện tử.                                                                              | Ghi nhận kết quả giao dịch.                                      | CAB chỉ ghi nhận kết quả/tham chiếu giao dịch cần thiết, không lưu trực tiếp thông tin thẻ/tài khoản nhạy cảm.                                                                        | BRULE-13                                | Đã xác nhận                                           |
+| AC-27 | Happy Path    | FR-19/FR-19.1–19.3; FR-20/FR-20.1–20.2 | UC-12        | Phát sinh sự kiện tiếp nhận yêu cầu, nhận tài xế, tài xế đến, hoàn thành, thanh toán hoặc thay đổi chuyến. | Gửi thông báo.                                                   | Hệ thống gửi trong hệ thống/email ở MVP, ghi nhận kết quả và thử lại tối đa 3 lần; không chuyển kênh khác sau retry thất bại ở phiên bản đầu.                                         | BRULE-15, BRULE-16; BP-05/STEP-13–14    | Đã xác nhận định hướng                                |
+| AC-28 | Exception     | FR-19/FR-19.2–19.3                     | UC-12        | Chưa xác định người nhận hoặc kênh.                                                                        | Chuẩn bị gửi thông báo.                                          | Hệ thống chưa gửi và ghi nhận cần xác nhận chính sách.                                                                                                                                | EX-15                                   | [Cần làm rõ]                                          |
+| AC-29 | Exception     | FR-20/FR-20.1–20.2                     | UC-12        | Kênh thông báo trong hệ thống/email trả lỗi gửi.                                                           | Gửi thông báo.                                                   | Hệ thống ghi nhận lỗi và thử lại tối đa 3 lần; MVP chưa yêu cầu chuyển sang kênh khác sau khi retry thất bại.                                                                         | EX-14                                   | Đã xác nhận định hướng                                |
+| AC-30 | Happy Path    | FR-21/FR-21.1–21.2; FR-22              | UC-13        | Nhân viên vận hành có quyền cần thiết.                                                                     | Xem hoặc cập nhật khách hàng, tài xế, phương tiện hoặc chuyến.   | Hệ thống cho phép thao tác trong phạm vi quyền và ghi nhận thay đổi hợp lệ.                                                                                                           | BRULE-17, BRULE-22; BP-06/STEP-15       | Đã xác nhận; ma trận quyền cần làm rõ                 |
+| AC-31 | Permission    | FR-22                                  | UC-13        | Nhân viên không có quyền thao tác.                                                                         | Yêu cầu thao tác quản trị.                                       | Hệ thống từ chối và dữ liệu không bị thay đổi bởi thao tác đó.                                                                                                                        | BRULE-17; EX-16                         | Đã xác nhận                                           |
+| AC-32 | Happy Path    | FR-23/FR-23.1–23.2; FR-24              | UC-14        | Có chuyến/sự cố cần vận hành xử lý.                                                                        | Nhân viên ghi nhận, cập nhật và phối hợp xử lý.                  | Hệ thống lưu thông tin xử lý và cung cấp kết quả cho bên liên quan theo chính sách.                                                                                                   | EX-18; BP-06/STEP-16                    | Đã xác nhận; trạng thái/thông báo cần làm rõ          |
+| AC-33 | Business Rule | FR-25                                  | UC-15        | Phát sinh thao tác được xác định là quan trọng.                                                            | Hoàn tất thao tác.                                               | Hệ thống lưu dấu vết thao tác để phục vụ kiểm tra khi có sự cố.                                                                                                                       | BRULE-18; BP-06/STEP-17                 | Đã xác nhận; danh sách/thời gian lưu cần làm rõ       |
+| AC-34 | Happy Path    | FR-26; FR-27/FR-27.1–27.3              | UC-16        | Có dữ liệu hoạt động và quyền xem phù hợp.                                                                 | Chọn ngày, tuần, tháng hoặc khoảng thời gian và yêu cầu báo cáo. | Hệ thống cung cấp số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế trong phạm vi quyền được cấp.                                                                  | BRULE-19; BP-07/STEP-18–19              | Đã xác nhận; công thức KPI chi tiết cần làm rõ        |
+| AC-35 | Exception     | FR-26, FR-27                           | UC-16        | Dữ liệu báo cáo thiếu hoặc KPI chưa có định nghĩa.                                                         | Tổng hợp báo cáo.                                                | Hệ thống ghi nhận báo cáo chưa hoàn chỉnh/chờ định nghĩa và không tự tính theo giả định.                                                                                              | EX-19, EX-20                            | [Cần làm rõ]                                          |
+| AC-36 | Happy Path    | FR-28/FR-28.1–28.2                     | UC-17        | Có nhu cầu mở rộng/thay đổi nền tảng.                                                                      | ACT-06 ghi nhận nhu cầu, phạm vi ảnh hưởng và ưu tiên.           | Hệ thống ghi nhận thông tin để đánh giá/triển khai theo phạm vi xác nhận.                                                                                                             | BRULE-20, BRULE-21; BP-08/STEP-20       | [Cần làm rõ]; actor/phạm vi chưa chốt                 |
+| AC-37 | Exception     | FR-28                                  | UC-17        | Chưa xác định được thành phần/chức năng bị ảnh hưởng.                                                      | Đánh giá phạm vi thay đổi.                                       | Hệ thống dừng quyết định triển khai và ghi nhận cần đánh giá thêm.                                                                                                                    | EX-21                                   | [Cần làm rõ]                                          |
+| AC-38 | Happy Path    | FR-29/FR-29.1–29.2                     | UC-18        | Có thay đổi được chấp thuận và phạm vi đã xác nhận.                                                        | Ghi nhận triển khai/kiểm tra thay đổi từng phần.                 | Hệ thống ghi nhận trạng thái triển khai và kết quả kiểm tra.                                                                                                                          | BRULE-20; BP-08/STEP-21                 | [Cần làm rõ]; phạm vi có thể vượt đồ án               |
+| AC-39 | Exception     | FR-29                                  | UC-18        | Thay đổi ảnh hưởng chức năng đang hoạt động.                                                               | Kiểm tra thay đổi.                                               | Hệ thống ghi nhận để xem xét lại phạm vi và ưu tiên; quyết định tiếp theo cần xác nhận.                                                                                               | EX-22                                   | [Cần làm rõ]                                          |
+| AC-40 | Happy Path    | FR-30/FR-30.1–30.2                     | UC-19        | Có kết quả kiểm tra sau thay đổi.                                                                          | ACT-06 đánh giá ảnh hưởng.                                       | Hệ thống ghi nhận ảnh hưởng hoặc trạng thái hoạt động để các bên xem xét.                                                                                                             | BRULE-20, BRULE-21; BP-08/STEP-21       | [Cần làm rõ]; actor/tiêu chí chưa chốt                |
+| AC-41 | Exception     | FR-30                                  | UC-19        | Sau thay đổi hệ thống hoạt động không ổn định.                                                             | Ghi nhận kết quả đánh giá.                                       | Hệ thống ghi nhận tình trạng cần xử lý; cách khôi phục/xử lý cần xác nhận.                                                                                                            | EX-23                                   | [Cần làm rõ]                                          |
 
 ## III. AC theo từng Use Case
 
-| UC ID | FR liên quan | AC Main Flow | AC Alternative Flow | AC Exception Flow | AC Business Rule |
-| --- | --- | --- | --- | --- | --- |
-| UC-01 | FR-01 | AC-01 | Không áp dụng | AC-02 | AC-02 |
-| UC-02 | FR-02, FR-03 | AC-03 | Không áp dụng | AC-04, AC-05 | AC-04 |
-| UC-03 | FR-04, FR-12 | AC-06 | Không áp dụng | AC-07, AC-08 | AC-06 |
-| UC-04 | FR-05 | AC-09 | AC-10 | AC-11 | AC-10 |
-| UC-05 | FR-06, FR-07 | AC-09, AC-12 | AC-10, AC-13 | AC-07, AC-11 | AC-12, AC-13 |
-| UC-06 | FR-08 | AC-14 | Không áp dụng | AC-15, AC-16 | AC-14, AC-15 |
-| UC-07 | FR-09, FR-10 | AC-17 | Không áp dụng | AC-16 | — |
-| UC-08 | FR-11 | AC-18 | Không áp dụng | AC-18 | — |
-| UC-09 | FR-13 | AC-19 | Không áp dụng | AC-20 | AC-19 |
-| UC-10 | FR-14, FR-15 | AC-21 | Không áp dụng | AC-22 | AC-21 |
-| UC-11 | FR-14, FR-16–18 | AC-23 | Không áp dụng | AC-24–AC-25 | AC-26 |
-| UC-12 | FR-19, FR-20 | AC-27 | Không áp dụng | AC-28–AC-29 | AC-27 |
-| UC-13 | FR-21, FR-22 | AC-30 | Không áp dụng | AC-31 | AC-30–AC-31 |
-| UC-14 | FR-23, FR-24 | AC-32 | Không áp dụng | AC-32 | — |
-| UC-15 | FR-25 | AC-33 | Không áp dụng | Không áp dụng | AC-33 |
-| UC-16 | FR-26, FR-27 | AC-34 | Không áp dụng | AC-35 | AC-34 |
-| UC-17 | FR-28 | AC-36 | Không áp dụng | AC-37 | AC-36 |
-| UC-18 | FR-29 | AC-38 | Không áp dụng | AC-39 | AC-38 |
-| UC-19 | FR-30 | AC-40 | Không áp dụng | AC-41 | AC-40 |
+| UC ID | FR liên quan    | AC Main Flow | AC Alternative Flow | AC Exception Flow | AC Business Rule |
+| ----- | --------------- | ------------ | ------------------- | ----------------- | ---------------- |
+| UC-01 | FR-01           | AC-01        | Không áp dụng       | AC-02             | AC-02            |
+| UC-02 | FR-02, FR-03    | AC-03        | Không áp dụng       | AC-04, AC-05      | AC-04            |
+| UC-03 | FR-04, FR-12    | AC-06        | Không áp dụng       | AC-07, AC-08      | AC-06            |
+| UC-04 | FR-05           | AC-09        | AC-10               | AC-11             | AC-10            |
+| UC-05 | FR-06, FR-07    | AC-09, AC-12 | AC-10, AC-13        | AC-07, AC-11      | AC-12, AC-13     |
+| UC-06 | FR-08           | AC-14        | Không áp dụng       | AC-15, AC-16      | AC-14, AC-15     |
+| UC-07 | FR-09, FR-10    | AC-17        | Không áp dụng       | AC-16             | —                |
+| UC-08 | FR-11           | AC-18        | Không áp dụng       | AC-18             | —                |
+| UC-09 | FR-13           | AC-19        | Không áp dụng       | AC-20             | AC-19            |
+| UC-10 | FR-14, FR-15    | AC-21        | Không áp dụng       | AC-22             | AC-21            |
+| UC-11 | FR-14, FR-16–18 | AC-23        | Không áp dụng       | AC-24–AC-25       | AC-26            |
+| UC-12 | FR-19, FR-20    | AC-27        | Không áp dụng       | AC-28–AC-29       | AC-27            |
+| UC-13 | FR-21, FR-22    | AC-30        | Không áp dụng       | AC-31             | AC-30–AC-31      |
+| UC-14 | FR-23, FR-24    | AC-32        | Không áp dụng       | AC-32             | —                |
+| UC-15 | FR-25           | AC-33        | Không áp dụng       | Không áp dụng     | AC-33            |
+| UC-16 | FR-26, FR-27    | AC-34        | Không áp dụng       | AC-35             | AC-34            |
+| UC-17 | FR-28           | AC-36        | Không áp dụng       | AC-37             | AC-36            |
+| UC-18 | FR-29           | AC-38        | Không áp dụng       | AC-39             | AC-38            |
+| UC-19 | FR-30           | AC-40        | Không áp dụng       | AC-41             | AC-40            |
 
 ## IV. Ma trận FR/UC/Rule/Exception → AC
 
-| Thành phần nguồn | AC liên quan | Có AC? | Bao phủ đầy đủ? | Ghi chú |
-| --- | --- | --- | --- | --- |
-| FR-01 đến FR-03 | AC-01 đến AC-05 | Có | Có | Điều kiện tài khoản/mất kết nối cần xác nhận |
-| FR-04 đến FR-07, FR-12 | AC-06 đến AC-13 | Có | Có | Tiêu chí ưu tiên, vị trí, timeout cần xác nhận |
-| FR-08 đến FR-11 | AC-14 đến AC-18 | Có | Có | Trình tự trạng thái, mất kết nối cần xác nhận |
-| FR-13 đến FR-18 | AC-19 đến AC-26 | Có | Có | Cước, tiền mặt, retry/đối soát cần xác nhận |
-| FR-19 đến FR-20 | AC-27 đến AC-29 | Có | Có | Người nhận/kênh/retry cần xác nhận |
-| FR-21 đến FR-25 | AC-30 đến AC-33 | Có | Có | Ma trận quyền/audit cần xác nhận |
-| FR-26 đến FR-27 | AC-34 đến AC-35 | Có | Có | KPI và bên nhận trực tiếp cần xác nhận |
-| FR-28 đến FR-30 | AC-36 đến AC-41 | Có | Một phần | Actor trực tiếp, phạm vi và cách xử lý chưa chốt |
-| UC-01 đến UC-19 Main Flow | AC-01,03,06,09,12,14,17–19,21,23,27,30,32–34,36,38,40 | Có | Có | UC-17 đến UC-19 cần xác nhận phạm vi |
-| BRULE-01 đến BRULE-22 có liên quan | AC-02,04,06,09,12–15,19,21,23,26–27,30–31,33–34,36,38,40 | Có | Có một phần | Rule có chi tiết chưa chốt được giữ nhãn cần làm rõ |
-| EX-01 đến EX-23 có liên quan | AC-04–05,07–08,10–11,15–16,18,20,22,24–25,28–29,31–32,35,37,39,41 | Có | Có | EX-02,05,06,09,10,12,14,15,19–23 cần chính sách chi tiết |
+| Thành phần nguồn                   | AC liên quan                                                      | Có AC? | Bao phủ đầy đủ? | Ghi chú                                                  |
+| ---------------------------------- | ----------------------------------------------------------------- | ------ | --------------- | -------------------------------------------------------- |
+| FR-01 đến FR-03                    | AC-01 đến AC-05                                                   | Có     | Có              | Điều kiện tài khoản/mất kết nối cần xác nhận             |
+| FR-04 đến FR-07, FR-12             | AC-06 đến AC-13                                                   | Có     | Có              | Tiêu chí ưu tiên, vị trí, timeout cần xác nhận           |
+| FR-08 đến FR-11                    | AC-14 đến AC-18                                                   | Có     | Có              | Trình tự trạng thái, mất kết nối cần xác nhận            |
+| FR-13 đến FR-18                    | AC-19 đến AC-26                                                   | Có     | Có              | Cước, tiền mặt, retry/đối soát cần xác nhận              |
+| FR-19 đến FR-20                    | AC-27 đến AC-29                                                   | Có     | Có              | Người nhận/kênh/retry cần xác nhận                       |
+| FR-21 đến FR-25                    | AC-30 đến AC-33                                                   | Có     | Có              | Ma trận quyền/audit cần xác nhận                         |
+| FR-26 đến FR-27                    | AC-34 đến AC-35                                                   | Có     | Có              | KPI và bên nhận trực tiếp cần xác nhận                   |
+| FR-28 đến FR-30                    | AC-36 đến AC-41                                                   | Có     | Một phần        | Actor trực tiếp, phạm vi và cách xử lý chưa chốt         |
+| UC-01 đến UC-19 Main Flow          | AC-01,03,06,09,12,14,17–19,21,23,27,30,32–34,36,38,40             | Có     | Có              | UC-17 đến UC-19 cần xác nhận phạm vi                     |
+| BRULE-01 đến BRULE-22 có liên quan | AC-02,04,06,09,12–15,19,21,23,26–27,30–31,33–34,36,38,40          | Có     | Có một phần     | Rule có chi tiết chưa chốt được giữ nhãn cần làm rõ      |
+| EX-01 đến EX-23 có liên quan       | AC-04–05,07–08,10–11,15–16,18,20,22,24–25,28–29,31–32,35,37,39,41 | Có     | Có              | EX-02,05,06,09,10,12,14,15,19–23 cần chính sách chi tiết |
 
 Không có AC nào ngoài phạm vi hoặc không truy xuất được về FR/UC/Rule/Exception. Mỗi FR từ `FR-01` đến `FR-30` có ít nhất một AC.
 
 ## V. Kiểm tra chất lượng AC
 
-| Issue ID | AC ID | Nội dung | Thành phần liên quan | Ảnh hưởng | Xử lý/Đề xuất |
-| --- | --- | --- | --- | --- | --- |
-| AC-I01 | AC-06, AC-08, AC-11 | Thiếu tiêu chí ưu tiên, dữ liệu vị trí và timeout phản hồi. | UC-03–UC-05; BRULE-03–05 | Không thể đặt ngưỡng kiểm tra chi tiết. | Giữ AC ở mức kết quả nghiệp vụ; cần xác nhận chính sách. |
-| AC-I02 | AC-14–AC-17 | Chưa có trình tự trạng thái và chính sách mất kết nối. | UC-06, UC-07; EX-07, EX-09 | Không thể xác định toàn bộ nhánh trạng thái. | Không suy đoán trạng thái/thời gian; cần xác nhận. |
-| AC-I03 | AC-19–AC-25 | Công thức cước, tiền mặt, retry và đối soát chưa chốt. | UC-09–UC-11 | Một số AC chỉ kiểm tra được ở mức nguyên tắc. | Xác nhận chính sách cước/thanh toán trước khi viết Test Case. |
-| AC-I04 | AC-27–AC-29 | Người nhận, kênh, retry thông báo chưa xác định. | UC-12; BRULE-16 | Không kiểm tra được kênh cụ thể. | Giữ tiêu chí chọn theo chính sách; cần xác nhận. |
-| AC-I05 | AC-34–AC-35 | KPI, kỳ báo cáo và actor nhận báo cáo trực tiếp chưa rõ. | UC-16; BRULE-19 | Không thể xác minh số liệu/công thức KPI chi tiết. | Xác nhận định nghĩa KPI và quyền xem. |
-| AC-I06 | AC-36–AC-41 | Actor, dữ liệu và phạm vi của khả năng mở rộng chưa chốt; có thể vượt đồ án. | UC-17–UC-19; S-F11 | Bao phủ chỉ ở mức phân tích. | Xác nhận phạm vi trước khi dùng làm tiêu chí triển khai. |
+| Issue ID | AC ID               | Nội dung                                                                     | Thành phần liên quan       | Ảnh hưởng                                          | Xử lý/Đề xuất                                                 |
+| -------- | ------------------- | ---------------------------------------------------------------------------- | -------------------------- | -------------------------------------------------- | ------------------------------------------------------------- |
+| AC-I01   | AC-06, AC-08, AC-11 | Thiếu tiêu chí ưu tiên, dữ liệu vị trí và timeout phản hồi.                  | UC-03–UC-05; BRULE-03–05   | Không thể đặt ngưỡng kiểm tra chi tiết.            | Giữ AC ở mức kết quả nghiệp vụ; cần xác nhận chính sách.      |
+| AC-I02   | AC-14–AC-17         | Chưa có trình tự trạng thái và chính sách mất kết nối.                       | UC-06, UC-07; EX-07, EX-09 | Không thể xác định toàn bộ nhánh trạng thái.       | Không suy đoán trạng thái/thời gian; cần xác nhận.            |
+| AC-I03   | AC-19–AC-25         | Công thức cước, tiền mặt, retry và đối soát chưa chốt.                       | UC-09–UC-11                | Một số AC chỉ kiểm tra được ở mức nguyên tắc.      | Xác nhận chính sách cước/thanh toán trước khi viết Test Case. |
+| AC-I04   | AC-27–AC-29         | Người nhận, kênh, retry thông báo chưa xác định.                             | UC-12; BRULE-16            | Không kiểm tra được kênh cụ thể.                   | Giữ tiêu chí chọn theo chính sách; cần xác nhận.              |
+| AC-I05   | AC-34–AC-35         | KPI, kỳ báo cáo và actor nhận báo cáo trực tiếp chưa rõ.                     | UC-16; BRULE-19            | Không thể xác minh số liệu/công thức KPI chi tiết. | Xác nhận định nghĩa KPI và quyền xem.                         |
+| AC-I06   | AC-36–AC-41         | Actor, dữ liệu và phạm vi của khả năng mở rộng chưa chốt; có thể vượt đồ án. | UC-17–UC-19; S-F11         | Bao phủ chỉ ở mức phân tích.                       | Xác nhận phạm vi trước khi dùng làm tiêu chí triển khai.      |
 
 ## VI. AC cần làm rõ
 
-| Issue ID | FR/UC | AC dự kiến | Nội dung chưa rõ | Ảnh hưởng | Cần xác nhận |
-| --- | --- | --- | --- | --- | --- |
-| AC-C01 | FR-04–FR-07 / UC-03–UC-05 | AC-06, AC-08, AC-11 | Tiêu chí ghép xe, vị trí và timeout. | Kết quả tìm/phân công chi tiết | Có |
-| AC-C02 | FR-08–FR-09 / UC-06–UC-07 | AC-14–AC-16 | Trình tự trạng thái, đồng bộ và thời gian dự kiến. | Luồng tiến trình chuyến | Có |
-| AC-C03 | FR-13–FR-17 / UC-09–UC-11 | AC-19–AC-25 | Công thức cước, tiền mặt, retry/đối soát. | Kết quả thanh toán chi tiết | Có |
-| AC-C04 | FR-19–FR-20 / UC-12 | AC-27–AC-29 | Người nhận, kênh và cơ chế gửi lại. | Kết quả thông báo chi tiết | Có |
-| AC-C05 | FR-21–FR-27 / UC-13, UC-15, UC-16 | AC-30–AC-35 | Ma trận quyền, audit, KPI và quyền xem báo cáo. | Permission/Report AC | Có |
-| AC-C06 | FR-28–FR-30 / UC-17–UC-19 | AC-36–AC-41 | Actor trực tiếp, phạm vi thay đổi và cách xử lý không ổn định. | Toàn bộ nhóm AC S-F11 | Có |
+| Issue ID | FR/UC                             | AC dự kiến          | Nội dung chưa rõ                                               | Ảnh hưởng                      | Cần xác nhận |
+| -------- | --------------------------------- | ------------------- | -------------------------------------------------------------- | ------------------------------ | ------------ |
+| AC-C01   | FR-04–FR-07 / UC-03–UC-05         | AC-06, AC-08, AC-11 | Tiêu chí ghép xe, vị trí và timeout.                           | Kết quả tìm/phân công chi tiết | Có           |
+| AC-C02   | FR-08–FR-09 / UC-06–UC-07         | AC-14–AC-16         | Trình tự trạng thái, đồng bộ và thời gian dự kiến.             | Luồng tiến trình chuyến        | Có           |
+| AC-C03   | FR-13–FR-17 / UC-09–UC-11         | AC-19–AC-25         | Công thức cước, tiền mặt, retry/đối soát.                      | Kết quả thanh toán chi tiết    | Có           |
+| AC-C04   | FR-19–FR-20 / UC-12               | AC-27–AC-29         | Người nhận, kênh và cơ chế gửi lại.                            | Kết quả thông báo chi tiết     | Có           |
+| AC-C05   | FR-21–FR-27 / UC-13, UC-15, UC-16 | AC-30–AC-35         | Ma trận quyền, audit, KPI và quyền xem báo cáo.                | Permission/Report AC           | Có           |
+| AC-C06   | FR-28–FR-30 / UC-17–UC-19         | AC-36–AC-41         | Actor trực tiếp, phạm vi thay đổi và cách xử lý không ổn định. | Toàn bộ nhóm AC S-F11          | Có           |
 
 ## VII. Tổng hợp Acceptance Criteria
 
-| Thành phần | Số lượng |
-| --- | ---: |
-| Tổng số AC | 41 |
-| AC Happy Path | 16 |
-| AC Alternative | 1 |
-| AC Validation | 3 |
-| AC Business Rule | 5 |
-| AC Exception | 15 |
-| AC Permission | 1 |
-| AC NFR-related | 0 |
-| AC đã xác nhận | 22 |
-| AC suy ra | 4 |
-| AC cần làm rõ | 15 |
-| FR quan trọng có AC | 30/30 |
-| FR quan trọng chưa có AC | 0 |
-| Rule quan trọng có AC | 22 Rule có liên quan |
+| Thành phần                 |                  Số lượng |
+| -------------------------- | ------------------------: |
+| Tổng số AC                 |                        41 |
+| AC Happy Path              |                        16 |
+| AC Alternative             |                         1 |
+| AC Validation              |                         3 |
+| AC Business Rule           |                         5 |
+| AC Exception               |                        15 |
+| AC Permission              |                         1 |
+| AC NFR-related             |                         0 |
+| AC đã xác nhận             |                        22 |
+| AC suy ra                  |                         4 |
+| AC cần làm rõ              |                        15 |
+| FR quan trọng có AC        |                     30/30 |
+| FR quan trọng chưa có AC   |                         0 |
+| Rule quan trọng có AC      |      22 Rule có liên quan |
 | Exception quan trọng có AC | 23 Exception có liên quan |
-| AC trùng lặp | 0 |
-| AC ngoài phạm vi | 0 |
+| AC trùng lặp               |                         0 |
+| AC ngoài phạm vi           |                         0 |
 
 ### Kết luận bước 16
 
@@ -4711,87 +4712,87 @@ RTM tổng hợp theo chuỗi `NEED -> STK -> SCOPE -> BR -> BP -> Step -> FR ->
 
 ## II. Ma trận RTM tổng quan
 
-| NEED ID | STK ID | SCOPE ID | BR ID | BP ID | Step ID | FR ID | FR con ID | Rule ID | Exception ID | NFR ID | Entity ID | Actor ID | UC ID | AC ID | Trạng thái | Ghi chú |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| NEED-01 | STK-02 | S-F01 | BR-01 | BP-01 | STEP-01 | FR-01 | FR-01.1–01.3 | BRULE-01 | EX-17 | NFR-04 | ENT-01, ENT-02 | ACT-01 | UC-01 | AC-01, AC-02 | Đầy đủ | FR-01.2 và EX-17 có yếu tố [Suy ra]. |
-| NEED-02 | STK-02 | S-F02 | BR-02 | BP-01 | STEP-02–03 | FR-02, FR-03 | FR-02.1–02.2; N/A | BRULE-02 | EX-01, EX-02 | NFR-04, NFR-13 | ENT-05 | ACT-01 | UC-02 | AC-03–AC-05 | Cần làm rõ | FR-03 ghi nhận/chuyển yêu cầu là [Suy ra]; EX-02 chưa có chính sách. |
-| NEED-03 | STK-02 | S-F04 | BR-03 | BP-03 | STEP-08 | FR-09 | FR-09.1–09.3 | N/A | EX-09 | NFR-01, NFR-02, NFR-09, NFR-12, NFR-14 | ENT-05, ENT-03 | ACT-01 | UC-07 | AC-16, AC-17 | Cần làm rõ | Thời gian dự kiến và xử lý mất kết nối chưa chốt. |
-| NEED-04 | STK-02 | S-F04, S-F06 | BR-04 | BP-03 | STEP-08–09 | FR-09, FR-10 | FR-09.3; N/A | BRULE-09 | N/A | NFR-09, NFR-12 | ENT-05, ENT-07 | ACT-01 | UC-07, UC-09 | AC-17, AC-19 | Cần làm rõ | Lịch sử/đánh giá tài xế chưa thành FR/UC độc lập; chỉ phần theo dõi/tính cước có truy xuất. |
-| NEED-05 | STK-03, STK-04 | S-F08 | BR-05 | BP-06 | STEP-15 | FR-21 | FR-21.1–21.2 | BRULE-17, BRULE-22 | EX-16 | NFR-05, NFR-06 | ENT-03, ENT-04 | ACT-03 | UC-13 | AC-30, AC-31 | Cần làm rõ | Quyền cập nhật hồ sơ/phương tiện chưa chi tiết. |
-| NEED-06 | STK-03 | S-F03, S-F04, S-F07 | BR-06 | BP-02, BP-03 | STEP-05, STEP-07 | FR-05, FR-08 | FR-05.1–05.2; FR-08.1–08.2 | BRULE-05, BRULE-07, BRULE-08 | EX-04, EX-05, EX-07 | NFR-02, NFR-12 | ENT-03, ENT-05 | ACT-02 | UC-04, UC-06 | AC-09–AC-11, AC-14–AC-15 | Cần làm rõ | Timeout phản hồi và trình tự trạng thái cần xác nhận. |
-| NEED-07 | STK-03, STK-02 | S-F04 | BR-07 | BP-03 | STEP-07–09 | FR-08, FR-10 | FR-08.1–08.2; N/A | BRULE-07, BRULE-08, BRULE-09 | EX-07, EX-09 | NFR-12, NFR-14 | ENT-05 | ACT-02, ACT-01 | UC-06, UC-07 | AC-14–AC-17 | Cần làm rõ | Trình tự trạng thái và đồng bộ khi mất kết nối chưa chốt. |
-| NEED-08 | STK-01, STK-03 | S-F03, S-F05 | BR-08 | BP-02 | STEP-04 | FR-04, FR-12 | FR-04.1–04.3; N/A | BRULE-03, BRULE-04 | EX-06 | NFR-01, NFR-02, NFR-06, NFR-20 | ENT-03, ENT-05, ENT-06 | ACT-03, ACT-02 | UC-03 | AC-06, AC-08 | Cần làm rõ | Cách thu thập/tần suất/chất lượng vị trí chưa xác định. |
-| NEED-09 | STK-01, STK-02, STK-03, STK-04 | S-F03, S-F07 | BR-09, BR-10 | BP-02 | STEP-04–06 | FR-04–FR-07 | FR-04.1–04.3; FR-05.1–05.2; FR-07.1–07.2 | BRULE-03–BRULE-06 | EX-03–EX-06 | NFR-02, NFR-09, NFR-10, NFR-13 | ENT-03, ENT-05, ENT-06, ENT-09 | ACT-01, ACT-02, ACT-03 | UC-03–UC-05 | AC-06–AC-13 | Cần làm rõ | Tiêu chí ưu tiên và thời gian không phản hồi chưa chốt. |
-| NEED-10 | STK-02, STK-03, STK-04, STK-07 | S-F07 | BR-11 | BP-05 | STEP-13–14 | FR-19, FR-20 | FR-19.1–19.3; FR-20.1–20.2 | BRULE-15, BRULE-16 | EX-14, EX-15 | NFR-10, NFR-11, NFR-18 | ENT-09 | ACT-01, ACT-02, ACT-03, ACT-05 | UC-12 | AC-27–AC-29 | Cần làm rõ | Người nhận, kênh, provider và retry chưa chốt. |
-| NEED-11 | STK-01, STK-02, STK-05 | S-F06 | BR-12 | BP-04 | STEP-10 | FR-13 | FR-13.1–13.3 | BRULE-09, BRULE-10 | EX-10 | NFR-09 | ENT-05, ENT-07 | ACT-03 | UC-09 | AC-19, AC-20 | Cần làm rõ | Công thức cước và actor khởi tạo/kiểm tra chưa xác định. |
-| NEED-12 | STK-01, STK-02, STK-06 | S-F06 | BR-13, BR-14 | BP-04 | STEP-11–12 | FR-14–FR-17 | FR-16.1–16.3; FR-17.1–17.3 | BRULE-11, BRULE-12, BRULE-14 | EX-11–EX-13 | NFR-09–NFR-11, NFR-18 | ENT-07, ENT-08 | ACT-01, ACT-04 | UC-10, UC-11 | AC-21–AC-25 | Cần làm rõ | Chính sách tiền mặt, retry, đối soát và provider cụ thể chưa chốt. |
-| NEED-13 | STK-01, STK-02, STK-06 | S-F06, S-F09 | BR-15 | BP-04 | STEP-12 | FR-18 | N/A | BRULE-13 | N/A | NFR-06, NFR-07 | ENT-08 | ACT-01, ACT-04 | UC-11 | AC-26 | Đầy đủ | Không lưu trực tiếp dữ liệu thanh toán nhạy cảm. |
-| NEED-14 | STK-04 | S-F08 | BR-16 | BP-06 | STEP-15 | FR-21 | FR-21.1–21.2 | BRULE-17, BRULE-22 | EX-16 | NFR-05, NFR-06 | ENT-01–ENT-05 | ACT-03 | UC-13 | AC-30, AC-31 | Cần làm rõ | Ma trận quyền và thao tác cập nhật chưa chốt. |
-| NEED-15 | STK-04, STK-02, STK-03 | S-F08 | BR-16 | BP-03, BP-06 | STEP-09, STEP-16 | FR-11, FR-23, FR-24 | FR-23.1–23.2; N/A | N/A | EX-08, EX-18 | NFR-13 | ENT-05, ENT-10 | ACT-01, ACT-02, ACT-03 | UC-08, UC-14 | AC-18, AC-32 | Cần làm rõ | Trạng thái sự cố và cách thông báo kết quả cần xác nhận. |
-| NEED-16 | STK-01, STK-04 | S-F09 | BR-17 | BP-06 | STEP-15, STEP-17 | FR-22, FR-25 | N/A | BRULE-17, BRULE-18, BRULE-22 | EX-16 | NFR-05, NFR-06, NFR-08 | ENT-01, ENT-12 | ACT-03 | UC-13, UC-15 | AC-31, AC-33 | Cần làm rõ | Ma trận quyền, thao tác audit và thời gian lưu chưa chốt. |
-| NEED-17 | STK-01, STK-05, STK-04 | S-F10 | BR-18 | BP-07 | STEP-18–19 | FR-26, FR-27 | FR-27.1–27.3 | BRULE-19 | EX-19, EX-20 | NFR-01, NFR-09, NFR-10, NFR-20 | ENT-05, ENT-07, ENT-08, ENT-11 | ACT-03 | UC-16 | AC-34, AC-35 | Cần làm rõ | KPI, kỳ báo cáo, dữ liệu và actor nhận trực tiếp chưa chốt. |
-| NEED-18 | STK-01, STK-05, STK-09 | S-F11 | BR-19 | BP-08 | STEP-20–21 | FR-28–FR-30 | FR-28.1–28.2; FR-29.1–29.2; FR-30.1–30.2 | BRULE-20, BRULE-21 | EX-21–EX-23 | NFR-01, NFR-03, NFR-11, NFR-15–NFR-17, NFR-19 | ENT-11 [Cần làm rõ] | ACT-06 | UC-17–UC-19 | AC-36–AC-41 | Có khả năng vượt phạm vi | Actor, dữ liệu, ngưỡng ổn định và cách khôi phục chưa chốt. |
-| NEED-19 | STK-01, STK-02, STK-03, STK-04 | S-F09 | BR-15, BR-17 | BP-04, BP-06 | STEP-12, STEP-15, STEP-17 | FR-18, FR-22, FR-25 | N/A | BRULE-13, BRULE-17, BRULE-18, BRULE-22 | EX-16 | NFR-04–NFR-08, NFR-20 | ENT-01, ENT-08, ENT-12 | ACT-03 | UC-11, UC-13, UC-15 | AC-26, AC-30–AC-33 | Cần làm rõ | Mức bảo vệ, quyền và thời gian audit/lưu trữ chưa chốt. |
-| NEED-20 | STK-01, STK-05, STK-07, STK-09 | S-F11 | BR-20 | BP-08 | STEP-20–21 | FR-28–FR-30 | FR-28.1–28.2; FR-29.1–29.2; FR-30.1–30.2 | BRULE-20, BRULE-21 | EX-21–EX-23 | NFR-03, NFR-15–NFR-19 | ENT-11 [Cần làm rõ] | ACT-06 | UC-17–UC-19 | AC-36–AC-41 | Có khả năng vượt phạm vi | Provider/dịch vụ và cách triển khai từng phần chưa cụ thể. |
+| NEED ID | STK ID                         | SCOPE ID            | BR ID        | BP ID        | Step ID                   | FR ID               | FR con ID                                | Rule ID                                | Exception ID        | NFR ID                                        | Entity ID                      | Actor ID                       | UC ID               | AC ID                    | Trạng thái               | Ghi chú                                                                                                                          |
+| ------- | ------------------------------ | ------------------- | ------------ | ------------ | ------------------------- | ------------------- | ---------------------------------------- | -------------------------------------- | ------------------- | --------------------------------------------- | ------------------------------ | ------------------------------ | ------------------- | ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| NEED-01 | STK-02                         | S-F01               | BR-01        | BP-01        | STEP-01                   | FR-01               | FR-01.1–01.3                             | BRULE-01                               | EX-17               | NFR-04                                        | ENT-01, ENT-02                 | ACT-01                         | UC-01               | AC-01, AC-02             | Đầy đủ                   | FR-01.2 và EX-17 có yếu tố [Suy ra].                                                                                             |
+| NEED-02 | STK-02                         | S-F02               | BR-02        | BP-01        | STEP-02–03                | FR-02, FR-03        | FR-02.1–02.2; N/A                        | BRULE-02                               | EX-01, EX-02        | NFR-04, NFR-13                                | ENT-05                         | ACT-01                         | UC-02               | AC-03–AC-05              | Cần làm rõ               | FR-03 ghi nhận/chuyển yêu cầu là [Suy ra]; EX-02 chưa có chính sách.                                                             |
+| NEED-03 | STK-02                         | S-F04               | BR-03        | BP-03        | STEP-08                   | FR-09               | FR-09.1–09.3                             | N/A                                    | EX-09               | NFR-01, NFR-02, NFR-09, NFR-12, NFR-14        | ENT-05, ENT-03                 | ACT-01                         | UC-07               | AC-16, AC-17             | Cần làm rõ               | Thời gian dự kiến và xử lý mất kết nối chưa chốt.                                                                                |
+| NEED-04 | STK-02                         | S-F04, S-F06        | BR-04        | BP-03        | STEP-08–09                | FR-09, FR-10        | FR-09.3; N/A                             | BRULE-09                               | N/A                 | NFR-09, NFR-12                                | ENT-05, ENT-07                 | ACT-01                         | UC-07, UC-09        | AC-17, AC-19             | Cần làm rõ một phần      | Theo dõi và số tiền đã có truy xuất; lịch sử chuyến/đánh giá tài xế chưa được phản hồi bổ sung xác nhận thành chức năng độc lập. |
+| NEED-05 | STK-03, STK-04                 | S-F08               | BR-05        | BP-06        | STEP-15                   | FR-21               | FR-21.1–21.2                             | BRULE-17, BRULE-22                     | EX-16               | NFR-05, NFR-06                                | ENT-03, ENT-04                 | ACT-03                         | UC-13               | AC-30, AC-31             | Cần làm rõ               | Quyền cập nhật hồ sơ/phương tiện chưa chi tiết.                                                                                  |
+| NEED-06 | STK-03                         | S-F03, S-F04, S-F07 | BR-06        | BP-02, BP-03 | STEP-05, STEP-07          | FR-05, FR-08        | FR-05.1–05.2; FR-08.1–08.2               | BRULE-05, BRULE-07, BRULE-08           | EX-04, EX-05, EX-07 | NFR-02, NFR-12                                | ENT-03, ENT-05                 | ACT-02                         | UC-04, UC-06        | AC-09–AC-11, AC-14–AC-15 | Cần làm rõ               | Timeout phản hồi và trình tự trạng thái cần xác nhận.                                                                            |
+| NEED-07 | STK-03, STK-02                 | S-F04               | BR-07        | BP-03        | STEP-07–09                | FR-08, FR-10        | FR-08.1–08.2; N/A                        | BRULE-07, BRULE-08, BRULE-09           | EX-07, EX-09        | NFR-12, NFR-14                                | ENT-05                         | ACT-02, ACT-01                 | UC-06, UC-07        | AC-14–AC-17              | Cần làm rõ               | Trình tự trạng thái và đồng bộ khi mất kết nối chưa chốt.                                                                        |
+| NEED-08 | STK-01, STK-03                 | S-F03, S-F05        | BR-08        | BP-02        | STEP-04                   | FR-04, FR-12        | FR-04.1–04.3; N/A                        | BRULE-03, BRULE-04                     | EX-06               | NFR-01, NFR-02, NFR-06, NFR-20                | ENT-03, ENT-05, ENT-06         | ACT-03, ACT-02                 | UC-03               | AC-06, AC-08             | Cần làm rõ               | Cách thu thập/tần suất/chất lượng vị trí chưa xác định.                                                                          |
+| NEED-09 | STK-01, STK-02, STK-03, STK-04 | S-F03, S-F07        | BR-09, BR-10 | BP-02        | STEP-04–06                | FR-04–FR-07         | FR-04.1–04.3; FR-05.1–05.2; FR-07.1–07.2 | BRULE-03–BRULE-06                      | EX-03–EX-06         | NFR-02, NFR-09, NFR-10, NFR-13                | ENT-03, ENT-05, ENT-06, ENT-09 | ACT-01, ACT-02, ACT-03         | UC-03–UC-05         | AC-06–AC-13              | Cần làm rõ               | Tiêu chí ưu tiên và thời gian không phản hồi chưa chốt.                                                                          |
+| NEED-10 | STK-02, STK-03, STK-04, STK-07 | S-F07               | BR-11        | BP-05        | STEP-13–14                | FR-19, FR-20        | FR-19.1–19.3; FR-20.1–20.2               | BRULE-15, BRULE-16                     | EX-14, EX-15        | NFR-10, NFR-11, NFR-18                        | ENT-09                         | ACT-01, ACT-02, ACT-03, ACT-05 | UC-12               | AC-27–AC-29              | Cần làm rõ               | Người nhận, kênh, provider và retry chưa chốt.                                                                                   |
+| NEED-11 | STK-01, STK-02, STK-05         | S-F06               | BR-12        | BP-04        | STEP-10                   | FR-13               | FR-13.1–13.3                             | BRULE-09, BRULE-10                     | EX-10               | NFR-09                                        | ENT-05, ENT-07                 | ACT-03                         | UC-09               | AC-19, AC-20             | Cần làm rõ               | Công thức cước và actor khởi tạo/kiểm tra chưa xác định.                                                                         |
+| NEED-12 | STK-01, STK-02, STK-06         | S-F06               | BR-13, BR-14 | BP-04        | STEP-11–12                | FR-14–FR-17         | FR-16.1–16.3; FR-17.1–17.3               | BRULE-11, BRULE-12, BRULE-14           | EX-11–EX-13         | NFR-09–NFR-11, NFR-18                         | ENT-07, ENT-08                 | ACT-01, ACT-04                 | UC-10, UC-11        | AC-21–AC-25              | Cần làm rõ               | Chính sách tiền mặt, retry, đối soát và provider cụ thể chưa chốt.                                                               |
+| NEED-13 | STK-01, STK-02, STK-06         | S-F06, S-F09        | BR-15        | BP-04        | STEP-12                   | FR-18               | N/A                                      | BRULE-13                               | N/A                 | NFR-06, NFR-07                                | ENT-08                         | ACT-01, ACT-04                 | UC-11               | AC-26                    | Đầy đủ                   | Không lưu trực tiếp dữ liệu thanh toán nhạy cảm.                                                                                 |
+| NEED-14 | STK-04                         | S-F08               | BR-16        | BP-06        | STEP-15                   | FR-21               | FR-21.1–21.2                             | BRULE-17, BRULE-22                     | EX-16               | NFR-05, NFR-06                                | ENT-01–ENT-05                  | ACT-03                         | UC-13               | AC-30, AC-31             | Cần làm rõ               | Ma trận quyền và thao tác cập nhật chưa chốt.                                                                                    |
+| NEED-15 | STK-04, STK-02, STK-03         | S-F08               | BR-16        | BP-03, BP-06 | STEP-09, STEP-16          | FR-11, FR-23, FR-24 | FR-23.1–23.2; N/A                        | N/A                                    | EX-08, EX-18        | NFR-13                                        | ENT-05, ENT-10                 | ACT-01, ACT-02, ACT-03         | UC-08, UC-14        | AC-18, AC-32             | Cần làm rõ               | Trạng thái sự cố và cách thông báo kết quả cần xác nhận.                                                                         |
+| NEED-16 | STK-01, STK-04                 | S-F09               | BR-17        | BP-06        | STEP-15, STEP-17          | FR-22, FR-25        | N/A                                      | BRULE-17, BRULE-18, BRULE-22           | EX-16               | NFR-05, NFR-06, NFR-08                        | ENT-01, ENT-12                 | ACT-03                         | UC-13, UC-15        | AC-31, AC-33             | Cần làm rõ               | Ma trận quyền, thao tác audit và thời gian lưu chưa chốt.                                                                        |
+| NEED-17 | STK-01, STK-05, STK-04         | S-F10               | BR-18        | BP-07        | STEP-18–19                | FR-26, FR-27        | FR-27.1–27.3                             | BRULE-19                               | EX-19, EX-20        | NFR-01, NFR-09, NFR-10, NFR-20                | ENT-05, ENT-07, ENT-08, ENT-11 | ACT-03                         | UC-16               | AC-34, AC-35             | Cần làm rõ               | KPI, kỳ báo cáo, dữ liệu và actor nhận trực tiếp chưa chốt.                                                                      |
+| NEED-18 | STK-01, STK-05, STK-09         | S-F11               | BR-19        | BP-08        | STEP-20–21                | FR-28–FR-30         | FR-28.1–28.2; FR-29.1–29.2; FR-30.1–30.2 | BRULE-20, BRULE-21                     | EX-21–EX-23         | NFR-01, NFR-03, NFR-11, NFR-15–NFR-17, NFR-19 | ENT-11 [Cần làm rõ]            | ACT-06                         | UC-17–UC-19         | AC-36–AC-41              | Có khả năng vượt phạm vi | Actor, dữ liệu, ngưỡng ổn định và cách khôi phục chưa chốt.                                                                      |
+| NEED-19 | STK-01, STK-02, STK-03, STK-04 | S-F09               | BR-15, BR-17 | BP-04, BP-06 | STEP-12, STEP-15, STEP-17 | FR-18, FR-22, FR-25 | N/A                                      | BRULE-13, BRULE-17, BRULE-18, BRULE-22 | EX-16               | NFR-04–NFR-08, NFR-20                         | ENT-01, ENT-08, ENT-12         | ACT-03                         | UC-11, UC-13, UC-15 | AC-26, AC-30–AC-33       | Cần làm rõ               | Mức bảo vệ, quyền và thời gian audit/lưu trữ chưa chốt.                                                                          |
+| NEED-20 | STK-01, STK-05, STK-07, STK-09 | S-F11               | BR-20        | BP-08        | STEP-20–21                | FR-28–FR-30         | FR-28.1–28.2; FR-29.1–29.2; FR-30.1–30.2 | BRULE-20, BRULE-21                     | EX-21–EX-23         | NFR-03, NFR-15–NFR-19                         | ENT-11 [Cần làm rõ]            | ACT-06                         | UC-17–UC-19         | AC-36–AC-41              | Có khả năng vượt phạm vi | Provider/dịch vụ và cách triển khai từng phần chưa cụ thể.                                                                       |
 
 ## III. Truy xuất xuôi (Forward Traceability)
 
-| Thành phần nguồn | Thành phần đích | Đã chuyển đổi? | Trạng thái | Ghi chú |
-| --- | --- | --- | --- | --- |
-| NEED-01 đến NEED-20 | BR-01 đến BR-20 | Có | Đầy đủ | Mỗi NEED có ít nhất một BR; NEED-18/20 dẫn đến nhóm S-F11 cần xác nhận. |
-| BR-01 đến BR-20 | S-F01 đến S-F11; BP-01 đến BP-08 | Có | Đầy đủ | BR-19/20 thuộc nhóm có khả năng vượt phạm vi. |
-| BR-01 đến BR-20 | FR-01 đến FR-30 | Có | Đầy đủ | FR-03, FR-10, FR-24 có quan hệ suy ra nhưng có cơ sở BP/BR. |
-| FR-01 đến FR-30 | FR con liên quan hoặc N/A | Có | Đầy đủ | 44 FR con được phân rã; các FR không có FR con có lý do không cần phân rã. |
-| FR-01 đến FR-30 | UC-01 đến UC-19 | Có | Đầy đủ | UC-17–UC-19 có ACT-06 cần xác nhận. |
-| FR-01 đến FR-30 | AC-01 đến AC-41 | Có | Đầy đủ | Mỗi FR có ít nhất một AC. |
-| FR/BP/Step liên quan | BRULE-01 đến BRULE-22; EX-01 đến EX-23 | Có | Đầy đủ | Một số Rule/Exception có cách xử lý hoặc điều kiện chưa chốt. |
-| FR/BP/Rule liên quan | NFR-01 đến NFR-20 | Có | Cần làm rõ | NFR truy xuất riêng; nhiều NFR thiếu ngưỡng/tiêu chí định lượng. |
-| FR/BP/Rule liên quan | ENT-01 đến ENT-12 | Có | Cần làm rõ | ENT-11 và dữ liệu nhóm mở rộng chưa đủ chi tiết. |
+| Thành phần nguồn     | Thành phần đích                        | Đã chuyển đổi? | Trạng thái | Ghi chú                                                                    |
+| -------------------- | -------------------------------------- | -------------- | ---------- | -------------------------------------------------------------------------- |
+| NEED-01 đến NEED-20  | BR-01 đến BR-20                        | Có             | Đầy đủ     | Mỗi NEED có ít nhất một BR; NEED-18/20 dẫn đến nhóm S-F11 cần xác nhận.    |
+| BR-01 đến BR-20      | S-F01 đến S-F11; BP-01 đến BP-08       | Có             | Đầy đủ     | BR-19/20 thuộc nhóm có khả năng vượt phạm vi.                              |
+| BR-01 đến BR-20      | FR-01 đến FR-30                        | Có             | Đầy đủ     | FR-03, FR-10, FR-24 có quan hệ suy ra nhưng có cơ sở BP/BR.                |
+| FR-01 đến FR-30      | FR con liên quan hoặc N/A              | Có             | Đầy đủ     | 44 FR con được phân rã; các FR không có FR con có lý do không cần phân rã. |
+| FR-01 đến FR-30      | UC-01 đến UC-19                        | Có             | Đầy đủ     | UC-17–UC-19 có ACT-06 cần xác nhận.                                        |
+| FR-01 đến FR-30      | AC-01 đến AC-41                        | Có             | Đầy đủ     | Mỗi FR có ít nhất một AC.                                                  |
+| FR/BP/Step liên quan | BRULE-01 đến BRULE-22; EX-01 đến EX-23 | Có             | Đầy đủ     | Một số Rule/Exception có cách xử lý hoặc điều kiện chưa chốt.              |
+| FR/BP/Rule liên quan | NFR-01 đến NFR-20                      | Có             | Cần làm rõ | NFR truy xuất riêng; nhiều NFR thiếu ngưỡng/tiêu chí định lượng.           |
+| FR/BP/Rule liên quan | ENT-01 đến ENT-12                      | Có             | Cần làm rõ | ENT-11 và dữ liệu nhóm mở rộng chưa đủ chi tiết.                           |
 
 ## IV. Truy xuất ngược (Backward Traceability)
 
-| Thành phần cần truy ngược | Thành phần nguồn tìm được | Có nguồn hợp lệ? | Trạng thái | Ghi chú |
-| --- | --- | --- | --- | --- |
-| AC-01 đến AC-05 | UC-01, UC-02 -> FR-01–FR-03 -> BR-01, BR-02 -> NEED-01, NEED-02 | Có | Đầy đủ | AC-05 kế thừa EX-02 cần làm rõ. |
-| AC-06 đến AC-13 | UC-03–UC-05 -> FR-04–FR-07, FR-12 -> BR-06, BR-08–BR-10 -> NEED-06, NEED-08, NEED-09 | Có | Cần làm rõ | Tiêu chí ghép, vị trí và timeout chưa chốt. |
-| AC-14 đến AC-18 | UC-06–UC-08 -> FR-08–FR-11 -> BR-03, BR-04, BR-07, BR-16 -> NEED-03, NEED-04, NEED-07, NEED-15 | Có | Cần làm rõ | Trạng thái/mất kết nối/sự cố cần chính sách. |
-| AC-19 đến AC-26 | UC-09–UC-11 -> FR-13–FR-18 -> BR-12–BR-15 -> NEED-11–NEED-13 | Có | Cần làm rõ | Cước, tiền mặt, provider/retry cần xác nhận. |
-| AC-27 đến AC-29 | UC-12 -> FR-19, FR-20 -> BR-11 -> NEED-10 | Có | Cần làm rõ | Người nhận/kênh/retry chưa chốt. |
-| AC-30 đến AC-33 | UC-13–UC-15 -> FR-21–FR-25 -> BR-05, BR-16, BR-17 -> NEED-05, NEED-14–NEED-16, NEED-19 | Có | Cần làm rõ | Quyền/audit còn thiếu chính sách chi tiết. |
-| AC-34 đến AC-35 | UC-16 -> FR-26, FR-27 -> BR-18 -> NEED-17 | Có | Cần làm rõ | KPI/kỳ báo cáo/actor nhận cần xác nhận. |
-| AC-36 đến AC-41 | UC-17–UC-19 -> FR-28–FR-30 -> BR-19, BR-20 -> NEED-18, NEED-20 | Có | Có khả năng vượt phạm vi | ACT-06 và mức triển khai chưa được xác nhận. |
-| UC-01 đến UC-19 | FR/BP/Step tương ứng trong Bước 13–15 | Có | Đầy đủ | UC-17–UC-19 được truy ngược nhưng chỉ ở mức phân tích. |
-| ENT-01 đến ENT-12 | FR/BP/Rule/NFR liên quan trong Bước 12 | Có | Đầy đủ | Một số thuộc tính/quan hệ được đánh dấu cần làm rõ, không phải Entity không nguồn. |
+| Thành phần cần truy ngược | Thành phần nguồn tìm được                                                                      | Có nguồn hợp lệ? | Trạng thái               | Ghi chú                                                                            |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ---------------- | ------------------------ | ---------------------------------------------------------------------------------- |
+| AC-01 đến AC-05           | UC-01, UC-02 -> FR-01–FR-03 -> BR-01, BR-02 -> NEED-01, NEED-02                                | Có               | Đầy đủ                   | AC-05 kế thừa EX-02 cần làm rõ.                                                    |
+| AC-06 đến AC-13           | UC-03–UC-05 -> FR-04–FR-07, FR-12 -> BR-06, BR-08–BR-10 -> NEED-06, NEED-08, NEED-09           | Có               | Cần làm rõ               | Tiêu chí ghép, vị trí và timeout chưa chốt.                                        |
+| AC-14 đến AC-18           | UC-06–UC-08 -> FR-08–FR-11 -> BR-03, BR-04, BR-07, BR-16 -> NEED-03, NEED-04, NEED-07, NEED-15 | Có               | Cần làm rõ               | Trạng thái/mất kết nối/sự cố cần chính sách.                                       |
+| AC-19 đến AC-26           | UC-09–UC-11 -> FR-13–FR-18 -> BR-12–BR-15 -> NEED-11–NEED-13                                   | Có               | Cần làm rõ               | Cước, tiền mặt, provider/retry cần xác nhận.                                       |
+| AC-27 đến AC-29           | UC-12 -> FR-19, FR-20 -> BR-11 -> NEED-10                                                      | Có               | Cần làm rõ               | Người nhận/kênh/retry chưa chốt.                                                   |
+| AC-30 đến AC-33           | UC-13–UC-15 -> FR-21–FR-25 -> BR-05, BR-16, BR-17 -> NEED-05, NEED-14–NEED-16, NEED-19         | Có               | Cần làm rõ               | Quyền/audit còn thiếu chính sách chi tiết.                                         |
+| AC-34 đến AC-35           | UC-16 -> FR-26, FR-27 -> BR-18 -> NEED-17                                                      | Có               | Cần làm rõ               | KPI/kỳ báo cáo/actor nhận cần xác nhận.                                            |
+| AC-36 đến AC-41           | UC-17–UC-19 -> FR-28–FR-30 -> BR-19, BR-20 -> NEED-18, NEED-20                                 | Có               | Có khả năng vượt phạm vi | ACT-06 và mức triển khai chưa được xác nhận.                                       |
+| UC-01 đến UC-19           | FR/BP/Step tương ứng trong Bước 13–15                                                          | Có               | Đầy đủ                   | UC-17–UC-19 được truy ngược nhưng chỉ ở mức phân tích.                             |
+| ENT-01 đến ENT-12         | FR/BP/Rule/NFR liên quan trong Bước 12                                                         | Có               | Đầy đủ                   | Một số thuộc tính/quan hệ được đánh dấu cần làm rõ, không phải Entity không nguồn. |
 
 Không phát hiện FR, UC hoặc AC nào tự phát sinh không truy ngược được về BR/NEED. `STK-08` là stakeholder dự án và `STK-10` là bên xác nhận chính sách chưa định danh; hai stakeholder này không phải chuỗi tương tác chức năng trực tiếp nên được ghi `N/A` trong RTM chức năng.
 
 ## V. Ma trận bao phủ
 
-| Thành phần | Tổng số | Có liên kết hợp lệ | Không liên kết | Cần làm rõ | Ngoài phạm vi | Trạng thái |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| NEED | 20 | 20 | 0 | 10 | 0 | Đầy đủ; NEED-18, NEED-20 có khả năng vượt phạm vi |
-| Stakeholder | 10 | 8 | 0 | 2 | 0 | Đầy đủ trong RTM chức năng; STK-08/STK-10 là N/A |
-| Scope | 11 | 11 | 0 | 1 | 0 | Đầy đủ; S-F11 có khả năng vượt phạm vi |
-| BR | 20 | 20 | 0 | 2 | 0 | Đầy đủ; BR-19, BR-20 cần xác nhận |
-| BP | 8 | 8 | 0 | 1 | 0 | Đầy đủ; BP-08 có khả năng vượt phạm vi |
-| Step | 21 | 21 | 0 | 2 | 0 | Đầy đủ; STEP-20, STEP-21 cần xác nhận |
-| FR | 30 | 30 | 0 | 11 | 0 | Đầy đủ; FR-28 đến FR-30 có khả năng vượt phạm vi |
-| FR con | 44 | 44 | 0 | 18 | 0 | Đầy đủ; các điều kiện chi tiết cần làm rõ |
-| Business Rule | 22 | 22 | 0 | 10 | 0 | Đầy đủ; tiêu chí/ma trận/chính sách chưa chốt |
-| Exception | 23 | 23 | 0 | 13 | 0 | Đầy đủ; nhiều cách xử lý chờ chính sách |
-| NFR | 20 | 20 | 0 | 15 | 0 | Đầy đủ về liên kết; ngưỡng chất lượng chưa đủ |
-| Entity/Data | 12 | 12 | 0 | 3 | 0 | Đầy đủ; ENT-11/báo cáo và dữ liệu mở rộng cần làm rõ |
-| Actor | 6 | 6 | 0 | 1 | 0 | Đầy đủ; ACT-06 là actor ứng viên |
-| Use Case | 19 | 19 | 0 | 3 | 0 | Đầy đủ; UC-17 đến UC-19 cần xác nhận |
-| AC | 41 | 41 | 0 | 15 | 0 | Đầy đủ; AC cần làm rõ giữ theo nguồn |
+| Thành phần    | Tổng số | Có liên kết hợp lệ | Không liên kết | Cần làm rõ | Ngoài phạm vi | Trạng thái                                           |
+| ------------- | ------: | -----------------: | -------------: | ---------: | ------------: | ---------------------------------------------------- |
+| NEED          |      20 |                 20 |              0 |         10 |             0 | Đầy đủ; NEED-18, NEED-20 có khả năng vượt phạm vi    |
+| Stakeholder   |      10 |                  8 |              0 |          2 |             0 | Đầy đủ trong RTM chức năng; STK-08/STK-10 là N/A     |
+| Scope         |      11 |                 11 |              0 |          1 |             0 | Đầy đủ; S-F11 có khả năng vượt phạm vi               |
+| BR            |      20 |                 20 |              0 |          2 |             0 | Đầy đủ; BR-19, BR-20 cần xác nhận                    |
+| BP            |       8 |                  8 |              0 |          1 |             0 | Đầy đủ; BP-08 có khả năng vượt phạm vi               |
+| Step          |      21 |                 21 |              0 |          2 |             0 | Đầy đủ; STEP-20, STEP-21 cần xác nhận                |
+| FR            |      30 |                 30 |              0 |         11 |             0 | Đầy đủ; FR-28 đến FR-30 có khả năng vượt phạm vi     |
+| FR con        |      44 |                 44 |              0 |         18 |             0 | Đầy đủ; các điều kiện chi tiết cần làm rõ            |
+| Business Rule |      22 |                 22 |              0 |         10 |             0 | Đầy đủ; tiêu chí/ma trận/chính sách chưa chốt        |
+| Exception     |      23 |                 23 |              0 |         13 |             0 | Đầy đủ; nhiều cách xử lý chờ chính sách              |
+| NFR           |      20 |                 20 |              0 |         15 |             0 | Đầy đủ về liên kết; ngưỡng chất lượng chưa đủ        |
+| Entity/Data   |      12 |                 12 |              0 |          3 |             0 | Đầy đủ; ENT-11/báo cáo và dữ liệu mở rộng cần làm rõ |
+| Actor         |       6 |                  6 |              0 |          1 |             0 | Đầy đủ; ACT-06 là actor ứng viên                     |
+| Use Case      |      19 |                 19 |              0 |          3 |             0 | Đầy đủ; UC-17 đến UC-19 cần xác nhận                 |
+| AC            |      41 |                 41 |              0 |         15 |             0 | Đầy đủ; AC cần làm rõ giữ theo nguồn                 |
 
 ## VI. Phát hiện vấn đề truy xuất
 
 ### A. Yêu cầu bị bỏ sót
 
-| Thành phần | ID | Thiếu thành phần nào | Ảnh hưởng | Đề xuất tối thiểu |
-| --- | --- | --- | --- | --- |
-| NEED/BR | NEED-04, BR-04 | Chưa có FR/UC riêng cho xem lịch sử chuyến và đánh giá tài xế sau chuyến. | Một phần NEED-04 chưa có AC trực tiếp. | Xác nhận có đưa lịch sử/đánh giá vào phạm vi phiên bản hiện tại hay không; nếu có, bổ sung ở bước nguồn phù hợp. |
+| Thành phần | ID             | Thiếu thành phần nào                                                      | Ảnh hưởng                              | Đề xuất tối thiểu                                                                                                |
+| ---------- | -------------- | ------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| NEED/BR    | NEED-04, BR-04 | Chưa có FR/UC riêng cho xem lịch sử chuyến và đánh giá tài xế sau chuyến. | Một phần NEED-04 chưa có AC trực tiếp. | Xác nhận có đưa lịch sử/đánh giá vào phạm vi phiên bản hiện tại hay không; nếu có, bổ sung ở bước nguồn phù hợp. |
 
 ### B. Thành phần không có nguồn gốc
 
@@ -4799,69 +4800,280 @@ Không phát hiện FR, UC, AC, Rule, Exception, NFR hoặc Entity quan trọng 
 
 ### C. Thành phần dư thừa hoặc ngoài phạm vi
 
-| Thành phần | ID | Lý do | Trạng thái |
-| --- | --- | --- | --- |
+| Thành phần           | ID                                                               | Lý do                                                                                                                        | Trạng thái               |
+| -------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | Scope/BR/BP/FR/UC/AC | S-F11, BR-19–BR-20, BP-08, FR-28–FR-30, UC-17–UC-19, AC-36–AC-41 | Có nguồn từ NEED-18/20 nhưng độ lớn mở rộng độc lập, thay provider/dịch vụ và triển khai từng phần có thể vượt quy mô đồ án. | Có khả năng vượt phạm vi |
-| Stakeholder | STK-08, STK-10 | Không có tương tác nghiệp vụ trực tiếp đã xác định; STK-08 là bên dự án, STK-10 chưa định danh. | N/A trong RTM chức năng |
+| Stakeholder          | STK-08, STK-10                                                   | Không có tương tác nghiệp vụ trực tiếp đã xác định; STK-08 là bên dự án, STK-10 chưa định danh.                              | N/A trong RTM chức năng  |
 
 ### D. Liên kết cần làm rõ hoặc không nhất quán
 
-| Thành phần A | Thành phần B | Vấn đề | Ảnh hưởng | Đề xuất |
-| --- | --- | --- | --- | --- |
-| NEED-04/BR-04 | FR-09, FR-10/UC-07 | Nguồn nêu lịch sử chuyến và đánh giá tài xế, nhưng chuỗi hiện tại chỉ bao phủ theo dõi/kết quả/tính cước. | Thiếu AC trực tiếp cho lịch sử/đánh giá. | Xác nhận phạm vi và bổ sung tối thiểu nếu thuộc phiên bản. |
-| FR-03, FR-10, FR-24 | BP/UC/AC liên quan | Các FR là `[Suy ra]` để nối quy trình hoặc cung cấp kết quả. | Cần xác nhận trước khi coi là yêu cầu triển khai chốt. | Giữ nhãn `[Suy ra]` trong RTM. |
-| REL-UC-01 đến REL-UC-04 | UC-02, UC-05, UC-07, UC-11 | Quan hệ include/extend chưa được xác nhận đầy đủ; REL-UC-05 không áp dụng. | Ranh giới Use Case/AC. | Xác nhận ở giai đoạn đặc tả/thiết kế tiếp theo. |
+| Thành phần A            | Thành phần B               | Vấn đề                                                                                                    | Ảnh hưởng                                              | Đề xuất                                                    |
+| ----------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
+| NEED-04/BR-04           | FR-09, FR-10/UC-07         | Nguồn nêu lịch sử chuyến và đánh giá tài xế, nhưng chuỗi hiện tại chỉ bao phủ theo dõi/kết quả/tính cước. | Thiếu AC trực tiếp cho lịch sử/đánh giá.               | Xác nhận phạm vi và bổ sung tối thiểu nếu thuộc phiên bản. |
+| FR-03, FR-10, FR-24     | BP/UC/AC liên quan         | Các FR là `[Suy ra]` để nối quy trình hoặc cung cấp kết quả.                                              | Cần xác nhận trước khi coi là yêu cầu triển khai chốt. | Giữ nhãn `[Suy ra]` trong RTM.                             |
+| REL-UC-01 đến REL-UC-04 | UC-02, UC-05, UC-07, UC-11 | Quan hệ include/extend chưa được xác nhận đầy đủ; REL-UC-05 không áp dụng.                                | Ranh giới Use Case/AC.                                 | Xác nhận ở giai đoạn đặc tả/thiết kế tiếp theo.            |
 
 ### E. Yêu cầu cần làm rõ
 
-| ID liên quan | Nội dung chưa rõ | Bước ảnh hưởng | Cần xác nhận |
-| --- | --- | --- | --- |
-| FR-04–FR-07; EX-05, EX-06 | Tiêu chí ghép, vị trí, thời gian phản hồi và tìm tiếp tài xế. | BP-02, UC-03–UC-05, AC-06–AC-13 | Có |
-| FR-08, FR-09; EX-07, EX-09 | Trình tự trạng thái, mất kết nối, thời gian dự kiến. | BP-03, UC-06–UC-07, AC-14–AC-17 | Có |
-| FR-13–FR-17; EX-10–EX-13 | Công thức cước, tiền mặt, retry/đối soát và provider. | BP-04, UC-09–UC-11, AC-19–AC-26 | Có |
-| FR-19, FR-20; EX-14, EX-15 | Người nhận, kênh, provider và retry thông báo. | BP-05, UC-12, AC-27–AC-29 | Có |
-| FR-21–FR-27 | Ma trận quyền, audit, KPI, kỳ báo cáo và quyền xem. | BP-06–BP-07, UC-13–UC-16, AC-30–AC-35 | Có |
-| FR-28–FR-30; ACT-06 | Actor trực tiếp, dữ liệu, phạm vi mở rộng và xử lý sau thay đổi. | BP-08, UC-17–UC-19, AC-36–AC-41 | Có |
+| ID liên quan               | Nội dung chưa rõ                                                 | Bước ảnh hưởng                        | Cần xác nhận |
+| -------------------------- | ---------------------------------------------------------------- | ------------------------------------- | ------------ |
+| FR-04–FR-07; EX-05, EX-06  | Tiêu chí ghép, vị trí, thời gian phản hồi và tìm tiếp tài xế.    | BP-02, UC-03–UC-05, AC-06–AC-13       | Có           |
+| FR-08, FR-09; EX-07, EX-09 | Trình tự trạng thái, mất kết nối, thời gian dự kiến.             | BP-03, UC-06–UC-07, AC-14–AC-17       | Có           |
+| FR-13–FR-17; EX-10–EX-13   | Công thức cước, tiền mặt, retry/đối soát và provider.            | BP-04, UC-09–UC-11, AC-19–AC-26       | Có           |
+| FR-19, FR-20; EX-14, EX-15 | Người nhận, kênh, provider và retry thông báo.                   | BP-05, UC-12, AC-27–AC-29             | Có           |
+| FR-21–FR-27                | Ma trận quyền, audit, KPI, kỳ báo cáo và quyền xem.              | BP-06–BP-07, UC-13–UC-16, AC-30–AC-35 | Có           |
+| FR-28–FR-30; ACT-06        | Actor trực tiếp, dữ liệu, phạm vi mở rộng và xử lý sau thay đổi. | BP-08, UC-17–UC-19, AC-36–AC-41       | Có           |
 
 ## VII. Ma trận tác động thay đổi
 
-| Thành phần thay đổi | ID | Thành phần bị ảnh hưởng | Mức độ ảnh hưởng | Lý do | Ghi chú |
-| --- | --- | --- | --- | --- | --- |
-| BR | BR-02 | S-F02, BP-01, FR-02–FR-03, ENT-05, ACT-01, UC-02, AC-03–AC-05 | Cao | Thay đổi mục tiêu tạo yêu cầu ảnh hưởng toàn bộ đầu vào đặt xe. | EX-01/EX-02 cũng cần rà soát. |
-| BR | BR-09, BR-10 | S-F03/S-F07, BP-02, FR-04–FR-07, ENT-03/05/06/09, UC-03–UC-05, AC-06–AC-13 | Cao | Thay đổi tìm/phân công ảnh hưởng nhiều Actor, Rule và thông báo. | Tiêu chí hiện cần làm rõ. |
-| Rule | BRULE-07 | FR-08, FR-09, BP-03, ENT-05, UC-06/UC-07, AC-14–AC-17, NFR-12/NFR-14 | Cao | Quy tắc trạng thái chi phối tiến trình và tính nhất quán chuyến. | Trình tự cụ thể chưa chốt. |
-| BR | BR-12–BR-15 | S-F06/S-F09, BP-04, FR-13–FR-18, ENT-07/08, UC-09–UC-11, AC-19–AC-26 | Cao | Thay đổi cước/thanh toán tác động kết quả giao dịch và bảo mật. | Provider/chính sách cần xác nhận. |
-| BR | BR-11 | S-F07, BP-05, FR-19–FR-20, ENT-09, UC-12, AC-27–AC-29 | Trung bình | Thay đổi sự kiện thông báo ảnh hưởng người nhận/kênh/kết quả gửi. | Kênh/retry chưa chốt. |
-| Rule | BRULE-17, BRULE-18 | FR-21, FR-22, FR-25, ENT-01/12, UC-13/UC-15, AC-30/31/33, NFR-05/06/08 | Cao | Quyền và audit tác động nhiều thao tác vận hành, dữ liệu bảo vệ. | Ma trận quyền/audit cần xác nhận. |
-| BR | BR-18 | S-F10, BP-07, FR-26–FR-27, ENT-11, UC-16, AC-34–AC-35 | Trung bình | Thay đổi KPI/báo cáo ảnh hưởng tổng hợp dữ liệu và tiêu chí chấp nhận. | Định nghĩa KPI/kỳ báo cáo chưa chốt. |
-| BR | BR-19, BR-20 | S-F11, BP-08, FR-28–FR-30, UC-17–UC-19, AC-36–AC-41, NFR-03/NFR-15–19 | Cao | Thay đổi định hướng mở rộng ảnh hưởng nhiều lớp và phạm vi dự án. | Có khả năng vượt phạm vi. |
-| NFR | NFR-07 | FR-16, FR-18, BRULE-13, ENT-08, UC-11, AC-26 | Trung bình | Ràng buộc không lưu dữ liệu nhạy cảm chi phối thanh toán điện tử. | Đã xác nhận. |
-| NFR | NFR-20 | FR-12, FR-25, FR-26, ENT-06/12/11, EX-19 | Trung bình | Thay đổi chính sách lưu trữ/phục hồi ảnh hưởng vị trí, audit và báo cáo. | Chính sách chưa chốt. |
+| Thành phần thay đổi | ID                 | Thành phần bị ảnh hưởng                                                    | Mức độ ảnh hưởng | Lý do                                                                    | Ghi chú                              |
+| ------------------- | ------------------ | -------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| BR                  | BR-02              | S-F02, BP-01, FR-02–FR-03, ENT-05, ACT-01, UC-02, AC-03–AC-05              | Cao              | Thay đổi mục tiêu tạo yêu cầu ảnh hưởng toàn bộ đầu vào đặt xe.          | EX-01/EX-02 cũng cần rà soát.        |
+| BR                  | BR-09, BR-10       | S-F03/S-F07, BP-02, FR-04–FR-07, ENT-03/05/06/09, UC-03–UC-05, AC-06–AC-13 | Cao              | Thay đổi tìm/phân công ảnh hưởng nhiều Actor, Rule và thông báo.         | Tiêu chí hiện cần làm rõ.            |
+| Rule                | BRULE-07           | FR-08, FR-09, BP-03, ENT-05, UC-06/UC-07, AC-14–AC-17, NFR-12/NFR-14       | Cao              | Quy tắc trạng thái chi phối tiến trình và tính nhất quán chuyến.         | Trình tự cụ thể chưa chốt.           |
+| BR                  | BR-12–BR-15        | S-F06/S-F09, BP-04, FR-13–FR-18, ENT-07/08, UC-09–UC-11, AC-19–AC-26       | Cao              | Thay đổi cước/thanh toán tác động kết quả giao dịch và bảo mật.          | Provider/chính sách cần xác nhận.    |
+| BR                  | BR-11              | S-F07, BP-05, FR-19–FR-20, ENT-09, UC-12, AC-27–AC-29                      | Trung bình       | Thay đổi sự kiện thông báo ảnh hưởng người nhận/kênh/kết quả gửi.        | Kênh/retry chưa chốt.                |
+| Rule                | BRULE-17, BRULE-18 | FR-21, FR-22, FR-25, ENT-01/12, UC-13/UC-15, AC-30/31/33, NFR-05/06/08     | Cao              | Quyền và audit tác động nhiều thao tác vận hành, dữ liệu bảo vệ.         | Ma trận quyền/audit cần xác nhận.    |
+| BR                  | BR-18              | S-F10, BP-07, FR-26–FR-27, ENT-11, UC-16, AC-34–AC-35                      | Trung bình       | Thay đổi KPI/báo cáo ảnh hưởng tổng hợp dữ liệu và tiêu chí chấp nhận.   | Định nghĩa KPI/kỳ báo cáo chưa chốt. |
+| BR                  | BR-19, BR-20       | S-F11, BP-08, FR-28–FR-30, UC-17–UC-19, AC-36–AC-41, NFR-03/NFR-15–19      | Cao              | Thay đổi định hướng mở rộng ảnh hưởng nhiều lớp và phạm vi dự án.        | Có khả năng vượt phạm vi.            |
+| NFR                 | NFR-07             | FR-16, FR-18, BRULE-13, ENT-08, UC-11, AC-26                               | Trung bình       | Ràng buộc không lưu dữ liệu nhạy cảm chi phối thanh toán điện tử.        | Đã xác nhận.                         |
+| NFR                 | NFR-20             | FR-12, FR-25, FR-26, ENT-06/12/11, EX-19                                   | Trung bình       | Thay đổi chính sách lưu trữ/phục hồi ảnh hưởng vị trí, audit và báo cáo. | Chính sách chưa chốt.                |
 
 ## VIII. Kiểm tra chất lượng và tổng hợp RTM
 
-| Tiêu chí | Kết quả |
-| --- | --- |
-| Tính đầy đủ | 20/20 NEED, 20/20 BR, 30/30 FR, 19/19 UC và 41/41 AC có liên kết hợp lệ. |
-| Tính đúng đắn | Các ID dùng đúng mã đã có; NFR và DATA được truy xuất riêng, không thay cho FR. |
-| Tính nhất quán | Không phát hiện UC/AC không có FR/BP nguồn; các liên kết suy ra vẫn được gắn nhãn. |
-| Tính truy ngược | Không phát hiện FR/UC/AC tự phát sinh không truy ngược về BR/NEED. |
-| Tính phạm vi | S-F11 và chuỗi BR-19/20 đến AC-36/41 được giữ lại nhưng đánh dấu có khả năng vượt phạm vi. |
+| Tiêu chí        | Kết quả                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| Tính đầy đủ     | 20/20 NEED, 20/20 BR, 30/30 FR, 19/19 UC và 41/41 AC có liên kết hợp lệ.                   |
+| Tính đúng đắn   | Các ID dùng đúng mã đã có; NFR và DATA được truy xuất riêng, không thay cho FR.            |
+| Tính nhất quán  | Không phát hiện UC/AC không có FR/BP nguồn; các liên kết suy ra vẫn được gắn nhãn.         |
+| Tính truy ngược | Không phát hiện FR/UC/AC tự phát sinh không truy ngược về BR/NEED.                         |
+| Tính phạm vi    | S-F11 và chuỗi BR-19/20 đến AC-36/41 được giữ lại nhưng đánh dấu có khả năng vượt phạm vi. |
 
-| Thành phần | Tổng số | Đầy đủ | Thiếu | Dư thừa | Cần làm rõ |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| NEED | 20 | 20 | 0 | 0 | 10 |
-| STK | 10 | 8 | 0 | 0 | 2 |
-| SCOPE | 11 | 10 | 0 | 0 | 1 |
-| BR | 20 | 18 | 0 | 0 | 2 |
-| BP | 8 | 7 | 0 | 0 | 1 |
-| FR/FR con | 74 | 45 | 0 | 0 | 29 |
-| Rule/Exception | 45 | 22 | 0 | 0 | 23 |
-| NFR | 20 | 5 | 0 | 0 | 15 |
-| DATA | 12 | 9 | 0 | 0 | 3 |
-| ACTOR/UC | 25 | 22 | 0 | 0 | 3 |
-| AC | 41 | 26 | 0 | 0 | 15 |
+| Thành phần     | Tổng số | Đầy đủ | Thiếu | Dư thừa | Cần làm rõ |
+| -------------- | ------: | -----: | ----: | ------: | ---------: |
+| NEED           |      20 |     20 |     0 |       0 |         10 |
+| STK            |      10 |      8 |     0 |       0 |          2 |
+| SCOPE          |      11 |     10 |     0 |       0 |          1 |
+| BR             |      20 |     18 |     0 |       0 |          2 |
+| BP             |       8 |      7 |     0 |       0 |          1 |
+| FR/FR con      |      74 |     45 |     0 |       0 |         29 |
+| Rule/Exception |      45 |     22 |     0 |       0 |         23 |
+| NFR            |      20 |      5 |     0 |       0 |         15 |
+| DATA           |      12 |      9 |     0 |       0 |          3 |
+| ACTOR/UC       |      25 |     22 |     0 |       0 |          3 |
+| AC             |      41 |     26 |     0 |       0 |         15 |
 
-### Tình trạng truy xuất yêu cầu: Cần làm rõ
+### Tình trạng truy xuất yêu cầu: Đã cập nhật theo phản hồi bổ sung
 
-Chuỗi từ NEED đến AC đã được thiết lập cho toàn bộ FR và Use Case. Không có thành phần chức năng trọng yếu không nguồn. Tuy nhiên, NEED-04 có phần lịch sử/đánh giá chưa được bao phủ trực tiếp, và các chính sách về ghép tài xế, trạng thái/mất kết nối, cước/thanh toán, thông báo, quyền/audit, KPI và khả năng mở rộng cần được xác nhận trước khi chuyển thành Test Case hoặc triển khai. Bổ sung tối thiểu cần ưu tiên là quyết định phạm vi NEED-04 và xác nhận các chính sách nêu trong mục VI.E.
+Chuỗi từ NEED đến AC đã được thiết lập cho toàn bộ FR và Use Case. Theo phản hồi v2, các chính sách về ghép tài xế, timeout 30 giây, trạng thái chuyến, mất kết nối, vị trí/ETA, hủy chuyến, bảng giá, retry thanh toán/thông báo, phân quyền, audit, báo cáo, lưu trữ, backup, RTO/RPO và hiệu năng MVP đã được cập nhật. Những nội dung còn cần làm rõ gồm công thức cước chi tiết, trạng thái không cho phép hủy, chi tiết hoàn tiền, ma trận quyền đầy đủ, tiêu chí nghiệm thu các mục tiêu đề xuất, Actor của nhóm mở rộng và việc đưa lịch sử chuyến/đánh giá tài xế thành chức năng độc lập.
+
+# Phụ lục cập nhật theo phản hồi bổ sung trước đó (được PhanHoiBoSung_v2.txt thay thế khi có khác biệt)
+
+## 1. Hiệu lực cập nhật
+
+Phụ lục này được lập từ `YeuCauKhachHang/PhanHoiBoSung_v2.txt` và có hiệu lực đối với toàn bộ nội dung từ Bước 02 đến Bước 17 của tài liệu. Khi nội dung trong các phần trước còn ghi `[Cần làm rõ]` nhưng đã được xác nhận trong phụ lục này, nội dung xác nhận mới được ưu tiên áp dụng. Các mã đã có được giữ nguyên để bảo toàn truy xuất RTM; không tạo lại mã cũ.
+
+Các nội dung chưa xuất hiện trong phản hồi bổ sung vẫn giữ trạng thái trước đó. Vì vậy, việc khách hàng xác nhận các chính sách dưới đây không mặc nhiên xác nhận phần lịch sử chuyến và đánh giá tài xế của `NEED-04`; hai nội dung này vẫn cần quyết định phạm vi riêng.
+
+## 2. Nguồn xác nhận bổ sung
+
+| Mã cập nhật | Nội dung đã xác nhận                                                                                                                                                                 | Thành phần bị ảnh hưởng                                                                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| CUS-01      | Tự động tìm tài xế theo vị trí, trạng thái sẵn sàng và loại xe phù hợp; ưu tiên khoảng cách hoặc thời gian dự kiến đến điểm đón thấp nhất.                                           | `BR-08`, `BR-09`, `FR-04`, `FR-04.1` đến `FR-04.3`, `UC-03`                                                         |
+| CUS-02      | Tài xế có 30 giây để phản hồi; hết thời gian hoặc từ chối thì hệ thống tìm tài xế khác, không yêu cầu khách hàng tạo lại yêu cầu.                                                    | `BR-10`, `FR-05`, `FR-07`, `BRULE-05`, `EX-05`, `UC-04`, `UC-05`, `AC-11` đến `AC-13`                               |
+| CUS-03      | Trạng thái chuyến theo thứ tự: Đã tiếp nhận -> Đang tìm tài xế -> Đã phân tài xế -> Tài xế đã đến -> Đã đón khách -> Đang di chuyển -> Hoàn thành.                                   | `FR-03`, `FR-06`, `FR-08`, `FR-09`, `BRULE-07`, `BRULE-08`, `EX-07`, `UC-02`, `UC-06`, `UC-07`, `AC-14` đến `AC-17` |
+| CUS-04      | Khi mất kết nối, ứng dụng hạn chế mất dữ liệu và đồng bộ lại khi kết nối khôi phục; lỗi một chức năng không làm dừng toàn bộ đặt xe.                                                 | `EX-02`, `EX-09`, `NFR-11`, `NFR-12`, `NFR-14`, `AC-05`, `AC-16`                                                    |
+| CUS-05      | Cước dùng bảng giá cấu hình theo loại dịch vụ/loại xe, có thể gồm giá tối thiểu và phụ phí; xác định khi chuyến hoàn thành; dữ liệu cước được lưu để thanh toán, lịch sử và tra cứu. | `BR-12`, `FR-13`, `BRULE-09`, `BRULE-10`, `ENT-07`, `AC-19`, `AC-20`                                                |
+| CUS-06      | Chỉ nhân viên có quyền quản trị phù hợp được thay đổi cấu hình giá.                                                                                                                  | `BR-17`, `FR-21`, `FR-22`, `UC-09`, `UC-13`, `BRULE-17`, `AC-30`, `AC-31`                                           |
+| CUS-07      | Thanh toán điện tử thành công cập nhật trạng thái thanh toán; thất bại phải thông báo và cho phép thực hiện lại theo chính sách; lưu lịch sử giao dịch để vận hành tra cứu.          | `BR-14`, `FR-16`, `FR-17`, `ENT-08`, `UC-11`, `EX-11`, `EX-12`, `AC-23` đến `AC-25`                                 |
+| CUS-08      | Thông báo bắt buộc cho khách hàng khi tiếp nhận yêu cầu, có tài xế nhận, tài xế đến, chuyến hoàn thành và thanh toán có kết quả; tài xế nhận chuyến mới hoặc thay đổi chuyến.        | `BR-11`, `FR-19`, `FR-20`, `ENT-09`, `UC-12`, `AC-27` đến `AC-29`                                                   |
+| CUS-09      | Giai đoạn đầu dùng thông báo đẩy; kiến trúc phải cho phép bổ sung SMS/Email; gửi lỗi phải ghi nhận và gửi lại; lỗi thông báo không dừng quy trình đặt và thực hiện chuyến.           | `BR-11`, `BR-20`, `NFR-11`, `NFR-16`, `NFR-18`, `NFR-19`, `EX-14`                                                   |
+| CUS-10      | Có vai trò nhân viên vận hành thông thường và quản trị cao hơn; thao tác nhạy cảm phải kiểm soát quyền; audit log lưu đề xuất 12 tháng rồi xử lý theo chính sách lưu trữ.            | `BR-17`, `FR-21`, `FR-22`, `FR-25`, `NFR-05`, `NFR-08`, `ENT-12`, `AC-30` đến `AC-33`                               |
+| CUS-11      | Báo cáo gồm số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế; xem theo ngày, tuần, tháng hoặc khoảng thời gian; quyền xem theo phân quyền.                       | `BR-18`, `FR-26`, `FR-27`, `ENT-11`, `UC-16`, `AC-34`, `AC-35`                                                      |
+| CUS-12      | Mức đầu định hướng theo phản hồi trước là 1.000 người dùng đồng thời; nội dung này được phản hồi v2 thay thế bằng khoảng 500 người dùng đồng thời trong MVP.                         | `BR-19`, `NFR-01`, `NFR-02`, `NFR-03`, `NFR-11`, `NFR-15`, `NFR-19`                                                 |
+| CUS-13      | Nền tảng có thể bổ sung dịch vụ, phương thức thanh toán, provider thông báo hoặc thay đổi thành phần mà không xây dựng lại toàn bộ ứng dụng.                                         | `BR-20`, `NFR-16`, `NFR-18`, `NFR-19`, `BP-08`, `UC-17` đến `UC-19`                                                 |
+
+## 3. Hiệu chỉnh Business Requirement và Functional Requirement
+
+Các mô tả sau đây là phiên bản đã cập nhật của các mã hiện có:
+
+| Mã                                 | Nội dung sau cập nhật                                                                                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BR-08`, `BR-09`                   | Tìm tài xế tự động theo vị trí hiện tại, trạng thái sẵn sàng và loại xe phù hợp; nếu có nhiều ứng viên thì ưu tiên khoảng cách hoặc thời gian dự kiến đến điểm đón thấp nhất.              |
+| `BR-10`                            | Sau 30 giây không phản hồi hoặc khi tài xế từ chối, hệ thống xem là không nhận chuyến và tự động tìm tài xế khác; khách hàng không tạo lại yêu cầu.                                        |
+| `BR-03`, `BR-07`                   | Chuyến đi phải đi qua đúng thứ tự bảy trạng thái đã nêu tại `CUS-03`; hệ thống quản lý trạng thái tiếp nhận/phân công, tài xế cập nhật các trạng thái thực hiện.                           |
+| `BR-12`                            | Cước được tính khi hoàn thành từ bảng giá cấu hình theo loại dịch vụ/loại xe, có thể gồm giá tối thiểu và phụ phí; thông tin cước được lưu để thanh toán, lịch sử và tra cứu.              |
+| `BR-17`                            | Phân biệt nhân viên vận hành thông thường và quản trị cao hơn; cấu hình giá, giao dịch, tài khoản và dữ liệu quan trọng chỉ được thao tác theo quyền phù hợp.                              |
+| `BR-18`                            | Báo cáo hỗ trợ kỳ ngày, tuần, tháng hoặc khoảng thời gian tùy chọn và chỉ hiển thị cho vai trò được cấp quyền.                                                                             |
+| `BR-19`, `BR-20`                   | Theo phản hồi v2, mức MVP định hướng khoảng 500 người dùng đồng thời; phản hồi thông thường không quá 3 giây, khả dụng đề xuất 99,5% và hỗ trợ mở rộng/thay provider/triển khai từng phần. |
+| `FR-04`, `FR-05`, `FR-07`          | Bổ sung loại xe phù hợp, thứ tự ưu tiên theo khoảng cách/thời gian dự kiến và timeout phản hồi 30 giây.                                                                                    |
+| `FR-08`, `FR-09`                   | Bổ sung kiểm tra đúng chuỗi trạng thái và đồng bộ lại sau mất kết nối khi kết nối được khôi phục.                                                                                          |
+| `FR-13`, `FR-15`, `FR-16`, `FR-17` | Bổ sung bảng giá cấu hình, giá tối thiểu/phụ phí, lưu lịch sử giao dịch và cập nhật trạng thái thanh toán.                                                                                 |
+| `FR-19`, `FR-20`                   | Bổ sung danh mục sự kiện thông báo bắt buộc, thông báo trong hệ thống/email ở MVP, ghi nhận lỗi và retry tối đa 3 lần.                                                                     |
+| `FR-21`, `FR-22`, `FR-25`          | Bổ sung vai trò vận hành/quản trị, kiểm soát thao tác nhạy cảm và thời gian lưu audit đề xuất 12 tháng.                                                                                    |
+| `FR-26`, `FR-27`                   | Bổ sung kỳ báo cáo ngày/tuần/tháng/khoảng tùy chọn và quyền xem theo vai trò.                                                                                                              |
+
+## 4. Hiệu chỉnh Rule, Exception và Data Model
+
+| Thành phần                         | Cập nhật có hiệu lực                                                                                                                                                          |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BRULE-03`, `BRULE-04`             | Điều kiện tài xế gồm vị trí hiện tại, trạng thái sẵn sàng và loại xe phù hợp; khi có nhiều tài xế, ưu tiên khoảng cách hoặc thời gian dự kiến thấp nhất.                      |
+| `BRULE-05`, `EX-05`                | Ngưỡng không phản hồi là 30 giây; hết ngưỡng được xử lý như từ chối và chuyển sang tài xế khác.                                                                               |
+| `BRULE-07`, `EX-07`                | Chuỗi trạng thái hợp lệ là: Đã tiếp nhận -> Đang tìm tài xế -> Đã phân tài xế -> Tài xế đã đến -> Đã đón khách -> Đang di chuyển -> Hoàn thành; không được bỏ qua trạng thái. |
+| `BRULE-09`, `BRULE-10`, `EX-10`    | Bảng giá được cấu hình theo loại dịch vụ/loại xe, có thể gồm giá tối thiểu và phụ phí; chỉ được tính khi hoàn thành và phải có dữ liệu để lưu kết quả.                        |
+| `BRULE-17`, `BRULE-18`             | Quyền quản trị phân theo vai trò; audit log của thao tác quản trị quan trọng có thời gian lưu đề xuất 12 tháng.                                                               |
+| `BRULE-19`                         | KPI được tổng hợp theo kỳ ngày, tuần, tháng hoặc khoảng tùy chọn và theo quyền xem đã cấp.                                                                                    |
+| `EX-02`, `EX-09`, `EX-12`, `EX-14` | Phải ghi nhận trạng thái lỗi, hạn chế mất dữ liệu và không làm dừng toàn bộ quy trình; đồng bộ/gửi lại thực hiện khi có khả năng theo chính sách đã xác nhận.                 |
+| `ENT-05 Trip`                      | `TripStatus` phải chứa bảy trạng thái theo `CUS-03`; cần lưu trạng thái tiếp nhận, phân công, hoàn thành và dữ liệu phục vụ đồng bộ.                                          |
+| `ENT-07 Fare`                      | Bổ sung nhóm dữ liệu bảng giá/cấu hình giá, loại dịch vụ/loại xe, giá tối thiểu, phụ phí, số tiền và thông tin cơ sở tính cước.                                               |
+| `ENT-08 PaymentTransaction`        | Lưu trạng thái thanh toán, lịch sử giao dịch và tham chiếu provider cần thiết; không lưu dữ liệu thẻ/tài khoản nhạy cảm.                                                      |
+| `ENT-09 NotificationRecord`        | Lưu loại sự kiện, người nhận, kênh push ban đầu, kết quả gửi, lỗi và lần gửi lại cần thiết.                                                                                   |
+| `ENT-11 ReportDefinition`          | Bổ sung kỳ ngày/tuần/tháng/khoảng tùy chọn và thông tin quyền xem báo cáo.                                                                                                    |
+| `ENT-12 AuditRecord`               | `RetentionPeriod` có giá trị đề xuất 12 tháng, sau đó xử lý theo chính sách lưu trữ doanh nghiệp.                                                                             |
+
+## 5. Hiệu chỉnh NFR và Acceptance Criteria
+
+Các NFR sau được cập nhật bằng tiêu chí định lượng hoặc mục tiêu do khách hàng cung cấp. Mức “định hướng”, “nên” và “đề xuất” được giữ nguyên, chưa xem là ngưỡng nghiệm thu bắt buộc nếu chưa được phê duyệt lại:
+
+| NFR                                    | Nội dung/tiêu chí cập nhật                                                                                                                                  |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NFR-01`                               | Kiểm tra ổn định theo mức tải MVP định hướng ban đầu khoảng 500 người dùng đồng thời.                                                                       |
+| `NFR-02`                               | Mục tiêu thời gian phản hồi thao tác thông thường không quá 3 giây trong điều kiện tải bình thường; cần xác nhận cách nghiệm thu.                           |
+| `NFR-03`, `NFR-15`, `NFR-16`, `NFR-19` | Các thành phần tải cao có thể mở rộng độc lập; chức năng mới triển khai từng phần; bổ sung/thay provider không cần xây dựng lại toàn bộ ứng dụng.           |
+| `NFR-11`                               | Lỗi thanh toán/thông báo phải được cô lập, ghi nhận và xử lý lại phù hợp mà không dừng toàn bộ đặt và thực hiện chuyến.                                     |
+| `NFR-14`                               | Mất kết nối phải hạn chế mất dữ liệu và đồng bộ lại khi kết nối khôi phục.                                                                                  |
+| `NFR-18`                               | Giai đoạn đầu dùng push notification; thiết kế phải cho phép mở rộng SMS/Email.                                                                             |
+| `NFR-20`                               | Audit log có thời gian lưu đề xuất 12 tháng; đây là đề xuất chính sách, chưa phải ngưỡng bắt buộc cuối cùng. Các dữ liệu khác theo chính sách doanh nghiệp. |
+| `NFR-04` đến `NFR-08`                  | Giữ nguyên yêu cầu xác thực, phân quyền, bảo vệ dữ liệu, không lưu dữ liệu thanh toán nhạy cảm và audit; chi tiết kỹ thuật vẫn cần đặc tả ở bước thiết kế.  |
+
+Các AC cần cập nhật trực tiếp:
+
+| AC                  | Điều chỉnh                                                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AC-06`             | Kiểm tra hệ thống tự động lọc theo vị trí, trạng thái sẵn sàng và loại xe; nhiều ứng viên được ưu tiên theo khoảng cách/thời gian dự kiến thấp nhất. |
+| `AC-11`             | Given tài xế nhận đề xuất, When hết 30 giây không phản hồi, Then hệ thống xử lý như từ chối và tìm tài xế khác.                                      |
+| `AC-14`, `AC-15`    | Kiểm tra đúng chuỗi bảy trạng thái và từ chối mọi cập nhật bỏ qua trạng thái.                                                                        |
+| `AC-05`, `AC-16`    | Kiểm tra hạn chế mất dữ liệu và đồng bộ lại sau khi kết nối khôi phục; lỗi cục bộ không dừng toàn bộ quy trình.                                      |
+| `AC-19`, `AC-20`    | Kiểm tra cước từ bảng giá theo loại dịch vụ/loại xe, giá tối thiểu/phụ phí nếu được cấu hình, chỉ tính khi hoàn thành và lưu kết quả.                |
+| `AC-23` đến `AC-26` | Kiểm tra cập nhật trạng thái thanh toán, lưu lịch sử/tra cứu giao dịch và không lưu dữ liệu nhạy cảm.                                                |
+| `AC-27` đến `AC-29` | Kiểm tra các sự kiện tiếp nhận, nhận tài xế, tài xế đến, hoàn thành, thanh toán và thay đổi chuyến; push giai đoạn đầu, ghi lỗi và gửi lại.          |
+| `AC-30` đến `AC-33` | Kiểm tra vai trò vận hành/quản trị, thao tác nhạy cảm và audit log 12 tháng.                                                                         |
+| `AC-34`, `AC-35`    | Kiểm tra báo cáo theo ngày/tuần/tháng/khoảng tùy chọn và quyền xem theo vai trò.                                                                     |
+
+## 6. Hiệu chỉnh Actor, Use Case và RTM
+
+- `UC-03` và `UC-05` được hiểu là luồng hệ thống tự động tìm/phân công; nhân viên vận hành theo dõi và hỗ trợ khi cần, không phải người khởi tạo bắt buộc.
+- `UC-09` được kích hoạt khi chuyến hoàn thành; hệ thống áp dụng bảng giá đã cấu hình. Nhân viên quản trị phù hợp được phép thay đổi cấu hình giá.
+- `UC-12` phải bao phủ các sự kiện bắt buộc tại `CUS-08`, push là kênh ban đầu; SMS/Email là hướng mở rộng.
+- `UC-13` phải phân biệt ít nhất nhân viên vận hành thông thường và quản trị cao hơn. `UC-15` ghi audit với thời gian lưu đề xuất 12 tháng.
+- `UC-16` hỗ trợ kỳ ngày, tuần, tháng hoặc khoảng thời gian tùy chọn; nhân viên có quyền phù hợp và cấp quản lý theo chính sách được xem báo cáo.
+- `UC-17` đến `UC-19` vẫn giữ trạng thái cần xác nhận về Actor trực tiếp và phạm vi triển khai, nhưng định hướng mở rộng không còn là nội dung chưa có cơ sở.
+- Trong RTM, các liên kết liên quan `CUS-01` đến `CUS-13` được đánh dấu `Đã xác nhận` ở mức nghiệp vụ. Các chi tiết chưa có trong phản hồi như đánh giá tài xế, lịch sử chuyến độc lập, cơ chế retry cụ thể, tiêu chuẩn bảo mật kỹ thuật và chính sách lưu dữ liệu ngoài audit vẫn giữ trạng thái cần làm rõ.
+
+## 7. Kết luận rà soát sau cập nhật
+
+Phản hồi bổ sung đã làm rõ phần lớn các điểm trước đây còn mở về tìm tài xế, trạng thái chuyến, mất kết nối, cước, thanh toán, thông báo, phân quyền, audit, báo cáo, hiệu năng và khả năng mở rộng. Tài liệu đã cập nhật theo nguyên tắc giữ nguyên mã truy xuất và ưu tiên nguồn xác nhận mới.
+
+Các điểm còn cần xác nhận trước triển khai chi tiết gồm: công thức cụ thể của bảng giá và phụ phí; trạng thái không cho phép hủy và quy trình hoàn tiền; ma trận quyền đầy đủ; tiêu chí nghiệm thu các mục tiêu đề xuất; người dùng trực tiếp của nhóm thay đổi nền tảng; và việc đưa lịch sử chuyến/đánh giá tài xế thành chức năng độc lập trong phạm vi hiện tại.
+
+# Phụ lục cập nhật v2 theo phản hồi mới nhất của khách hàng
+
+## 1. Hiệu lực và thứ tự ưu tiên nguồn
+
+Phụ lục này được lập từ `YeuCauKhachHang/PhanHoiBoSung_v2.txt` và là cập nhật mới nhất cho toàn bộ SRS. Khi phản hồi v2 khác với phản hồi bổ sung trước, phản hồi v2 được ưu tiên. Các mã `NEED`, `STK`, `SCOPE`, `BR`, `BP`, `STEP`, `FR`, `BRULE`, `EX`, `NFR`, `ENT`, `ACT`, `UC`, `AC` và RTM hiện có được giữ nguyên.
+
+Các mức “đề xuất”, “định hướng” và “MVP” được giữ nguyên mức độ, không tự xem là cam kết nghiệm thu cuối cùng.
+
+## 2. Ma trận cập nhật v2
+
+| V2 ID | Nội dung đã bổ sung/xác nhận                                                                                                                                                                                       | Mã hiện có cần cập nhật                                                                                           |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| V2-01 | Vị trí tài xế cập nhật khoảng 10 giây/lần; độ chính xác mục tiêu khoảng 50 m khi GPS phù hợp; ETA dựa trên vị trí hiện tại và khoảng cách đến điểm đón; MVP chưa cần dữ liệu giao thông thời gian thực.            | `NEED-08`, `BR-08`, `FR-04`, `FR-12`, `ENT-06`, `NFR-02`, `UC-03`, `AC-06`                                        |
+| V2-02 | Khách hàng được hủy trước khi hoàn thành và trước trạng thái không cho phép hủy; MVP đề xuất chưa áp dụng phí hủy; hoàn tiền điện tử theo Payment Provider.                                                        | `NEED-04`, `BR-03`, `BR-04`, `FR-08`, `FR-09`, `FR-11`, `EX-08`, `ENT-05`, `UC-07`, `UC-08`, `AC-14`, `AC-18`     |
+| V2-03 | Thanh toán điện tử retry tối đa 3 lần trong 30 phút; sau đó thất bại/chưa hoàn tất. Tiền mặt hoàn tất khi tài xế xác nhận đã thu đủ.                                                                               | `BR-14`, `FR-15`, `FR-16`, `FR-17`, `EX-11`, `EX-12`, `ENT-08`, `UC-10`, `UC-11`, `AC-21`, `AC-23` đến `AC-25`    |
+| V2-04 | Thông báo MVP dùng trong hệ thống và email; retry tối đa 3 lần; không chuyển kênh khác sau khi retry thất bại; provider/kênh có thể thay đổi trong tương lai.                                                      | `BR-11`, `FR-19`, `FR-20`, `EX-14`, `ENT-09`, `NFR-18`, `UC-12`, `AC-27` đến `AC-29`                              |
+| V2-05 | RBAC MVP gồm Nhân viên vận hành và Quản trị viên; chỉ Quản trị viên cấp/thay đổi quyền; audit cho đăng nhập, đổi quyền, dữ liệu quan trọng, sự cố và thao tác quản trị.                                            | `BR-17`, `FR-21`, `FR-22`, `FR-25`, `ENT-01`, `ENT-12`, `NFR-05`, `NFR-08`, `UC-13`, `UC-15`, `AC-30` đến `AC-33` |
+| V2-06 | Sự cố gồm mất kết nối, trạng thái bất thường, không thể tiếp tục, lỗi thanh toán hoặc lỗi hệ thống ảnh hưởng chuyến; vận hành cập nhật trạng thái; kết thúc ở hủy hoặc sự cố đã xử lý; thông báo bên bị ảnh hưởng. | `BR-16`, `FR-11`, `FR-23`, `FR-24`, `EX-08`, `EX-09`, `ENT-05`, `ENT-10`, `UC-08`, `UC-14`, `AC-18`, `AC-32`      |
+| V2-07 | Tìm/phân công, tính cước và gửi thông báo là trách nhiệm tự động của hệ thống; vận hành chỉ hỗ trợ/xử lý sự cố.                                                                                                    | `UC-03`, `UC-05`, `UC-09`, `UC-12`, association liên quan                                                         |
+| V2-08 | Báo cáo có công thức tỷ lệ hoàn thành/hủy, lọc theo thời gian/tài xế/loại xe/trạng thái; vận hành lập báo cáo, ban lãnh đạo xem tổng hợp và không vận hành trực tiếp.                                              | `BR-18`, `FR-26`, `FR-27`, `ENT-11`, `ACT-06`/STK-05, `UC-16`, `AC-34`, `AC-35`                                   |
+| V2-09 | Lưu đề xuất: chuyến 24 tháng, giao dịch 24 tháng, vị trí chi tiết 30 ngày, audit 12 tháng; hết hạn xóa hoặc lưu trữ theo chính sách doanh nghiệp.                                                                  | `NFR-20`, `ENT-06`, `ENT-08`, `ENT-12`, `AC-33`                                                                   |
+| V2-10 | Hiệu năng/phục hồi MVP: khoảng 500 người dùng đồng thời, phản hồi thông thường tối đa 3 giây, khả dụng đề xuất 99,5%, backup hằng ngày, RTO tối đa 4 giờ, RPO tối đa 24 giờ.                                       | `NFR-01`, `NFR-02`, `NFR-11`, `NFR-20`, `AC` liên quan                                                            |
+| V2-11 | Mở rộng loại dịch vụ, phương thức thanh toán, kênh/provider; thành phần mở rộng/thay đổi độc lập; triển khai chức năng từng phần.                                                                                  | `BR-19`, `BR-20`, `NFR-03`, `NFR-15`, `NFR-16`, `NFR-19`, `BP-08`                                                 |
+
+## 3. Nội dung cập nhật trực tiếp cho nghiệp vụ
+
+### 3.1. Vị trí, ETA và phân công
+
+- `DriverLocation` được cập nhật khoảng 10 giây/lần trong thời gian tài xế hoạt động hoặc thực hiện chuyến.
+- Độ chính xác vị trí mục tiêu khoảng 50 m khi tín hiệu GPS phù hợp.
+- ETA trong MVP dựa trên vị trí hiện tại và khoảng cách đến điểm đón; không yêu cầu tích hợp giao thông thời gian thực.
+- Hệ thống tự động tìm/phân công; nhân viên vận hành chỉ can thiệp khi hỗ trợ hoặc xử lý sự cố.
+
+### 3.2. Hủy chuyến và sự cố
+
+- Khách hàng được hủy trước khi chuyến hoàn thành và trước trạng thái không cho phép hủy.
+- Tài xế chỉ từ chối trước khi nhận; sau khi nhận chỉ yêu cầu hủy hoặc báo sự cố theo chính sách vận hành.
+- MVP đề xuất chưa áp dụng phí hủy.
+- Chưa phát sinh thanh toán thì không hoàn tiền; đã thanh toán điện tử thì hoàn tiền theo chính sách Payment Provider.
+- Sự cố có thể đưa chuyến về trạng thái hủy hoặc sự cố đã xử lý tùy tình huống.
+
+### 3.3. Thanh toán và thông báo
+
+- Thanh toán điện tử được retry tối đa 3 lần trong 30 phút kể từ lần thất bại đầu tiên.
+- Tiền mặt hoàn tất khi tài xế xác nhận đã thu đủ tiền.
+- MVP dùng thông báo trong hệ thống và email, retry tối đa 3 lần; không tự chuyển sang kênh khác sau khi retry thất bại.
+
+### 3.4. Vai trò và báo cáo
+
+- Nhân viên vận hành quản lý khách hàng, tài xế, phương tiện, chuyến, sự cố và trạng thái vận hành theo quyền.
+- Quản trị viên quản lý tài khoản, phân quyền và cấu hình quản trị; chỉ Quản trị viên được cấp/thay đổi quyền.
+- Báo cáo gồm số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế.
+- `Tỷ lệ hoàn thành = Số chuyến hoàn thành / Tổng số chuyến được tạo x 100%`.
+- `Tỷ lệ hủy = Số chuyến bị hủy / Tổng số chuyến được tạo x 100%`.
+- Báo cáo lọc theo thời gian, tài xế, loại xe và trạng thái; ban lãnh đạo chỉ xem báo cáo tổng hợp.
+
+## 4. Cập nhật Data Model ở mức phân tích
+
+Không thiết kế Database vật lý. Các thuộc tính phân tích cần được hiểu như sau:
+
+| Entity                      | Thuộc tính/quy tắc cập nhật                                                                                                      |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `ENT-05 Trip`               | Bổ sung trạng thái hủy và sự cố đã xử lý; lưu điều kiện/trạng thái cho phép hủy và thông tin hủy khi có.                         |
+| `ENT-06 DriverLocation`     | Bổ sung tần suất khoảng 10 giây/lần, độ chính xác mục tiêu 50 m và chính sách lưu chi tiết 30 ngày đề xuất.                      |
+| `ENT-07 Fare`               | Cước do hệ thống tự động tính từ bảng giá cấu hình, loại dịch vụ/loại xe và thông tin chuyến; có thể có giá tối thiểu/phụ phí.   |
+| `ENT-08 PaymentTransaction` | Bổ sung số lần retry, thời điểm retry, trạng thái tiền mặt do tài xế xác nhận và giới hạn 3 lần/30 phút cho điện tử.             |
+| `ENT-09 NotificationRecord` | Kênh MVP là trong hệ thống/email; lưu số lần gửi, tối đa 3 lần retry và kết quả cuối; không tự chuyển kênh sau retry thất bại.   |
+| `ENT-12 AuditRecord`        | Bao gồm đăng nhập, đổi quyền, đổi dữ liệu quan trọng, xử lý sự cố và thao tác quản trị; thời gian lưu đề xuất 12 tháng.          |
+| Dữ liệu lưu trữ             | Chuyến/giao dịch 24 tháng; vị trí chi tiết 30 ngày; audit 12 tháng; sau đó xóa hoặc chuyển lưu trữ theo chính sách doanh nghiệp. |
+
+## 5. Cập nhật NFR và phục hồi
+
+| NFR/nhóm      | Nội dung sau phản hồi v2                                                                             | Mức độ                            |
+| ------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Performance   | Khoảng 500 người dùng đồng thời trong MVP; thao tác thông thường không quá 3 giây.                   | Đề xuất/định hướng, cần phê duyệt |
+| Availability  | Khả dụng đề xuất 99,5% trong thời gian vận hành.                                                     | Đề xuất, cần phê duyệt            |
+| Backup        | Sao lưu dữ liệu tự động hằng ngày.                                                                   | Đề xuất, cần phê duyệt            |
+| Recovery      | RTO không quá 4 giờ; RPO không quá 24 giờ.                                                           | Đề xuất, cần phê duyệt            |
+| Isolation     | Lỗi thanh toán/thông báo không làm dừng toàn bộ đặt và thực hiện chuyến.                             | Đã xác nhận nguyên tắc            |
+| Extensibility | Có thể thêm dịch vụ, phương thức thanh toán, kênh/provider; mở rộng độc lập và triển khai từng phần. | Đã xác nhận định hướng            |
+
+## 6. Nội dung còn cần xác nhận
+
+Sau phản hồi v2, các điểm còn mở là:
+
+- Công thức cước chi tiết, danh mục giá tối thiểu/phụ phí và quyền cấu hình cụ thể.
+- Trạng thái chính xác mà chuyến không còn được hủy.
+- Quy trình/phê duyệt hoàn tiền khi hủy thanh toán điện tử.
+- Chi tiết ma trận quyền ngoài hai vai trò MVP và danh sách đầy đủ thao tác nhạy cảm.
+- Chi tiết trạng thái hủy/sự cố đã xử lý và quy trình chuyển trạng thái sau sự cố.
+- Tiêu chí nghiệm thu cuối cho 500 người dùng, 3 giây, 99,5%, backup, RTO và RPO vì nguồn dùng mức đề xuất/định hướng.
+- Actor trực tiếp của nhóm mở rộng nền tảng.
+- Việc đưa lịch sử chuyến và đánh giá tài xế thành FR/UC/AC độc lập.
+
+## 7. Kiểm tra truy xuất sau cập nhật v2
+
+- Không đổi hoặc xóa mã truy xuất hiện có.
+- Các nội dung v2 được liên kết về các mã hiện có trong bảng V2-01 đến V2-11.
+- Phản hồi v2 được ưu tiên khi khác phản hồi cũ; mức tải MVP được cập nhật từ 1.000 xuống 500 người dùng đồng thời.
+- Các mục tiêu đề xuất không được ghi là tiêu chí nghiệm thu bắt buộc.
+- Các nội dung chưa được phản hồi v2 chốt vẫn giữ trạng thái cần xác nhận.

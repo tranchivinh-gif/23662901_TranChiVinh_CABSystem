@@ -1,0 +1,147 @@
+# YÊU CẦU BỔ SUNG VÀ XÁC NHẬN
+
+## 1. Quản lý vị trí tài xế và ETA
+
+Trong quá trình tài xế ở trạng thái hoạt động hoặc đang thực hiện chuyến, hệ thống thu thập và cập nhật vị trí của tài xế định kỳ khoảng **10 giây/lần**. Độ chính xác vị trí mục tiêu khoảng **50 m** trong điều kiện tín hiệu GPS phù hợp.
+
+Thời gian dự kiến tài xế đến điểm đón (ETA) được xác định dựa trên **vị trí hiện tại của tài xế và khoảng cách đến điểm đón**. Trong phiên bản đầu, hệ thống chưa yêu cầu tích hợp dữ liệu giao thông thời gian thực.
+
+## 2. Chính sách hủy chuyến
+
+Khách hàng được phép hủy chuyến khi chuyến chưa hoàn thành và chưa chuyển sang trạng thái không cho phép hủy.
+
+Tài xế có thể từ chối chuyến trước khi nhận chuyến. Sau khi đã nhận chuyến, tài xế chỉ được yêu cầu hủy hoặc báo sự cố theo chính sách vận hành của hệ thống.
+
+Trong phiên bản MVP, đề xuất **chưa áp dụng phí hủy chuyến** nhằm giảm độ phức tạp triển khai. Trường hợp chưa phát sinh thanh toán thì không có yêu cầu hoàn tiền. Nếu khách hàng đã thanh toán điện tử trước khi hủy, việc hoàn tiền được xử lý theo chính sách của đơn vị cung cấp dịch vụ thanh toán.
+
+## 3. Thanh toán điện tử và tiền mặt
+
+Hệ thống hỗ trợ hai hình thức thanh toán chính gồm **tiền mặt và thanh toán điện tử**.
+
+Đối với thanh toán điện tử, nếu giao dịch thất bại, khách hàng được phép thực hiện lại tối đa **3 lần trong vòng 30 phút** kể từ lần thanh toán thất bại đầu tiên. Nếu tất cả các lần thử đều thất bại, giao dịch được ghi nhận ở trạng thái thất bại/chưa hoàn tất và khách hàng được thông báo để thực hiện phương án xử lý tiếp theo theo chính sách vận hành.
+
+Đối với thanh toán tiền mặt, **tài xế xác nhận việc đã nhận tiền** từ khách hàng. Giao dịch được xem là hoàn tất khi tài xế xác nhận đã thu đủ số tiền cần thanh toán.
+
+Đối với thanh toán điện tử, CAB System sử dụng **Payment Provider bên ngoài**. Hệ thống không lưu trữ trực tiếp thông tin thẻ hoặc thông tin tài khoản thanh toán nhạy cảm. Hệ thống lưu các thông tin cần thiết như mã giao dịch và trạng thái giao dịch để phục vụ tra cứu và đối soát.
+
+## 4. Thông báo
+
+Hệ thống gửi thông báo cho khách hàng khi:
+
+* Yêu cầu đặt chuyến được tiếp nhận.
+* Tài xế được phân công.
+* Tài xế đã đến điểm đón.
+* Chuyến đi hoàn thành.
+* Thanh toán thành công hoặc thất bại.
+
+Đối với tài xế, hệ thống gửi thông báo khi có chuyến mới hoặc có thay đổi liên quan đến chuyến đang thực hiện.
+
+Trong phiên bản MVP, đề xuất sử dụng **thông báo trong hệ thống và email**. Khi gửi thông báo thất bại, hệ thống thực hiện tối đa **3 lần thử lại**. Phiên bản đầu chưa yêu cầu chuyển sang một kênh thông báo khác khi retry thất bại.
+
+Hệ thống được thiết kế theo hướng có thể thay đổi hoặc bổ sung Notification Provider và các kênh thông báo khác trong tương lai mà không phải xây dựng lại toàn bộ hệ thống.
+
+## 5. Phân quyền nhân viên vận hành
+
+Hệ thống áp dụng cơ chế **phân quyền dựa trên vai trò**.
+
+Trong phạm vi MVP, đề xuất gồm hai vai trò quản trị chính:
+
+* **Nhân viên vận hành:** xử lý các nghiệp vụ vận hành như quản lý khách hàng, tài xế, phương tiện, chuyến đi, sự cố và trạng thái vận hành theo quyền được cấp.
+* **Quản trị viên:** quản lý tài khoản, phân quyền người dùng và các cấu hình quản trị được phép thay đổi.
+
+Các thao tác nhạy cảm bao gồm thay đổi quyền người dùng, thay đổi thông tin tài khoản quan trọng, thay đổi dữ liệu giao dịch, thay đổi trạng thái chuyến và các thao tác quản trị quan trọng.
+
+Chỉ **Quản trị viên** được cấp hoặc thay đổi quyền của người dùng.
+
+Hệ thống ghi nhận nhật ký kiểm toán (audit log) đối với các thao tác quan trọng như đăng nhập, thay đổi quyền, thay đổi dữ liệu quan trọng, xử lý sự cố và các thao tác quản trị. Thời gian lưu audit log đề xuất là **12 tháng**.
+
+## 6. Xử lý sự cố
+
+Sự cố được hiểu là các trường hợp làm ảnh hưởng đến việc thực hiện chuyến, bao gồm mất kết nối, trạng thái chuyến bất thường, khách hàng hoặc tài xế không thể tiếp tục chuyến, lỗi thanh toán hoặc lỗi hệ thống ảnh hưởng đến chuyến đi.
+
+Nhân viên vận hành có quyền xem thông tin sự cố, kiểm tra thông tin chuyến, cập nhật trạng thái phù hợp và ghi nhận kết quả xử lý.
+
+Sau khi xử lý, chuyến đi được chuyển về trạng thái phù hợp. Nếu chuyến không thể tiếp tục, chuyến được chuyển sang trạng thái **hủy hoặc sự cố đã xử lý** theo tình huống thực tế.
+
+Khi kết quả xử lý sự cố ảnh hưởng đến khách hàng hoặc tài xế, hệ thống gửi thông báo cho các bên liên quan.
+
+## 7. Phân công tài xế
+
+Việc tìm kiếm và phân công tài xế được thực hiện **tự động bởi hệ thống** dựa trên các tiêu chí vận hành đã được cấu hình.
+
+Hệ thống ưu tiên các tài xế phù hợp, đặc biệt dựa trên **vị trí và khả năng đáp ứng chuyến**. Khi tài xế từ chối hoặc không phản hồi, hệ thống tiếp tục tìm kiếm tài xế khác mà không yêu cầu khách hàng tạo lại yêu cầu đặt chuyến.
+
+Nhân viên vận hành chỉ can thiệp trong các trường hợp cần hỗ trợ hoặc xử lý sự cố.
+
+## 8. Quản lý cước phí
+
+Cước chuyến được **hệ thống tự động tính toán** dựa trên thông tin chuyến đi và bảng giá đã được cấu hình.
+
+Các dữ liệu đầu vào phục vụ tính cước có thể bao gồm loại dịch vụ, loại phương tiện và thông tin của chuyến đi. Bảng giá được quản lý thông qua chức năng cấu hình của hệ thống.
+
+## 9. Báo cáo và KPI
+
+Hệ thống cung cấp các báo cáo phục vụ hoạt động quản lý, bao gồm:
+
+* Số lượng chuyến.
+* Doanh thu.
+* Tỷ lệ hoàn thành chuyến.
+* Tỷ lệ hủy chuyến.
+* Hiệu quả hoạt động của tài xế.
+
+Báo cáo hỗ trợ các kỳ **ngày, tuần, tháng** và cho phép lựa chọn khoảng thời gian cần xem.
+
+Tỷ lệ hoàn thành chuyến được tính theo công thức:
+
+**Tỷ lệ hoàn thành = Số chuyến hoàn thành / Tổng số chuyến được tạo × 100%**
+
+Tỷ lệ hủy chuyến được tính theo công thức:
+
+**Tỷ lệ hủy = Số chuyến bị hủy / Tổng số chuyến được tạo × 100%**
+
+Hiệu quả tài xế được đánh giá dựa trên các chỉ số như số chuyến nhận, số chuyến hoàn thành, tỷ lệ từ chối/hủy và đánh giá của khách hàng.
+
+Báo cáo có thể được lọc theo thời gian, tài xế, loại xe và trạng thái chuyến.
+
+Nhân viên vận hành được phép xem và lập báo cáo. Ban lãnh đạo có quyền xem các báo cáo tổng hợp nhưng không trực tiếp thực hiện các nghiệp vụ vận hành.
+
+## 10. Vai trò của các Actor
+
+Ban lãnh đạo được xem là đối tượng sử dụng chức năng báo cáo ở mức quản lý và có thể đăng nhập để xem thông tin tổng hợp.
+
+Nhân viên vận hành chịu trách nhiệm xử lý các nghiệp vụ vận hành và can thiệp khi hệ thống cần hỗ trợ.
+
+Hệ thống chịu trách nhiệm tự động tìm kiếm và phân công tài xế, tính toán cước và gửi thông báo.
+
+Quản trị viên chịu trách nhiệm quản lý tài khoản, phân quyền và các cấu hình quản trị được phép thay đổi.
+
+BA và nhóm phát triển là **Stakeholder của dự án**, không phải Actor nghiệp vụ chính của hệ thống.
+
+## 11. Lưu trữ dữ liệu
+
+Đề xuất thời gian lưu trữ dữ liệu như sau:
+
+* **Dữ liệu chuyến đi:** 24 tháng.
+* **Dữ liệu giao dịch:** 24 tháng.
+* **Dữ liệu vị trí tài xế chi tiết:** 30 ngày.
+* **Audit log:** 12 tháng.
+
+Sau thời hạn lưu trữ, dữ liệu được xóa hoặc chuyển sang lưu trữ theo chính sách của doanh nghiệp. Đối với dữ liệu vị trí chi tiết, chỉ duy trì trong thời gian thực sự cần thiết cho mục đích nghiệp vụ.
+
+## 12. Hiệu năng và khả năng phục hồi
+
+Trong phạm vi MVP, hệ thống được đề xuất thiết kế để hỗ trợ khoảng **500 người dùng đồng thời**.
+
+Đối với các thao tác nghiệp vụ thông thường, thời gian phản hồi mục tiêu là **không quá 3 giây**. Các thao tác phụ thuộc vào dịch vụ bên ngoài như thanh toán hoặc thông báo có thể có thời gian phản hồi khác.
+
+Mục tiêu khả dụng của hệ thống đề xuất là **99,5% trong thời gian vận hành**.
+
+Hệ thống thực hiện **sao lưu dữ liệu tự động hằng ngày**.
+
+Trong trường hợp xảy ra sự cố nghiêm trọng, mục tiêu thời gian khôi phục dịch vụ (**RTO**) là **không quá 4 giờ**. Mục tiêu điểm khôi phục dữ liệu (**RPO**) là **không quá 24 giờ**, nghĩa là hệ thống có khả năng khôi phục dữ liệu về bản sao lưu gần nhất trong phạm vi mục tiêu này.
+
+## 13. Khả năng mở rộng trong tương lai
+
+CAB System được định hướng theo kiến trúc có khả năng mở rộng. Hệ thống có thể bổ sung loại hình dịch vụ, phương thức thanh toán, kênh thông báo hoặc nhà cung cấp dịch vụ bên ngoài trong tương lai mà không phải xây dựng lại toàn bộ hệ thống.
+
+Các thành phần có thể được mở rộng hoặc thay đổi độc lập khi cần thiết. Việc triển khai các chức năng mới được thực hiện theo từng phần nhằm hạn chế ảnh hưởng đến các chức năng đang hoạt động.
