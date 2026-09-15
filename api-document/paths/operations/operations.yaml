@@ -4,6 +4,9 @@ notifications:
     summary: List notifications for current user
     operationId: listOwnNotifications
     security: [{ bearerAuth: [] }]
+    parameters:
+      - { $ref: '../../parameters/parameters.yaml#/Page' }
+      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
     responses:
       '200': { description: Notifications, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/NotificationPage' } } } }
 incident:
@@ -21,14 +24,11 @@ incident:
       required: true
       content:
         application/json:
-          schema:
-            type: object
-            required: [status]
-            properties:
-              status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
-              resolution: { type: string }
+          schema: { $ref: '../../schemas/common.yaml#/schemas/IncidentUpdateRequest' }
     responses:
       '200': { description: Updated incident, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
       '404': { $ref: '../../responses/responses.yaml#/NotFound' }
 users:
@@ -41,7 +41,8 @@ users:
       - { $ref: '../../parameters/parameters.yaml#/Page' }
       - { $ref: '../../parameters/parameters.yaml#/PageSize' }
     responses:
-      '200': { description: User page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: User page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/UserPage' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
 drivers:
   get:
@@ -49,8 +50,10 @@ drivers:
     summary: List drivers for operation
     operationId: listOperationalDrivers
     security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
     responses:
-      '200': { description: Driver page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: Driver page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/DriverPage' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
 vehicles:
   get:
@@ -58,8 +61,10 @@ vehicles:
     summary: List vehicles for operation
     operationId: listOperationalVehicles
     security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
     responses:
-      '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/VehiclePage' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
 audit:
   get:
@@ -73,5 +78,6 @@ audit:
       - { name: from, in: query, schema: { type: string, format: date-time } }
       - { name: to, in: query, schema: { type: string, format: date-time } }
     responses:
-      '200': { description: Audit records, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: Audit records, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/AuditRecordPage' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }

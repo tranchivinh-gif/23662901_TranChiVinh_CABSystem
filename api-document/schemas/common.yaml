@@ -3,47 +3,61 @@ schemas:
     type: object
     required: [code, message]
     properties:
-      code: { type: string, example: VALIDATION_ERROR }
-      message: { type: string, example: Request data is invalid. }
-      details: { type: array, items: { type: object, additionalProperties: true } }
-      traceId: { type: string }
+      code: { type: string, description: "Mã lỗi theo quy ước kỹ thuật." }
+      message: { type: string }
+      details: { type: array, items: { $ref: '#/schemas/ErrorDetail' } }
+      traceId: { type: string, nullable: true, description: "Mã tương quan kỹ thuật." }
+  ErrorDetail:
+    type: object
+    properties: { field: { type: string, nullable: true }, issue: { type: string } }
   User:
     type: object
-    required: [id, email, role]
+    required: [id, email, role, status]
     properties:
       id: { type: string, format: uuid }
       email: { type: string, format: email }
       fullName: { type: string }
-      phone: { type: string }
+      phone: { type: string, nullable: true }
       role: { type: string, enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN] }
       status: { type: string, enum: [ACTIVE, LOCKED] }
+      createdAt: { type: string, format: date-time }
+  Vehicle:
+    type: object
+    required: [id, plateNumber, type, status]
+    properties:
+      id: { type: string, format: uuid }
+      plateNumber: { type: string }
+      type: { type: string, description: "Danh mục loại xe là cấu hình vận hành." }
+      status: { type: string, enum: [AVAILABLE, IN_SERVICE, MAINTENANCE] }
+      driverId: { type: string, format: uuid, nullable: true }
+  DriverProfile:
+    allOf:
+      - $ref: '#/schemas/User'
+      - type: object
+        properties: { vehicle: { $ref: '#/schemas/Vehicle' }, availability: { type: boolean } }
   RegisterRequest:
     type: object
     required: [email, password, fullName]
     properties:
       email: { type: string, format: email }
-      password: { type: string, format: password }
+      password: { type: string, format: password, writeOnly: true }
       fullName: { type: string, minLength: 1 }
       phone: { type: string }
   LoginRequest:
     type: object
     required: [email, password]
-    properties:
-      email: { type: string, format: email }
-      password: { type: string, format: password }
+    properties: { email: { type: string, format: email }, password: { type: string, format: password, writeOnly: true } }
   AuthResponse:
     type: object
-    required: [accessToken, user]
+    required: [accessToken, tokenType, user]
     properties:
       accessToken: { type: string }
       tokenType: { type: string, example: Bearer }
-      expiresIn: { type: integer, format: int32 }
+      expiresIn: { type: integer, nullable: true, description: "TBD – thời hạn token chưa được SRS chốt." }
       user: { $ref: '#/schemas/User' }
   UpdateProfileRequest:
     type: object
-    properties:
-      fullName: { type: string }
-      phone: { type: string }
+    properties: { fullName: { type: string, minLength: 1 }, phone: { type: string } }
   Location:
     type: object
     required: [latitude, longitude]
@@ -51,9 +65,18 @@ schemas:
       latitude: { type: number, format: double, minimum: -90, maximum: 90 }
       longitude: { type: number, format: double, minimum: -180, maximum: 180 }
       recordedAt: { type: string, format: date-time }
+      accuracyMeters: { type: number, format: double, minimum: 0, nullable: true, description: "Mục tiêu GPS khoảng 50 m khi phù hợp." }
+  TripStatus:
+    type: string
+    enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT_REPORTED, INCIDENT_RESOLVED]
+  DriverSummary:
+    type: object
+    nullable: true
+    required: [id, fullName]
+    properties: { id: { type: string, format: uuid }, fullName: { type: string }, vehicle: { $ref: '#/schemas/Vehicle' } }
   Trip:
     type: object
-    required: [id, pickup, destination, vehicleType, status]
+    required: [id, pickup, destination, vehicleType, status, createdAt]
     properties:
       id: { type: string, format: uuid }
       customerId: { type: string, format: uuid }
@@ -61,101 +84,157 @@ schemas:
       pickup: { $ref: '#/schemas/Location' }
       destination: { $ref: '#/schemas/Location' }
       vehicleType: { type: string }
-      status:
-        type: string
-        enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT]
-      etaSeconds: { type: integer, nullable: true }
+      status: { $ref: '#/schemas/TripStatus' }
+      etaSeconds: { type: integer, minimum: 0, nullable: true, description: "ETA MVP theo vị trí và khoảng cách, không dùng giao thông thời gian thực." }
+      driver: { $ref: '#/schemas/DriverSummary' }
       createdAt: { type: string, format: date-time }
   CreateTripRequest:
     type: object
     required: [pickup, destination, vehicleType]
-    properties:
-      pickup: { $ref: '#/schemas/Location' }
-      destination: { $ref: '#/schemas/Location' }
-      vehicleType: { type: string }
+    properties: { pickup: { $ref: '#/schemas/Location' }, destination: { $ref: '#/schemas/Location' }, vehicleType: { type: string } }
   DriverResponseRequest:
     type: object
     required: [response]
-    properties:
-      response: { type: string, enum: [ACCEPT, REJECT] }
-      reason: { type: string }
+    properties: { response: { type: string, enum: [ACCEPT, REJECT] }, reason: { type: string, nullable: true } }
   StatusUpdateRequest:
     type: object
     required: [status]
-    properties:
-      status: { $ref: '#/schemas/Trip/properties/status' }
+    properties: { status: { $ref: '#/schemas/TripStatus' } }
   IncidentRequest:
     type: object
     required: [description]
     properties:
       description: { type: string, minLength: 1 }
-      type: { type: string }
+      type: { type: string, enum: [CONNECTION_LOSS, ABNORMAL_STATUS, CANNOT_CONTINUE, PAYMENT_ERROR, SYSTEM_ERROR], nullable: true }
+  IncidentUpdateRequest:
+    type: object
+    required: [status]
+    properties: { status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }, reason: { type: string, nullable: true }, resolution: { type: string, nullable: true } }
   Incident:
     type: object
-    required: [id, tripId, description, status]
+    required: [id, tripId, description, status, reportedAt]
     properties:
       id: { type: string, format: uuid }
       tripId: { type: string, format: uuid }
       description: { type: string }
-      type: { type: string }
+      type: { type: string, nullable: true }
       status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
+      reason: { type: string, nullable: true }
+      resolution: { type: string, nullable: true }
+      reportedAt: { type: string, format: date-time }
+      resolvedAt: { type: string, format: date-time, nullable: true }
   Fare:
     type: object
     required: [tripId, amount, currency, status]
     properties:
       tripId: { type: string, format: uuid }
-      amount: { type: number, format: decimal, minimum: 0 }
+      amount: { type: number, format: double, minimum: 0 }
       currency: { type: string, example: VND }
-      basis: { type: string }
       status: { type: string, enum: [CALCULATED, PENDING_CONFIRMATION] }
+      priceVersion: { type: string, nullable: true, description: "TBD – phiên bản bảng giá." }
+      basis: { type: string, nullable: true, description: "TBD – công thức cước/phụ phí." }
+  PaymentFailure:
+    type: object
+    nullable: true
+    properties: { code: { type: string }, message: { type: string } }
   Payment:
     type: object
-    required: [id, tripId, method, status]
+    required: [id, tripId, method, status, attemptNumber, createdAt]
     properties:
       id: { type: string, format: uuid }
       tripId: { type: string, format: uuid }
       method: { type: string, enum: [CASH, ELECTRONIC] }
-      status: { type: string, enum: [PENDING, PROCESSING, SUCCEEDED, FAILED] }
-      providerTransactionId: { type: string, nullable: true }
+      status: { type: string, enum: [PENDING, PROCESSING, SUCCEEDED, FAILED, UNCOMPLETED] }
+      provider: { type: string, nullable: true }
+      providerTransactionReference: { type: string, nullable: true }
+      attemptNumber: { type: integer, minimum: 1, maximum: 3 }
+      firstFailureAt: { type: string, format: date-time, nullable: true }
+      failure: { $ref: '#/schemas/PaymentFailure' }
+      createdAt: { type: string, format: date-time }
   ElectronicPaymentRequest:
     type: object
     required: [provider, paymentToken]
     properties:
       provider: { type: string }
-      paymentToken: { type: string, description: Token from provider; CAB does not store sensitive payment data. }
+      paymentToken: { type: string, writeOnly: true, description: "Token provider; CAB không lưu dữ liệu thẻ/tài khoản nhạy cảm." }
+  RatingRequest:
+    type: object
+    required: [rating]
+    properties: { rating: { type: number, format: double, description: "TBD – thang điểm chưa chốt." }, review: { type: string, nullable: true } }
+  Rating:
+    type: object
+    required: [id, tripId, driverId, rating, createdAt]
+    properties: { id: { type: string, format: uuid }, tripId: { type: string, format: uuid }, driverId: { type: string, format: uuid }, rating: { type: number, format: double }, review: { type: string, nullable: true }, createdAt: { type: string, format: date-time } }
+  NotificationFailure:
+    type: object
+    nullable: true
+    properties: { message: { type: string }, final: { type: boolean, description: "true sau tối đa 3 lần; MVP không đổi kênh." } }
   Notification:
     type: object
-    required: [id, eventType, recipientId, channel, status]
+    required: [id, eventType, recipientId, channel, status, attempts, createdAt]
     properties:
       id: { type: string, format: uuid }
-      eventType: { type: string }
+      eventType: { type: string, enum: [TRIP_RECEIVED, DRIVER_ASSIGNED, DRIVER_ARRIVED, TRIP_COMPLETED, PAYMENT_UPDATED, TRIP_CHANGED] }
       recipientId: { type: string, format: uuid }
       channel: { type: string, enum: [IN_APP, EMAIL] }
       status: { type: string, enum: [PENDING, SENT, FAILED] }
-      attempts: { type: integer, maximum: 3 }
-  NotificationPage:
+      attempts: { type: integer, minimum: 1, maximum: 3 }
+      failure: { $ref: '#/schemas/NotificationFailure' }
+      createdAt: { type: string, format: date-time }
+  AuditRecord:
     type: object
-    required: [items, page, pageSize, total]
+    required: [id, occurredAt, actorId, action, resourceType, resourceId, outcome]
     properties:
-      items: { type: array, items: { $ref: '#/schemas/Notification' } }
-      page: { type: integer, minimum: 1 }
-      pageSize: { type: integer, minimum: 1 }
-      total: { type: integer, minimum: 0 }
+      id: { type: string, format: uuid }
+      occurredAt: { type: string, format: date-time }
+      actorId: { type: string, format: uuid }
+      action: { type: string, enum: [LOGIN, ROLE_CHANGED, IMPORTANT_DATA_CHANGED, INCIDENT_HANDLED, ADMIN_OPERATION] }
+      resourceType: { type: string }
+      resourceId: { type: string }
+      outcome: { type: string, enum: [SUCCESS, FAILURE] }
+      traceId: { type: string, nullable: true }
+  DriverPerformance:
+    type: object
+    required: [driverId, acceptedTrips, completedTrips, rejectedOrCancelledTrips]
+    properties: { driverId: { type: string, format: uuid }, acceptedTrips: { type: integer, minimum: 0 }, completedTrips: { type: integer, minimum: 0 }, rejectedOrCancelledTrips: { type: integer, minimum: 0 }, averageRating: { type: number, format: double, nullable: true } }
   Report:
     type: object
+    required: [from, to, totalTrips, completedTrips, cancelledTrips, revenue, completionRate, cancellationRate, driverPerformance]
     properties:
       from: { type: string, format: date-time }
       to: { type: string, format: date-time }
-      totalTrips: { type: integer }
-      completedTrips: { type: integer }
-      cancelledTrips: { type: integer }
-      revenue: { type: number, format: decimal }
-      completionRate: { type: number, format: double }
-      cancellationRate: { type: number, format: double }
-  Page:
+      totalTrips: { type: integer, minimum: 0 }
+      completedTrips: { type: integer, minimum: 0 }
+      cancelledTrips: { type: integer, minimum: 0 }
+      revenue: { type: number, format: double, minimum: 0 }
+      completionRate: { type: number, format: double, description: "completedTrips / totalTrips * 100; 0 khi mẫu số bằng 0." }
+      cancellationRate: { type: number, format: double, description: "cancelledTrips / totalTrips * 100; 0 khi mẫu số bằng 0." }
+      driverPerformance: { type: array, items: { $ref: '#/schemas/DriverPerformance' } }
+  UserPage:
     type: object
-    properties:
-      items: { type: array, items: { type: object, additionalProperties: true } }
-      page: { type: integer, minimum: 1 }
-      pageSize: { type: integer, minimum: 1 }
-      total: { type: integer, minimum: 0 }
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/User' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  DriverPage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/DriverProfile' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  VehiclePage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/Vehicle' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  TripPage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/Trip' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  PaymentPage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/Payment' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  NotificationPage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/Notification' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }
+  AuditRecordPage:
+    type: object
+    required: [items, page, pageSize, total]
+    properties: { items: { type: array, items: { $ref: '#/schemas/AuditRecord' } }, page: { type: integer, minimum: 1 }, pageSize: { type: integer, minimum: 1 }, total: { type: integer, minimum: 0 } }

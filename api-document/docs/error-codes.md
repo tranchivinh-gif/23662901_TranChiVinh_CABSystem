@@ -9,4 +9,4 @@
 | 409 | `CONFLICT` | Trạng thái nghiệp vụ không hợp lệ, trùng lặp hoặc chuyển trạng thái đồng thời |
 | 500 | `INTERNAL_ERROR` | Lỗi máy chủ không dự kiến |
 
-Lỗi sử dụng cấu trúc JSON dùng chung trong `schemas/common.yaml`.
+Các mã trên là quy ước kỹ thuật, không phải mã nghiệp vụ mới. Lỗi dùng cấu trúc `Error` chung gồm `code`, `message`, `details` và `traceId` tùy chọn.

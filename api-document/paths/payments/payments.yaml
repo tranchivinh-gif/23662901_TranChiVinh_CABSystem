@@ -1,46 +1,56 @@
 fare:
   get:
     tags: [Payments]
-    summary: Get calculated trip fare
+    summary: Xem cước tự động tính sau khi hoàn thành
     operationId: getTripFare
+    description: "Cước chỉ được hệ thống tính khi chuyến COMPLETED, từ bảng giá cấu hình theo dịch vụ/loại xe, giá tối thiểu và phụ phí nếu có. TBD – công thức, làm tròn và phiên bản bảng giá."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
-      '200': { description: Fare, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Fare' } } } }
+      '200': { description: "Cước của chuyến.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Fare' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
       '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 cashPayment:
   post:
     tags: [Payments]
-    summary: Confirm cash collection
+    summary: Tài xế xác nhận đã thu đủ tiền mặt
     operationId: confirmCashPayment
-    description: Cash payment is complete only after the driver confirms the full amount was collected.
+    description: "Chỉ DRIVER được phân công xác nhận. CASH chỉ SUCCEEDED khi tài xế xác nhận thu đủ; chi tiết chính sách tiền mặt vẫn cần xác nhận."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
-      '200': { description: Cash payment, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
-      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '200': { description: "Trạng thái thanh toán tiền mặt.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 electronicPayment:
   post:
     tags: [Payments]
-    summary: Start electronic payment
+    summary: Khởi tạo hoặc thử lại thanh toán điện tử
     operationId: startElectronicPayment
-    description: CAB stores only provider transaction identifier and status. Retry is limited to three attempts within 30 minutes.
+    description: "CUSTOMER của chuyến gửi token do provider phát hành. CAB chỉ lưu tham chiếu/kết quả provider, không lưu dữ liệu nhạy cảm. Tối đa 3 attempt trong 30 phút kể từ failure đầu tiên; sau đó FAILED hoặc UNCOMPLETED và thông báo khách hàng."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/ElectronicPaymentRequest' } } }
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/ElectronicPaymentRequest' } } } }
     responses:
-      '202': { description: Payment submitted, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
+      '202': { description: "Yêu cầu đã gửi provider.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
       '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 payments:
   get:
     tags: [Payments]
-    summary: List trip payment attempts
+    summary: Xem lịch sử attempt thanh toán
     operationId: listTripPayments
     security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }, { $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
     responses:
-      '200': { description: Payment records, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: "Lịch sử giao dịch được phép tra cứu.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/PaymentPage' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }

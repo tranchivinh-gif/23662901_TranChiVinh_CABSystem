@@ -121,7 +121,13 @@ Bundle chứa độc lập toàn bộ path, schema, parameter, response và secu
 Editor, Swagger UI, kiểm thử và chia sẻ. Không chỉnh sửa trực tiếp file trong `dist/`; mọi thay
 đổi phải bắt đầu từ file nguồn, kiểm tra rồi bundle lại.
 
-## 8. Validation
+## 8. Truy xuất, phạm vi và các điểm chưa chốt
+
+Ma trận FR/UC/AC có tại [docs/traceability.md](./docs/traceability.md); các quyết định cần BA/customer xác nhận có tại [docs/open-issues.md](./docs/open-issues.md). Phạm vi MVP gồm UC-01 đến UC-16. UC-17 đến UC-19 là future extension, không có public endpoint MVP.
+
+Các bổ sung v2 được phản ánh gồm assignment/tính cước/thông báo tự động, 30 giây phản hồi tài xế, retry thanh toán 3 lần/30 phút, `IN_APP`/`EMAIL` với tối đa 3 attempt, audit baseline 12 tháng và công thức tỷ lệ hoàn thành/hủy. Công thức fare, policy cash/cancellation/refund, ma trận CRUD và rating scale vẫn cần xác nhận.
+
+## 9. Validation
 
 - Các endpoint map tới UC-01–UC-16 và FR-01–FR-27 trong SRS.
 - Không tạo endpoint ngoài phạm vi; UC-17–UC-19 được đánh dấu `[NEED CLARIFICATION]`.
@@ -129,11 +135,10 @@ Editor, Swagger UI, kiểm thử và chia sẻ. Không chỉnh sửa trực ti�
 - Các quy tắc phân công, timeout 30 giây, tiến trình chuyến, hủy, thanh toán, thông báo,
   audit và báo cáo đã được phản ánh.
 - Tất cả file `$ref` nguồn tồn tại và bundle không có external `$ref`.
-- Source và bundle không có lỗi Problems; bundle có 24 endpoint.
-- `git diff --check` không phát hiện lỗi whitespace.
-- Cần import bundle vào Swagger Editor như một bước release gate khi môi trường có Swagger CLI/editor.
+- Source cần được lint/bundle bằng Redocly hoặc Swagger CLI trước release. Lệnh chuẩn: `npx @redocly/cli lint api-document/openapi.yaml` và `npx @redocly/cli bundle api-document/openapi.yaml --output api-document/dist/openapi.bundle.yaml`.
+- Bundle chỉ được generate từ source; không chỉnh tay. Release gate cần kiểm tra mọi $ref, operationId và import Swagger Editor.
 
-## 9. [NEED CLARIFICATION]
+## 10. [NEED CLARIFICATION]
 
 Mỗi vấn đề dưới đây cần được xác nhận trước khi triển khai chính thức:
 

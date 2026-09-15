@@ -3,8 +3,8 @@ info:
   title: CAB System API
   version: 1.0.0
   description: |
-    API contract for the CAB System MVP. The contract is derived from SRS.md.
-    Items explicitly marked "[NEED CLARIFICATION]" in the SRS are not silently implemented.
+    Hợp đồng API CAB System MVP, truy xuất từ SRS.md (bao gồm phụ lục v2).
+    Các điểm chưa chốt được ghi rõ TBD/Cần xác nhận, không được suy diễn thành quy tắc nghiệp vụ.
 servers:
   - url: https://api.example.com/api/v1
     description: Placeholder; deployment host requires confirmation.
@@ -43,6 +43,8 @@ paths:
     $ref: './paths/orders/orders.yaml#/status'
   /trips/{tripId}/incidents:
     $ref: './paths/orders/orders.yaml#/incidents'
+  /trips/{tripId}/rating:
+    $ref: './paths/orders/orders.yaml#/rating'
   /trips/{tripId}/fare:
     $ref: './paths/payments/payments.yaml#/fare'
   /trips/{tripId}/payments/cash:
@@ -82,11 +84,15 @@ components:
     Incident: { $ref: './schemas/common.yaml#/schemas/Incident' }
     Fare: { $ref: './schemas/common.yaml#/schemas/Fare' }
     Payment: { $ref: './schemas/common.yaml#/schemas/Payment' }
+    Rating: { $ref: './schemas/common.yaml#/schemas/Rating' }
+    RatingRequest: { $ref: './schemas/common.yaml#/schemas/RatingRequest' }
     ElectronicPaymentRequest: { $ref: './schemas/common.yaml#/schemas/ElectronicPaymentRequest' }
     Notification: { $ref: './schemas/common.yaml#/schemas/Notification' }
     NotificationPage: { $ref: './schemas/common.yaml#/schemas/NotificationPage' }
     Report: { $ref: './schemas/common.yaml#/schemas/Report' }
-    Page: { $ref: './schemas/common.yaml#/schemas/Page' }
+    TripPage: { $ref: './schemas/common.yaml#/schemas/TripPage' }
+    PaymentPage: { $ref: './schemas/common.yaml#/schemas/PaymentPage' }
+    AuditRecordPage: { $ref: './schemas/common.yaml#/schemas/AuditRecordPage' }
   parameters:
     TripId:
       $ref: './parameters/parameters.yaml#/TripId'

@@ -1,98 +1,126 @@
 trips:
   post:
     tags: [Trips]
-    summary: Create a trip request
+    summary: Tạo yêu cầu đặt xe
     operationId: createTrip
+    description: "Khách hàng tạo yêu cầu; hệ thống tự chuyển chuyến sang tìm tài xế."
     security: [{ bearerAuth: [] }]
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/CreateTripRequest' } } }
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/CreateTripRequest' } } } }
     responses:
-      '201': { description: Trip accepted and sent to driver search, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '201': { description: "Yêu cầu được tiếp nhận.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
       '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
       '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
       '500': { $ref: '../../responses/responses.yaml#/ServerError' }
   get:
     tags: [Trips]
-    summary: List current user's trips
+    summary: Xem lịch sử chuyến của chính mình
     operationId: listOwnTrips
+    description: "CUSTOMER chỉ xem chuyến của mình; DRIVER chỉ xem chuyến được phân công."
     security: [{ bearerAuth: [] }]
-    parameters:
-      - { $ref: '../../parameters/parameters.yaml#/Page' }
-      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
-      - { name: status, in: query, schema: { type: string } }
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }, { name: status, in: query, schema: { $ref: '../../schemas/common.yaml#/schemas/TripStatus' } }]
     responses:
-      '200': { description: Trip page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '200': { description: "Danh sách chuyến.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/TripPage' } } } }
       '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
 trip:
   get:
     tags: [Trips]
-    summary: Get trip status and tracking information
+    summary: Theo dõi trạng thái và thông tin chuyến
     operationId: getTrip
+    description: "Chỉ thành viên chuyến hoặc vận hành có quyền. ETA chỉ là ước tính theo vị trí/khoảng cách."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
-      '200': { description: Trip, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '200': { description: "Chuyến và tiến trình hiện tại.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
       '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
       '404': { $ref: '../../responses/responses.yaml#/NotFound' }
   delete:
     tags: [Trips]
-    summary: Cancel trip before cancellation lock and completion
+    summary: Hủy chuyến
     operationId: cancelTrip
+    description: "CUSTOMER hủy trước COMPLETED và trước trạng thái khóa hủy theo policy vận hành. Không tự xác định phí hủy; hoàn tiền điện tử do provider xử lý."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
-      '204': { description: Trip cancelled }
+      '204': { description: "Đã hủy." }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 assignment:
   post:
     tags: [Trips]
-    summary: Record driver assignment result
-    operationId: assignDriver
-    description: Operator/system operation; assignment uses location, availability, vehicle type and business priority rules.
+    summary: Kích hoạt phân công tự động (nội bộ)
+    operationId: triggerAutomaticDriverAssignment
+    description: "Internal/system operation, không phải public API. The system automatically searches and assigns a suitable driver theo vị trí, availability, loại xe và ưu tiên ETA/khoảng cách thấp nhất. Chờ tối đa 30 giây; từ chối/không phản hồi thì tìm tiếp."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
-      '200': { description: Assignment result, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '202': { description: "Đã kích hoạt/quản lý vòng tìm tài xế.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
       '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 driverResponse:
   post:
     tags: [Trips]
-    summary: Accept or reject offered trip
+    summary: Tài xế chấp nhận hoặc từ chối đề xuất
     operationId: respondToTripOffer
+    description: "Chỉ DRIVER đang được đề xuất. Không phản hồi 30 giây được hệ thống xử lý như REJECT."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/DriverResponseRequest' } } }
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/DriverResponseRequest' } } } }
     responses:
-      '200': { description: Response recorded, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '200': { description: "Phản hồi đã ghi nhận.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 status:
   patch:
     tags: [Trips]
-    summary: Advance trip status
+    summary: Cập nhật tiến trình chuyến
     operationId: updateTripStatus
+    description: "Chỉ DRIVER được phân công. Transition cố định: DRIVER_ASSIGNED → DRIVER_ARRIVED → PASSENGER_PICKED_UP → IN_PROGRESS → COMPLETED. Hệ thống tạo RECEIVED → SEARCHING_DRIVER → DRIVER_ASSIGNED. Không được bỏ qua trạng thái; incident/hủy đi theo luồng riêng."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/StatusUpdateRequest' } } }
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/StatusUpdateRequest' } } } }
     responses:
-      '200': { description: Status updated, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '200': { description: "Trạng thái hợp lệ đã cập nhật.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
       '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
       '409': { $ref: '../../responses/responses.yaml#/Conflict' }
 incidents:
   post:
     tags: [Trips]
-    summary: Report a trip incident
+    summary: Báo sự cố của chuyến
     operationId: reportTripIncident
+    description: "CUSTOMER, DRIVER hoặc OPERATOR liên quan có thể báo. Chuyến chuyển sang INCIDENT_REPORTED; OPERATOR xử lý ở /incidents/{incidentId}."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/IncidentRequest' } } }
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/IncidentRequest' } } } }
     responses:
-      '201': { description: Incident recorded, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
+      '201': { description: "Sự cố đã ghi nhận.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
       '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+rating:
+  post:
+    tags: [Trips]
+    summary: Đánh giá tài xế sau chuyến
+    operationId: rateDriverForTrip
+    description: "CUSTOMER của chuyến COMPLETED gửi một đánh giá. SRS xác nhận có đánh giá nhưng chưa chốt thang điểm, nội dung và quy tắc chống gửi lặp."
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/RatingRequest' } } } }
+    responses:
+      '201': { description: "Đánh giá đã ghi nhận.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Rating' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
