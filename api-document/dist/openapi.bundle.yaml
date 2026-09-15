@@ -1,0 +1,562 @@
+openapi: 3.0.3
+info:
+  title: CAB System API
+  version: 1.0.0
+  description: Bundled CAB System MVP API. This file is generated from ../openapi.yaml and is not edited directly.
+servers:
+  - url: https://api.example.com/api/v1
+    description: Placeholder; deployment host requires confirmation.
+tags:
+  - name: Authentication
+  - name: Users
+  - name: Drivers
+  - name: Trips
+  - name: Payments
+  - name: Operations
+  - name: Reports
+paths:
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register customer account
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201': { description: Account created, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login and issue JWT
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200': { description: Authenticated, content: { application/json: { schema: { $ref: '#/components/schemas/AuthResponse' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current authenticated user
+      operationId: getCurrentUser
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Current user, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get customer profile
+      operationId: getOwnProfile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [Users]
+      summary: Update customer profile
+      operationId: updateOwnProfile
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/UpdateProfileRequest' } } }
+      responses:
+        '200': { description: Updated profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /drivers/me:
+    get:
+      tags: [Drivers]
+      summary: Get driver profile
+      operationId: getDriverProfile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Driver profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [Drivers]
+      summary: Update driver profile
+      operationId: updateDriverProfile
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/UpdateProfileRequest' } } }
+      responses:
+        '200': { description: Updated driver profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /drivers/me/location:
+    put:
+      tags: [Drivers]
+      summary: Update active driver location
+      operationId: updateDriverLocation
+      description: SRS baseline targets approximately one update every 10 seconds while active.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/Location' } } }
+      responses:
+        '204': { description: Location recorded }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /drivers/me/availability:
+    put:
+      tags: [Drivers]
+      summary: Update driver availability
+      operationId: updateDriverAvailability
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [available]
+              properties: { available: { type: boolean } }
+      responses:
+        '204': { description: Availability updated }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /trips:
+    post:
+      tags: [Trips]
+      summary: Create a trip request
+      operationId: createTrip
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreateTripRequest' } } }
+      responses:
+        '201': { description: Trip accepted and sent to driver search, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+    get:
+      tags: [Trips]
+      summary: List current user's trips
+      operationId: listOwnTrips
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/PageSize' }
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Trip page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /trips/{tripId}:
+    parameters: [{ $ref: '#/components/parameters/TripId' }]
+    get:
+      tags: [Trips]
+      summary: Get trip status and tracking information
+      operationId: getTrip
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Trip, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Trips]
+      summary: Cancel trip before cancellation lock and completion
+      operationId: cancelTrip
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Trip cancelled }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/assignment:
+    post:
+      tags: [Trips]
+      summary: Record driver assignment result
+      operationId: assignDriver
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      responses:
+        '200': { description: Assignment result, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/driver-response:
+    post:
+      tags: [Trips]
+      summary: Accept or reject offered trip
+      operationId: respondToTripOffer
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/DriverResponseRequest' } } }
+      responses:
+        '200': { description: Response recorded, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/status:
+    patch:
+      tags: [Trips]
+      summary: Advance trip status
+      operationId: updateTripStatus
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/StatusUpdateRequest' } } }
+      responses:
+        '200': { description: Status updated, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/incidents:
+    post:
+      tags: [Trips]
+      summary: Report a trip incident
+      operationId: reportTripIncident
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/IncidentRequest' } } }
+      responses:
+        '201': { description: Incident recorded, content: { application/json: { schema: { $ref: '#/components/schemas/Incident' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /trips/{tripId}/fare:
+    get:
+      tags: [Payments]
+      summary: Get calculated trip fare
+      operationId: getTripFare
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      responses:
+        '200': { description: Fare, content: { application/json: { schema: { $ref: '#/components/schemas/Fare' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /trips/{tripId}/payments/cash:
+    post:
+      tags: [Payments]
+      summary: Confirm cash collection
+      operationId: confirmCashPayment
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      responses:
+        '200': { description: Cash payment, content: { application/json: { schema: { $ref: '#/components/schemas/Payment' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/payments/electronic:
+    post:
+      tags: [Payments]
+      summary: Start electronic payment
+      operationId: startElectronicPayment
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ElectronicPaymentRequest' } } }
+      responses:
+        '202': { description: Payment submitted, content: { application/json: { schema: { $ref: '#/components/schemas/Payment' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /trips/{tripId}/payments:
+    get:
+      tags: [Payments]
+      summary: List trip payment attempts
+      operationId: listTripPayments
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      responses:
+        '200': { description: Payment records, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+  /notifications:
+    get:
+      tags: [Operations]
+      summary: List notifications for current user
+      operationId: listOwnNotifications
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Notifications, content: { application/json: { schema: { $ref: '#/components/schemas/NotificationPage' } } } }
+  /incidents/{incidentId}:
+    patch:
+      tags: [Operations]
+      summary: Update incident handling result
+      operationId: updateIncident
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: incidentId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
+                resolution: { type: string }
+      responses:
+        '200': { description: Updated incident, content: { application/json: { schema: { $ref: '#/components/schemas/Incident' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /operations/users:
+    get:
+      tags: [Operations]
+      summary: List users for operation
+      operationId: listOperationalUsers
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/PageSize' }
+      responses:
+        '200': { description: User page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /operations/drivers:
+    get:
+      tags: [Operations]
+      summary: List drivers for operation
+      operationId: listOperationalDrivers
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Driver page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /operations/vehicles:
+    get:
+      tags: [Operations]
+      summary: List vehicles for operation
+      operationId: listOperationalVehicles
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /audit-records:
+    get:
+      tags: [Operations]
+      summary: Search audit records
+      operationId: searchAuditRecords
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/PageSize' }
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+      responses:
+        '200': { description: Audit records, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /reports/activity:
+    get:
+      tags: [Reports]
+      summary: Generate activity report
+      operationId: getActivityReport
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: period, in: query, required: true, schema: { type: string, enum: [DAY, WEEK, MONTH, CUSTOM] } }
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+        - { name: driverId, in: query, schema: { type: string, format: uuid } }
+        - { name: vehicleType, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Activity report, content: { application/json: { schema: { $ref: '#/components/schemas/Report' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/ServerError' }
+components:
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string, example: VALIDATION_ERROR }
+        message: { type: string, example: Request data is invalid. }
+        details: { type: array, items: { type: object, additionalProperties: true } }
+        traceId: { type: string }
+    User:
+      type: object
+      required: [id, email, role]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        fullName: { type: string }
+        phone: { type: string }
+        role: { type: string, enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN] }
+        status: { type: string, enum: [ACTIVE, LOCKED] }
+    RegisterRequest:
+      type: object
+      required: [email, password, fullName]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+        fullName: { type: string, minLength: 1 }
+        phone: { type: string }
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    AuthResponse:
+      type: object
+      required: [accessToken, user]
+      properties:
+        accessToken: { type: string }
+        tokenType: { type: string, example: Bearer }
+        expiresIn: { type: integer, format: int32 }
+        user: { $ref: '#/components/schemas/User' }
+    UpdateProfileRequest:
+      type: object
+      properties:
+        fullName: { type: string }
+        phone: { type: string }
+    Location:
+      type: object
+      required: [latitude, longitude]
+      properties:
+        latitude: { type: number, format: double, minimum: -90, maximum: 90 }
+        longitude: { type: number, format: double, minimum: -180, maximum: 180 }
+        recordedAt: { type: string, format: date-time }
+    Trip:
+      type: object
+      required: [id, pickup, destination, vehicleType, status]
+      properties:
+        id: { type: string, format: uuid }
+        customerId: { type: string, format: uuid }
+        driverId: { type: string, format: uuid, nullable: true }
+        pickup: { $ref: '#/components/schemas/Location' }
+        destination: { $ref: '#/components/schemas/Location' }
+        vehicleType: { type: string }
+        status: { type: string, enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT] }
+        etaSeconds: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+    CreateTripRequest:
+      type: object
+      required: [pickup, destination, vehicleType]
+      properties:
+        pickup: { $ref: '#/components/schemas/Location' }
+        destination: { $ref: '#/components/schemas/Location' }
+        vehicleType: { type: string }
+    DriverResponseRequest:
+      type: object
+      required: [response]
+      properties:
+        response: { type: string, enum: [ACCEPT, REJECT] }
+        reason: { type: string }
+    StatusUpdateRequest:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT] }
+    IncidentRequest:
+      type: object
+      required: [description]
+      properties:
+        description: { type: string, minLength: 1 }
+        type: { type: string }
+    Incident:
+      type: object
+      required: [id, tripId, description, status]
+      properties:
+        id: { type: string, format: uuid }
+        tripId: { type: string, format: uuid }
+        description: { type: string }
+        type: { type: string }
+        status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
+    Fare:
+      type: object
+      required: [tripId, amount, currency, status]
+      properties:
+        tripId: { type: string, format: uuid }
+        amount: { type: number, format: decimal, minimum: 0 }
+        currency: { type: string, example: VND }
+        basis: { type: string }
+        status: { type: string, enum: [CALCULATED, PENDING_CONFIRMATION] }
+    Payment:
+      type: object
+      required: [id, tripId, method, status]
+      properties:
+        id: { type: string, format: uuid }
+        tripId: { type: string, format: uuid }
+        method: { type: string, enum: [CASH, ELECTRONIC] }
+        status: { type: string, enum: [PENDING, PROCESSING, SUCCEEDED, FAILED] }
+        providerTransactionId: { type: string, nullable: true }
+    ElectronicPaymentRequest:
+      type: object
+      required: [provider, paymentToken]
+      properties:
+        provider: { type: string }
+        paymentToken: { type: string, description: Token from provider; CAB does not store sensitive payment data. }
+    Report:
+      type: object
+      properties:
+        from: { type: string, format: date-time }
+        to: { type: string, format: date-time }
+        totalTrips: { type: integer }
+        completedTrips: { type: integer }
+        cancelledTrips: { type: integer }
+        revenue: { type: number, format: decimal }
+        completionRate: { type: number, format: double }
+        cancellationRate: { type: number, format: double }
+    Notification:
+      type: object
+      required: [id, eventType, recipientId, channel, status]
+      properties:
+        id: { type: string, format: uuid }
+        eventType: { type: string }
+        recipientId: { type: string, format: uuid }
+        channel: { type: string, enum: [IN_APP, EMAIL] }
+        status: { type: string, enum: [PENDING, SENT, FAILED] }
+        attempts: { type: integer, maximum: 3 }
+    NotificationPage:
+      type: object
+      required: [items, page, pageSize, total]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/Notification' } }
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1 }
+        total: { type: integer, minimum: 0 }
+    Page:
+      type: object
+      properties:
+        items: { type: array, items: { type: object, additionalProperties: true } }
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1 }
+        total: { type: integer, minimum: 0 }
+  parameters:
+    TripId:
+      name: tripId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+  responses:
+    BadRequest:
+      description: Invalid request or business validation failure.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unauthorized:
+      description: Missing or invalid JWT.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Forbidden:
+      description: Authenticated user is not authorized.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotFound:
+      description: Resource was not found.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Conflict:
+      description: State or uniqueness conflict.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    ServerError:
+      description: Unexpected server error.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

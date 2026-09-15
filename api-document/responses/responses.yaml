@@ -1,0 +1,36 @@
+BadRequest:
+  description: Invalid request or business validation failure.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'
+Unauthorized:
+  description: Missing or invalid JWT.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'
+Forbidden:
+  description: Authenticated user is not authorized.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'
+NotFound:
+  description: Resource was not found.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'
+Conflict:
+  description: State or uniqueness conflict.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'
+ServerError:
+  description: Unexpected server error.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/common.yaml#/schemas/Error'

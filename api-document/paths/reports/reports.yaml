@@ -1,0 +1,19 @@
+activity:
+  get:
+    tags: [Reports]
+    summary: Generate activity report
+    operationId: getActivityReport
+    description: Supports day/week/month or a custom period; filters are limited to SRS-confirmed dimensions.
+    security: [{ bearerAuth: [] }]
+    parameters:
+      - { name: period, in: query, required: true, schema: { type: string, enum: [DAY, WEEK, MONTH, CUSTOM] } }
+      - { name: from, in: query, schema: { type: string, format: date-time } }
+      - { name: to, in: query, schema: { type: string, format: date-time } }
+      - { name: driverId, in: query, schema: { type: string, format: uuid } }
+      - { name: vehicleType, in: query, schema: { type: string } }
+      - { name: status, in: query, schema: { type: string } }
+    responses:
+      '200': { description: Activity report, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Report' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '500': { $ref: '../../responses/responses.yaml#/ServerError' }

@@ -1,0 +1,21 @@
+me:
+  get:
+    tags: [Users]
+    summary: Get customer profile
+    operationId: getOwnProfile
+    security: [{ bearerAuth: [] }]
+    responses:
+      '200': { description: Profile, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/User' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+  put:
+    tags: [Users]
+    summary: Update customer profile
+    operationId: updateOwnProfile
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/UpdateProfileRequest' } } }
+    responses:
+      '200': { description: Updated profile, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/User' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }

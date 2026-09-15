@@ -1,0 +1,77 @@
+notifications:
+  get:
+    tags: [Operations]
+    summary: List notifications for current user
+    operationId: listOwnNotifications
+    security: [{ bearerAuth: [] }]
+    responses:
+      '200': { description: Notifications, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/NotificationPage' } } } }
+incident:
+  patch:
+    tags: [Operations]
+    summary: Update incident handling result
+    operationId: updateIncident
+    security: [{ bearerAuth: [] }]
+    parameters:
+      - name: incidentId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [status]
+            properties:
+              status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
+              resolution: { type: string }
+    responses:
+      '200': { description: Updated incident, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+users:
+  get:
+    tags: [Operations]
+    summary: List users for operation
+    operationId: listOperationalUsers
+    security: [{ bearerAuth: [] }]
+    parameters:
+      - { $ref: '../../parameters/parameters.yaml#/Page' }
+      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
+    responses:
+      '200': { description: User page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+drivers:
+  get:
+    tags: [Operations]
+    summary: List drivers for operation
+    operationId: listOperationalDrivers
+    security: [{ bearerAuth: [] }]
+    responses:
+      '200': { description: Driver page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+vehicles:
+  get:
+    tags: [Operations]
+    summary: List vehicles for operation
+    operationId: listOperationalVehicles
+    security: [{ bearerAuth: [] }]
+    responses:
+      '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+audit:
+  get:
+    tags: [Operations]
+    summary: Search audit records
+    operationId: searchAuditRecords
+    security: [{ bearerAuth: [] }]
+    parameters:
+      - { $ref: '../../parameters/parameters.yaml#/Page' }
+      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
+      - { name: from, in: query, schema: { type: string, format: date-time } }
+      - { name: to, in: query, schema: { type: string, format: date-time } }
+    responses:
+      '200': { description: Audit records, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }

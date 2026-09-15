@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  title: CAB System API
+  version: 1.0.0
+  description: |
+    API contract for the CAB System MVP. The contract is derived from SRS.md.
+    Items explicitly marked "[NEED CLARIFICATION]" in the SRS are not silently implemented.
+servers:
+  - url: https://api.example.com/api/v1
+    description: Placeholder; deployment host requires confirmation.
+tags:
+  - name: Authentication
+  - name: Users
+  - name: Drivers
+  - name: Trips
+  - name: Payments
+  - name: Operations
+  - name: Reports
+paths:
+  /auth/register:
+    $ref: './paths/auth/auth.yaml#/register'
+  /auth/login:
+    $ref: './paths/auth/auth.yaml#/login'
+  /auth/me:
+    $ref: './paths/auth/auth.yaml#/me'
+  /users/me:
+    $ref: './paths/users/users.yaml#/me'
+  /drivers/me:
+    $ref: './paths/employees/employees.yaml#/driverMe'
+  /drivers/me/location:
+    $ref: './paths/employees/employees.yaml#/driverLocation'
+  /drivers/me/availability:
+    $ref: './paths/employees/employees.yaml#/driverAvailability'
+  /trips:
+    $ref: './paths/orders/orders.yaml#/trips'
+  /trips/{tripId}:
+    $ref: './paths/orders/orders.yaml#/trip'
+  /trips/{tripId}/assignment:
+    $ref: './paths/orders/orders.yaml#/assignment'
+  /trips/{tripId}/driver-response:
+    $ref: './paths/orders/orders.yaml#/driverResponse'
+  /trips/{tripId}/status:
+    $ref: './paths/orders/orders.yaml#/status'
+  /trips/{tripId}/incidents:
+    $ref: './paths/orders/orders.yaml#/incidents'
+  /trips/{tripId}/fare:
+    $ref: './paths/payments/payments.yaml#/fare'
+  /trips/{tripId}/payments/cash:
+    $ref: './paths/payments/payments.yaml#/cashPayment'
+  /trips/{tripId}/payments/electronic:
+    $ref: './paths/payments/payments.yaml#/electronicPayment'
+  /trips/{tripId}/payments:
+    $ref: './paths/payments/payments.yaml#/payments'
+  /notifications:
+    $ref: './paths/operations/operations.yaml#/notifications'
+  /incidents/{incidentId}:
+    $ref: './paths/operations/operations.yaml#/incident'
+  /operations/users:
+    $ref: './paths/operations/operations.yaml#/users'
+  /operations/drivers:
+    $ref: './paths/operations/operations.yaml#/drivers'
+  /operations/vehicles:
+    $ref: './paths/operations/operations.yaml#/vehicles'
+  /audit-records:
+    $ref: './paths/operations/operations.yaml#/audit'
+  /reports/activity:
+    $ref: './paths/reports/reports.yaml#/activity'
+components:
+  schemas:
+    Error: { $ref: './schemas/common.yaml#/schemas/Error' }
+    User: { $ref: './schemas/common.yaml#/schemas/User' }
+    RegisterRequest: { $ref: './schemas/common.yaml#/schemas/RegisterRequest' }
+    LoginRequest: { $ref: './schemas/common.yaml#/schemas/LoginRequest' }
+    AuthResponse: { $ref: './schemas/common.yaml#/schemas/AuthResponse' }
+    UpdateProfileRequest: { $ref: './schemas/common.yaml#/schemas/UpdateProfileRequest' }
+    Location: { $ref: './schemas/common.yaml#/schemas/Location' }
+    Trip: { $ref: './schemas/common.yaml#/schemas/Trip' }
+    CreateTripRequest: { $ref: './schemas/common.yaml#/schemas/CreateTripRequest' }
+    DriverResponseRequest: { $ref: './schemas/common.yaml#/schemas/DriverResponseRequest' }
+    StatusUpdateRequest: { $ref: './schemas/common.yaml#/schemas/StatusUpdateRequest' }
+    IncidentRequest: { $ref: './schemas/common.yaml#/schemas/IncidentRequest' }
+    Incident: { $ref: './schemas/common.yaml#/schemas/Incident' }
+    Fare: { $ref: './schemas/common.yaml#/schemas/Fare' }
+    Payment: { $ref: './schemas/common.yaml#/schemas/Payment' }
+    ElectronicPaymentRequest: { $ref: './schemas/common.yaml#/schemas/ElectronicPaymentRequest' }
+    Notification: { $ref: './schemas/common.yaml#/schemas/Notification' }
+    NotificationPage: { $ref: './schemas/common.yaml#/schemas/NotificationPage' }
+    Report: { $ref: './schemas/common.yaml#/schemas/Report' }
+    Page: { $ref: './schemas/common.yaml#/schemas/Page' }
+  parameters:
+    TripId:
+      $ref: './parameters/parameters.yaml#/TripId'
+    Page:
+      $ref: './parameters/parameters.yaml#/Page'
+    PageSize:
+      $ref: './parameters/parameters.yaml#/PageSize'
+  responses:
+    BadRequest:
+      $ref: './responses/responses.yaml#/BadRequest'
+    Unauthorized:
+      $ref: './responses/responses.yaml#/Unauthorized'
+    Forbidden:
+      $ref: './responses/responses.yaml#/Forbidden'
+    NotFound:
+      $ref: './responses/responses.yaml#/NotFound'
+    Conflict:
+      $ref: './responses/responses.yaml#/Conflict'
+    ServerError:
+      $ref: './responses/responses.yaml#/ServerError'
+  securitySchemes:
+    bearerAuth:
+      $ref: './security/bearer.yaml#/bearerAuth'

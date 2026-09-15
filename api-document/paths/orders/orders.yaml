@@ -1,0 +1,98 @@
+trips:
+  post:
+    tags: [Trips]
+    summary: Create a trip request
+    operationId: createTrip
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/CreateTripRequest' } } }
+    responses:
+      '201': { description: Trip accepted and sent to driver search, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '500': { $ref: '../../responses/responses.yaml#/ServerError' }
+  get:
+    tags: [Trips]
+    summary: List current user's trips
+    operationId: listOwnTrips
+    security: [{ bearerAuth: [] }]
+    parameters:
+      - { $ref: '../../parameters/parameters.yaml#/Page' }
+      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
+      - { name: status, in: query, schema: { type: string } }
+    responses:
+      '200': { description: Trip page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Page' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+trip:
+  get:
+    tags: [Trips]
+    summary: Get trip status and tracking information
+    operationId: getTrip
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    responses:
+      '200': { description: Trip, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+  delete:
+    tags: [Trips]
+    summary: Cancel trip before cancellation lock and completion
+    operationId: cancelTrip
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    responses:
+      '204': { description: Trip cancelled }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
+assignment:
+  post:
+    tags: [Trips]
+    summary: Record driver assignment result
+    operationId: assignDriver
+    description: Operator/system operation; assignment uses location, availability, vehicle type and business priority rules.
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    responses:
+      '200': { description: Assignment result, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
+driverResponse:
+  post:
+    tags: [Trips]
+    summary: Accept or reject offered trip
+    operationId: respondToTripOffer
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    requestBody:
+      required: true
+      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/DriverResponseRequest' } } }
+    responses:
+      '200': { description: Response recorded, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
+status:
+  patch:
+    tags: [Trips]
+    summary: Advance trip status
+    operationId: updateTripStatus
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    requestBody:
+      required: true
+      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/StatusUpdateRequest' } } }
+    responses:
+      '200': { description: Status updated, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Trip' } } } }
+      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
+      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
+incidents:
+  post:
+    tags: [Trips]
+    summary: Report a trip incident
+    operationId: reportTripIncident
+    security: [{ bearerAuth: [] }]
+    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
+    requestBody:
+      required: true
+      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/IncidentRequest' } } }
+    responses:
+      '201': { description: Incident recorded, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
+      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
