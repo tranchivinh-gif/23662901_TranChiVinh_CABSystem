@@ -113,7 +113,7 @@ rating:
     tags: [Trips]
     summary: Đánh giá tài xế sau chuyến
     operationId: rateDriverForTrip
-    description: "CUSTOMER của chuyến COMPLETED gửi một đánh giá. SRS xác nhận có đánh giá nhưng chưa chốt thang điểm, nội dung và quy tắc chống gửi lặp."
+    description: "CUSTOMER của chuyến COMPLETED gửi một đánh giá từ 1 đến 5 sao, có nhận xét tùy chọn. Mỗi chuyến chỉ được đánh giá một lần."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/RatingRequest' } } } }

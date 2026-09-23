@@ -125,7 +125,7 @@ Editor, Swagger UI, kiểm thử và chia sẻ. Không chỉnh sửa trực ti�
 
 Ma trận FR/UC/AC có tại [docs/traceability.md](./docs/traceability.md); các quyết định cần BA/customer xác nhận có tại [docs/open-issues.md](./docs/open-issues.md). Phạm vi MVP gồm UC-01 đến UC-16. UC-17 đến UC-19 là future extension, không có public endpoint MVP.
 
-Các bổ sung v2 được phản ánh gồm assignment/tính cước/thông báo tự động, 30 giây phản hồi tài xế, retry thanh toán 3 lần/30 phút, `IN_APP`/`EMAIL` với tối đa 3 attempt, audit baseline 12 tháng và công thức tỷ lệ hoàn thành/hủy. Công thức fare, policy cash/cancellation/refund, ma trận CRUD và rating scale vẫn cần xác nhận.
+Các bổ sung được xác nhận ngày 23/09/2026 gồm assignment tự động, 30 giây phản hồi tài xế, retry thanh toán tối đa 3 lần/30 phút, `IN_APP`/`EMAIL` với tối đa 3 attempt, audit 12 tháng, công thức cước, chính sách hủy không thu phí và rating 1–5 sao. API phải tuân thủ baseline xác nhận trong SRS.md.
 
 ## 9. Validation
 
@@ -138,15 +138,12 @@ Các bổ sung v2 được phản ánh gồm assignment/tính cước/thông bá
 - Source cần được lint/bundle bằng Redocly hoặc Swagger CLI trước release. Lệnh chuẩn: `npx @redocly/cli lint api-document/openapi.yaml` và `npx @redocly/cli bundle api-document/openapi.yaml --output api-document/dist/openapi.bundle.yaml`.
 - Bundle chỉ được generate từ source; không chỉnh tay. Release gate cần kiểm tra mọi $ref, operationId và import Swagger Editor.
 
-## 10. [NEED CLARIFICATION]
+## 10. Các điểm còn cần cấu hình kỹ thuật
 
-Mỗi vấn đề dưới đây cần được xác nhận trước khi triển khai chính thức:
+Tài liệu xác nhận đã chốt phạm vi và quy tắc nghiệp vụ MVP. Các nội dung dưới đây không còn là khoảng trống chức năng, nhưng cần cấu hình hoặc đặc tả kỹ thuật trước khi triển khai:
 
-1. **API host và môi trường:** SRS chưa nêu domain development, staging, production; ảnh hưởng tất cả API.
-2. **Authentication:** Chưa chốt password policy, refresh token, logout, verification, token lifetime và key rotation; ảnh hưởng UC-01.
-3. **Driver/vehicle:** Chưa chốt field hồ sơ, giấy phép, catalog loại xe và quyền cập nhật vận hành; ảnh hưởng UC-03, UC-13.
-4. **Matching/trip state:** Chưa chốt công thức ETA, stale location, ma trận chuyển trạng thái và cancellation-lock; ảnh hưởng UC-03–UC-07.
-5. **Fare/payment:** Chưa chốt công thức cước, làm tròn, tiền tệ, provider webhook, đối soát và lịch retry; ảnh hưởng UC-09–UC-11.
-6. **Notification/incident:** Chưa chốt template, recipient, provider, loại sự cố, bằng chứng và escalation; ảnh hưởng UC-08, UC-12, UC-14.
-7. **Authorization/audit/report:** Chưa chốt RBAC matrix, audit event/retention, KPI, timezone, boundary ngày và export; ảnh hưởng UC-13, UC-15, UC-16.
-8. **Offline:** Chưa chốt retry, idempotency, local queue, đồng bộ và xử lý conflict khi mất kết nối; ảnh hưởng UC-02, UC-06, UC-07, UC-11.
+1. API host và môi trường development/staging/production.
+2. Password policy, refresh token, logout, verification, token lifetime và key rotation.
+3. Tên Payment Provider và Notification Provider cụ thể.
+4. Template thông báo, timezone báo cáo, định dạng export và cách lưu trữ sau thời hạn.
+5. Cơ chế idempotency, hàng đợi gửi lại và xử lý conflict khi mất kết nối.

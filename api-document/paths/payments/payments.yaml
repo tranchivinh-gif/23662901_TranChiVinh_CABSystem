@@ -3,7 +3,7 @@ fare:
     tags: [Payments]
     summary: Xem cước tự động tính sau khi hoàn thành
     operationId: getTripFare
-    description: "Cước chỉ được hệ thống tính khi chuyến COMPLETED, từ bảng giá cấu hình theo dịch vụ/loại xe, giá tối thiểu và phụ phí nếu có. TBD – công thức, làm tròn và phiên bản bảng giá."
+    description: "Cước chỉ được tính khi chuyến COMPLETED theo Fare = Base Fare + Distance × Price Per KM + Surcharge. MVP hỗ trợ BIKE, CAR4, CAR7 và CAR16; không áp dụng dynamic pricing."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:
@@ -17,7 +17,7 @@ cashPayment:
     tags: [Payments]
     summary: Tài xế xác nhận đã thu đủ tiền mặt
     operationId: confirmCashPayment
-    description: "Chỉ DRIVER được phân công xác nhận. CASH chỉ SUCCEEDED khi tài xế xác nhận thu đủ; chi tiết chính sách tiền mặt vẫn cần xác nhận."
+    description: "Chỉ DRIVER được phân công xác nhận. CASH chỉ SUCCEEDED khi tài xế xác nhận đã thu đủ tiền sau khi chuyến hoàn thành."
     security: [{ bearerAuth: [] }]
     parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
     responses:

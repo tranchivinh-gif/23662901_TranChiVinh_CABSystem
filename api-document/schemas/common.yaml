@@ -18,7 +18,7 @@ schemas:
       email: { type: string, format: email }
       fullName: { type: string }
       phone: { type: string, nullable: true }
-      role: { type: string, enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN] }
+      role: { type: string, enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN, MANAGEMENT] }
       status: { type: string, enum: [ACTIVE, LOCKED] }
       createdAt: { type: string, format: date-time }
   Vehicle:
@@ -27,7 +27,7 @@ schemas:
     properties:
       id: { type: string, format: uuid }
       plateNumber: { type: string }
-      type: { type: string, description: "Danh mục loại xe là cấu hình vận hành." }
+      type: { type: string, enum: [BIKE, CAR4, CAR7, CAR16], description: "Loại phương tiện được hỗ trợ trong MVP." }
       status: { type: string, enum: [AVAILABLE, IN_SERVICE, MAINTENANCE] }
       driverId: { type: string, format: uuid, nullable: true }
   DriverProfile:
@@ -53,7 +53,7 @@ schemas:
     properties:
       accessToken: { type: string }
       tokenType: { type: string, example: Bearer }
-      expiresIn: { type: integer, nullable: true, description: "TBD – thời hạn token chưa được SRS chốt." }
+      expiresIn: { type: integer, nullable: true, description: "Thời hạn token do môi trường triển khai cấu hình." }
       user: { $ref: '#/schemas/User' }
   UpdateProfileRequest:
     type: object
@@ -68,7 +68,7 @@ schemas:
       accuracyMeters: { type: number, format: double, minimum: 0, nullable: true, description: "Mục tiêu GPS khoảng 50 m khi phù hợp." }
   TripStatus:
     type: string
-    enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT_REPORTED, INCIDENT_RESOLVED]
+    enum: [REQUESTED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, NO_DRIVER_FOUND, CANCELLED, INCIDENT]
   DriverSummary:
     type: object
     nullable: true
@@ -83,7 +83,7 @@ schemas:
       driverId: { type: string, format: uuid, nullable: true }
       pickup: { $ref: '#/schemas/Location' }
       destination: { $ref: '#/schemas/Location' }
-      vehicleType: { type: string }
+      vehicleType: { type: string, enum: [BIKE, CAR4, CAR7, CAR16] }
       status: { $ref: '#/schemas/TripStatus' }
       etaSeconds: { type: integer, minimum: 0, nullable: true, description: "ETA MVP theo vị trí và khoảng cách, không dùng giao thông thời gian thực." }
       driver: { $ref: '#/schemas/DriverSummary' }
@@ -131,8 +131,8 @@ schemas:
       amount: { type: number, format: double, minimum: 0 }
       currency: { type: string, example: VND }
       status: { type: string, enum: [CALCULATED, PENDING_CONFIRMATION] }
-      priceVersion: { type: string, nullable: true, description: "TBD – phiên bản bảng giá." }
-      basis: { type: string, nullable: true, description: "TBD – công thức cước/phụ phí." }
+      priceVersion: { type: string, nullable: true, description: "Phiên bản bảng giá được áp dụng cho chuyến." }
+      basis: { type: string, nullable: true, description: "Fare = Base Fare + Distance × Price Per KM + Surcharge." }
   PaymentFailure:
     type: object
     nullable: true
@@ -160,11 +160,11 @@ schemas:
   RatingRequest:
     type: object
     required: [rating]
-    properties: { rating: { type: number, format: double, description: "TBD – thang điểm chưa chốt." }, review: { type: string, nullable: true } }
+    properties: { rating: { type: number, format: double, minimum: 1, maximum: 5, description: "Điểm đánh giá từ 1 đến 5 sao." }, review: { type: string, nullable: true } }
   Rating:
     type: object
     required: [id, tripId, driverId, rating, createdAt]
-    properties: { id: { type: string, format: uuid }, tripId: { type: string, format: uuid }, driverId: { type: string, format: uuid }, rating: { type: number, format: double }, review: { type: string, nullable: true }, createdAt: { type: string, format: date-time } }
+    properties: { id: { type: string, format: uuid }, tripId: { type: string, format: uuid }, driverId: { type: string, format: uuid }, rating: { type: number, format: double, minimum: 1, maximum: 5 }, review: { type: string, nullable: true }, createdAt: { type: string, format: date-time } }
   NotificationFailure:
     type: object
     nullable: true

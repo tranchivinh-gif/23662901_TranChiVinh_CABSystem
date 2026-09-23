@@ -1,0 +1,144 @@
+TEST SCENARIO DISCOVERY
+=======================
+
+Dựa trên SRS.md và API Document (api-document/README.md, api-document/openapi.yaml) để xác định Test Scenario ở cấp chức năng/nghiệp vụ, không phân rã thành Test Case.
+
+SC-001
+Module: Authentication
+Requirement/UC/API: UC-01 / POST /auth/register, POST /auth/login, GET /auth/me
+Test Scenario: Quản lý tài khoản
+Cơ sở từ tài liệu: SRS: NEED-01, ACTV-01; API: /auth/register, /auth/login, /auth/me; xác thực JWT cho /auth/me
+Priority: High
+
+SC-002
+Module: User Management
+Requirement/UC/API: UC-01 / GET /users/me, PUT /users/me
+Test Scenario: Quản lý hồ sơ người dùng
+Cơ sở từ tài liệu: SRS: NEED-01, ACTV-01; API: /users/me; tài khoản của chính mình
+Priority: High
+
+SC-003
+Module: Driver Management
+Requirement/UC/API: UC-03, UC-04, UC-06 / GET /drivers/me, PUT /drivers/me, PUT /drivers/me/location, PUT /drivers/me/availability
+Test Scenario: Quản lý tài xế
+Cơ sở từ tài liệu: SRS: NEED-05, NEED-06, NEED-08; API: /drivers/me, /drivers/me/location, /drivers/me/availability
+Priority: High
+
+SC-004
+Module: Trip Management
+Requirement/UC/API: UC-02 / POST /trips
+Test Scenario: Đặt chuyến
+Cơ sở từ tài liệu: SRS: NEED-02, ACTV-02; API: POST /trips; yêu cầu bắt buộc có điểm đón, điểm đến và loại xe
+Priority: High
+
+SC-005
+Module: Trip Management
+Requirement/UC/API: UC-03, UC-04, UC-05 / POST /trips/{tripId}/assignment, POST /trips/{tripId}/driver-response
+Test Scenario: Tìm và phân công tài xế
+Cơ sở từ tài liệu: SRS: NEED-06, NEED-09, ACTV-03, ACTV-04; API: /trips/{tripId}/assignment, /trips/{tripId}/driver-response; hệ thống tự động tìm tài xế theo vị trí, trạng thái sẵn sàng, loại xe và khả năng đáp ứng
+Priority: High
+
+SC-006
+Module: Trip Management
+Requirement/UC/API: UC-07 / GET /trips/{tripId}
+Test Scenario: Theo dõi chuyến
+Cơ sở từ tài liệu: SRS: NEED-03, ACTV-07; API: GET /trips/{tripId}; khách hàng theo dõi trạng thái chuyến, ETA và tiến độ
+Priority: High
+
+SC-007
+Module: Trip Management
+Requirement/UC/API: UC-06 / PATCH /trips/{tripId}/status
+Test Scenario: Cập nhật trạng thái chuyến
+Cơ sở từ tài liệu: SRS: NEED-07, ACTV-05; API: PATCH /trips/{tripId}/status; không được bỏ qua trạng thái
+Priority: High
+
+SC-008
+Module: Trip Management
+Requirement/UC/API: UC-07 / DELETE /trips/{tripId}
+Test Scenario: Hủy chuyến
+Cơ sở từ tài liệu: SRS: NEED-07, ACTV-07; API: DELETE /trips/{tripId}; hủy trước trạng thái khóa hủy và trước khi hoàn thành
+Priority: High
+
+SC-009
+Module: Operations
+Requirement/UC/API: UC-08, UC-14 / POST /trips/{tripId}/incidents, GET/PATCH /incidents/{incidentId}
+Test Scenario: Quản lý sự cố
+Cơ sở từ tài liệu: SRS: ACTV-11, 12; API: /trips/{tripId}/incidents, /incidents/{incidentId}; báo và xử lý sự cố của chuyến
+Priority: Medium
+
+SC-010
+Module: Payment
+Requirement/UC/API: UC-09 / GET /trips/{tripId}/fare
+Test Scenario: Tính cước
+Cơ sở từ tài liệu: SRS: NEED-11, ACTV-08; API: /trips/{tripId}/fare; tính cước sau khi chuyến hoàn thành
+Priority: High
+
+SC-011
+Module: Payment
+Requirement/UC/API: UC-10, UC-11 / POST /trips/{tripId}/payments/cash, POST /trips/{tripId}/payments/electronic, GET /trips/{tripId}/payments
+Test Scenario: Thanh toán
+Cơ sở từ tài liệu: SRS: NEED-04, NEED-10, NEED-11, ACTV-09, ACTV-10; API: /payments/cash, /payments/electronic, /payments; hỗ trợ tiền mặt và thanh toán điện tử
+Priority: High
+
+SC-012
+Module: Operations
+Requirement/UC/API: UC-12 / GET /notifications
+Test Scenario: Thông báo
+Cơ sở từ tài liệu: SRS: NEED-10, ACTV-11; API: /notifications; MVP dùng thông báo trong hệ thống và email; retry tối đa 3 lần
+Priority: Medium
+
+SC-013
+Module: Operations
+Requirement/UC/API: UC-13, UC-15 / GET /operations/users, GET /operations/drivers, GET /operations/vehicles, GET /audit-records
+Test Scenario: Quản lý vận hành và kiểm toán
+Cơ sở từ tài liệu: SRS: ACTV-11, Scope-09, Scope-11; API: /operations/*, /audit-records; quản trị vận hành, RBAC và lưu vết thao tác
+Priority: Medium
+
+SC-014
+Module: Reports
+Requirement/UC/API: UC-16 / GET /reports/activity
+Test Scenario: Báo cáo hoạt động
+Cơ sở từ tài liệu: SRS: NEED-12, ACTV-12; API: /reports/activity; hỗ trợ báo cáo theo thời gian, tài xế, loại xe, trạng thái
+Priority: Medium
+
+
+COVERAGE SUMMARY
+================
+
+Module: Authentication
+Số Scenario: 1
+
+Module: User Management
+Số Scenario: 1
+
+Module: Driver Management
+Số Scenario: 1
+
+Module: Trip Management
+Số Scenario: 5
+
+Module: Payment
+Số Scenario: 2
+
+Module: Operations
+Số Scenario: 2
+
+Module: Reports
+Số Scenario: 1
+
+Tổng số Scenario: 14
+
+
+NHỮNG ĐIỂM CẦN XÁC NHẬN
+=======================
+
+- Requirement chưa rõ: công thức cước, tiêu chí tìm tài xế, quy tắc hủy và hoàn tiền, thời gian retry thanh toán, KPI báo cáo.
+- Use Case chưa rõ: UC-17 đến UC-19 chưa có endpoint hoặc mô tả rõ trong API Document.
+- Chức năng chưa rõ: loại dịch vụ, kênh thông báo cụ thể, cấu hình provider, thời gian lưu trữ vị trí/audit.
+- API chưa xác định thuộc chức năng nào: một số API phụ thuộc vào business rule chưa được chốt rõ.
+- Hai API có khả năng thuộc cùng một chức năng nhưng chưa đủ thông tin để gộp: API thanh toán điện tử, API thông báo, API vận hành cần xác nhận phạm vi MVP.
+- Business Rule chưa rõ: chính sách hủy, khóa hủy, retry thanh toán, quyền truy cập, lưu vết và bảo mật dữ liệu.
+- Validation chưa rõ: định dạng dữ liệu vị trí, độ chính xác GPS, giới hạn loại xe, đánh giá tài xế, và các quy tắc báo sự cố.
+- SRS và API Document mâu thuẫn: các nội dung đánh dấu [NEED CLARIFICATION] hoặc [Cần làm rõ] vẫn tồn tại trong MVP baseline.
+- Không xác định được phạm vi của một Scenario: các chức năng mở rộng (báo cáo KPI, provider thông báo, tích hợp thanh toán, audit) có thể nằm ngoài phạm vi đồ án nhỏ.
+- Priority được xác định theo baseline MVP trong SRS: High cho luồng cốt lõi của dịch vụ đặt xe và Medium cho chức năng hỗ trợ vận hành, thông báo, sự cố và báo cáo.
