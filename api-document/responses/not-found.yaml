@@ -1,0 +1,5 @@
+description: Không tìm thấy tài nguyên.
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/common/ErrorResponse.yaml

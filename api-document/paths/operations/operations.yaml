@@ -1,83 +1,192 @@
-notifications:
-  get:
-    tags: [Operations]
-    summary: List notifications for current user
-    operationId: listOwnNotifications
-    security: [{ bearerAuth: [] }]
-    parameters:
-      - { $ref: '../../parameters/parameters.yaml#/Page' }
-      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
-    responses:
-      '200': { description: Notifications, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/NotificationPage' } } } }
-incident:
-  patch:
-    tags: [Operations]
-    summary: Update incident handling result
-    operationId: updateIncident
-    security: [{ bearerAuth: [] }]
-    parameters:
-      - name: incidentId
-        in: path
+paths:
+  /operations/transactions:
+    get:
+      tags:
+      - Operations
+      summary: Tra cứu giao dịch
+      operationId: lookupTransactions
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-36
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      - name: paymentId
+        in: query
+        schema:
+          type: integer
+      - name: tripId
+        in: query
+        schema:
+          type: integer
+      - name: customerId
+        in: query
+        schema:
+          type: integer
+      - name: paymentMethod
+        in: query
+        schema:
+          type: string
+          enum:
+          - Cash
+          - Electronic
+      - name: paymentStatus
+        in: query
+        schema:
+          type: string
+          enum:
+          - Pending
+          - Paid
+          - Failed
+      - name: createdFrom
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: createdTo
+        in: query
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Danh sách giao dịch phù hợp.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/operations/TransactionLookup.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /operations/dashboard:
+    get:
+      tags:
+      - Operations
+      summary: Theo dõi thông tin hoạt động
+      operationId: getOperationsDashboard
+      x-roles:
+      - Leadership
+      x-use-cases:
+      - UC-37
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Thông tin hoạt động tổng hợp.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/operations/Dashboard.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+
+  /operations/trips/{tripId}/notes:
+    get:
+      tags: [Operations]
+      summary: Xem ghi chú hỗ trợ của chuyến
+      operationId: listTripSupportNotes
+      x-baseline-requirements: [BR-20, FR-35]
+      x-roles: [OperationsStaff, OperationsSupervisor]
+      security: [{bearerAuth: []}]
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Danh sách ghi chú theo thứ tự thời gian.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../../schemas/operations/TripSupportNote.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    post:
+      tags: [Operations]
+      summary: Thêm ghi chú hỗ trợ bất biến cho chuyến
+      operationId: createTripSupportNote
+      x-baseline-requirements: [BR-20, FR-35]
+      x-roles: [OperationsStaff, OperationsSupervisor]
+      security: [{bearerAuth: []}]
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      requestBody:
         required: true
-        schema: { type: string, format: uuid }
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema: { $ref: '../../schemas/common.yaml#/schemas/IncidentUpdateRequest' }
-    responses:
-      '200': { description: Updated incident, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Incident' } } } }
-      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
-users:
-  get:
-    tags: [Operations]
-    summary: List users for operation
-    operationId: listOperationalUsers
-    security: [{ bearerAuth: [] }]
-    parameters:
-      - { $ref: '../../parameters/parameters.yaml#/Page' }
-      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
-    responses:
-      '200': { description: User page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/UserPage' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-drivers:
-  get:
-    tags: [Operations]
-    summary: List drivers for operation
-    operationId: listOperationalDrivers
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
-    responses:
-      '200': { description: Driver page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/DriverPage' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-vehicles:
-  get:
-    tags: [Operations]
-    summary: List vehicles for operation
-    operationId: listOperationalVehicles
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
-    responses:
-      '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/VehiclePage' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-audit:
-  get:
-    tags: [Operations]
-    summary: Search audit records
-    operationId: searchAuditRecords
-    security: [{ bearerAuth: [] }]
-    parameters:
-      - { $ref: '../../parameters/parameters.yaml#/Page' }
-      - { $ref: '../../parameters/parameters.yaml#/PageSize' }
-      - { name: from, in: query, schema: { type: string, format: date-time } }
-      - { name: to, in: query, schema: { type: string, format: date-time } }
-    responses:
-      '200': { description: Audit records, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/AuditRecordPage' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/operations/TripSupportNoteCreateRequest.yaml
+      responses:
+        '201':
+          description: Ghi chú hỗ trợ được lưu và audit.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/operations/TripSupportNote.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /operations/trips/{tripId}/interventions:
+    post:
+      tags: [Operations]
+      summary: Supervisor hủy chuyến hoặc đóng chuyến lỗi
+      operationId: interveneTrip
+      x-baseline-requirements: [BR-20, FR-35]
+      x-roles: [OperationsSupervisor]
+      security: [{bearerAuth: []}]
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/operations/TripInterventionRequest.yaml
+      responses:
+        '200': {description: Can thiệp hoàn tất và được audit.}
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

@@ -1,12 +1,8 @@
-# Mã lỗi
+# HTTP Error
 
-| HTTP | Mã | Ý nghĩa |
-|---:|---|---|
-| 400 | `VALIDATION_ERROR` | Dữ liệu request bị thiếu, sai định dạng hoặc không hợp lệ |
-| 401 | `UNAUTHORIZED` | Thiếu JWT hoặc JWT không hợp lệ |
-| 403 | `FORBIDDEN` | Người dùng đã xác thực nhưng không có quyền |
-| 404 | `NOT_FOUND` | Tài nguyên không tồn tại hoặc không được phép xem |
-| 409 | `CONFLICT` | Trạng thái nghiệp vụ không hợp lệ, trùng lặp hoặc chuyển trạng thái đồng thời |
-| 500 | `INTERNAL_ERROR` | Lỗi máy chủ không dự kiến |
-
-Các mã trên là quy ước kỹ thuật, không phải mã nghiệp vụ mới. Lỗi dùng cấu trúc `Error` chung gồm `code`, `message`, `details` và `traceId` tùy chọn.
+- `400`: dữ liệu không hợp lệ.
+- `401`: chưa xác thực.
+- `403`: không có quyền.
+- `404`: không tìm thấy.
+- `409`: xung đột.
+- `500`: lỗi hệ thống.

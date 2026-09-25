@@ -1,0 +1,9 @@
+type: object
+required: [approvalStatus]
+properties:
+  approvalStatus:
+    type: string
+    enum: [PendingApproval, Approved, Rejected]
+  reason:
+    type: string
+    maxLength: 500

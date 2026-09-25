@@ -1,0 +1,177 @@
+paths:
+  /customers:
+    post:
+      tags:
+      - Customers
+      summary: Operations Staff tạo Customer
+      operationId: createCustomer
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-23
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/customer/CustomerCreateRequest.yaml
+      responses:
+        '201':
+          description: Customer được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/customer/Customer.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    get:
+      tags:
+      - Customers
+      summary: Operations Staff tra cứu Customer
+      operationId: listCustomers
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-24
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/customer/Customer.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /customers/{customerId}:
+    get:
+      tags:
+      - Customers
+      summary: Lấy Customer theo ID
+      operationId: getCustomer
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-03
+      - UC-24
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/CustomerIdParam
+      responses:
+        '200':
+          description: Customer.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/customer/Customer.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    put:
+      tags:
+      - Customers
+      summary: Cập nhật Customer
+      operationId: updateCustomer
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-03
+      - UC-25
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/CustomerIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/customer/CustomerUpdateRequest.yaml
+      responses:
+        '200':
+          description: Customer được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/customer/Customer.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    delete:
+      tags:
+      - Customers
+      summary: Logical delete Customer
+      operationId: deleteCustomer
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-26
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/CustomerIdParam
+      responses:
+        '200':
+          description: Customer được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/customer/Customer.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

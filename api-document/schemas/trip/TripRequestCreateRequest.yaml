@@ -1,0 +1,24 @@
+type: object
+required:
+- requestedVehicleTypeId
+- pickupLatitude
+- pickupLongitude
+- destinationLatitude
+- destinationLongitude
+properties:
+  requestedVehicleTypeId:
+    type: integer
+    format: int32
+    example: 1
+  pickupLatitude:
+    type: number
+    format: double
+  pickupLongitude:
+    type: number
+    format: double
+  destinationLatitude:
+    type: number
+    format: double
+  destinationLongitude:
+    type: number
+    format: double

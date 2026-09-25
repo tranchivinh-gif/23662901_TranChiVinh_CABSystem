@@ -1,0 +1,14 @@
+type: object
+required:
+- latitude
+- longitude
+properties:
+  latitude:
+    type: number
+    format: double
+  longitude:
+    type: number
+    format: double
+  recordedAt:
+    type: string
+    format: date-time

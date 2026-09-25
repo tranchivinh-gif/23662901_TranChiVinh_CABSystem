@@ -1,0 +1,9 @@
+StatusParam:
+  name: status
+  in: query
+  required: false
+  description: Trạng thái cần lọc theo đúng danh sách nghiệp vụ trong SRS. Có thể dùng cho TripRequest, Trip hoặc Driver availability tùy endpoint.
+  schema:
+    type: string
+    enum: [Searching, Assigned, Cancelled, NoDriverFound, Available, Unavailable, Arrived, PickedUp, InProgress, Completed]
+    example: Searching

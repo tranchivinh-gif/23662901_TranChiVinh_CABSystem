@@ -1,0 +1,9 @@
+type: object
+required:
+- availabilityStatus
+properties:
+  availabilityStatus:
+    type: string
+    enum:
+    - Available
+    - Unavailable

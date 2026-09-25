@@ -1,0 +1,21 @@
+type: object
+required:
+- accountId
+- fullName
+- phoneNumber
+- email
+- address
+properties:
+  accountId:
+    type: integer
+    format: int32
+    example: 1
+  fullName:
+    type: string
+  phoneNumber:
+    type: string
+  email:
+    type: string
+    format: email
+  address:
+    type: string

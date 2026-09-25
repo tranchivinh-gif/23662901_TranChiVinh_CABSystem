@@ -1,0 +1,47 @@
+type: object
+required:
+- tripRequestId
+- customerId
+- requestedVehicleTypeId
+- pickupLatitude
+- pickupLongitude
+- destinationLatitude
+- destinationLongitude
+- status
+- createdAt
+properties:
+  tripRequestId:
+    type: integer
+    format: int32
+    example: 1
+  customerId:
+    type: integer
+    format: int32
+    example: 1
+  requestedVehicleTypeId:
+    type: integer
+    format: int32
+    example: 1
+  pickupLatitude:
+    type: number
+    format: double
+  pickupLongitude:
+    type: number
+    format: double
+  destinationLatitude:
+    type: number
+    format: double
+  destinationLongitude:
+    type: number
+    format: double
+  status:
+    type: string
+    enum:
+    - Searching
+    - Assigned
+    - Cancelled
+    - NoDriverFound
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'

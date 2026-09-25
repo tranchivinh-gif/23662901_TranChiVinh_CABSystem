@@ -1,0 +1,6 @@
+type: object
+required: [ticket, websocketUrl, expiresAt]
+properties:
+  ticket: {type: string}
+  websocketUrl: {type: string, format: uri}
+  expiresAt: {type: string, format: date-time}

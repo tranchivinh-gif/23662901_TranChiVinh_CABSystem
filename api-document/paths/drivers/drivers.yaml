@@ -1,0 +1,285 @@
+paths:
+  /drivers:
+    post:
+      tags:
+      - Drivers
+      summary: Operations Staff tạo Driver
+      operationId: createDriver
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-27
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/driver/DriverCreateRequest.yaml
+      responses:
+        '201':
+          description: Driver được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    get:
+      tags:
+      - Drivers
+      summary: Operations Staff tra cứu Driver
+      operationId: listDrivers
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-28
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/driver/Driver.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /drivers/{driverId}:
+    get:
+      tags:
+      - Drivers
+      summary: Lấy Driver theo ID
+      operationId: getDriver
+      x-roles:
+      - Driver
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-04
+      - UC-28
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      responses:
+        '200':
+          description: Driver.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    put:
+      tags:
+      - Drivers
+      summary: Cập nhật Driver
+      operationId: updateDriver
+      x-roles:
+      - Driver
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-04
+      - UC-29
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/driver/DriverUpdateRequest.yaml
+      responses:
+        '200':
+          description: Driver được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    delete:
+      tags:
+      - Drivers
+      summary: Logical delete Driver
+      operationId: deleteDriver
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-30
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      responses:
+        '200':
+          description: Driver được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /drivers/{driverId}/availability:
+    patch:
+      tags:
+      - Drivers
+      summary: Cập nhật trạng thái sẵn sàng
+      operationId: updateDriverAvailability
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-06
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/driver/DriverAvailabilityUpdateRequest.yaml
+      responses:
+        '200':
+          description: Cập nhật trạng thái.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /drivers/{driverId}/location:
+    put:
+      tags:
+      - Drivers
+      summary: Cập nhật vị trí gần nhất của Driver
+      operationId: updateDriverLocation
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-15
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/trip/DriverLocationUpdateRequest.yaml
+      responses:
+        '200':
+          description: Vị trí gần nhất.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/DriverLocation.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+
+  /drivers/{driverId}/approval:
+    patch:
+      tags: [Drivers]
+      summary: Duyệt hoặc từ chối hồ sơ Driver
+      operationId: updateDriverApproval
+      x-baseline-requirements: [BR-21, FR-36]
+      x-roles: [OperationsStaff, OperationsSupervisor]
+      security: [{bearerAuth: []}]
+      parameters:
+      - $ref: ../../parameters/id.yaml#/DriverIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/driver/DriverApproval.yaml
+      responses:
+        '200':
+          description: Trạng thái duyệt được cập nhật; từ chối yêu cầu reason.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

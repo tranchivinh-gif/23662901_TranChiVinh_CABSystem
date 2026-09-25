@@ -1,0 +1,8 @@
+type: object
+required: [noteId, tripId, authorAccountId, content, createdAt]
+properties:
+  noteId: {type: integer, format: int32}
+  tripId: {type: integer, format: int32}
+  authorAccountId: {type: integer, format: int32}
+  content: {type: string}
+  createdAt: {type: string, format: date-time}

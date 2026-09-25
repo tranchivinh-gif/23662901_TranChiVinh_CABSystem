@@ -1,0 +1,16 @@
+type: object
+required:
+- fullName
+- phoneNumber
+- email
+- address
+properties:
+  fullName:
+    type: string
+  phoneNumber:
+    type: string
+  email:
+    type: string
+    format: email
+  address:
+    type: string

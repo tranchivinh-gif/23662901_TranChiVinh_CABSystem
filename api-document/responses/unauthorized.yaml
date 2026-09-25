@@ -1,0 +1,5 @@
+description: Chưa xác thực.
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/common/ErrorResponse.yaml

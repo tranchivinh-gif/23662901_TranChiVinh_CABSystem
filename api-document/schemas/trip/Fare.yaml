@@ -1,0 +1,26 @@
+type: object
+required:
+- fareId
+- tripId
+- baseFare
+- distanceKm
+- pricePerKm
+- totalFare
+properties:
+  fareId:
+    type: integer
+    format: int32
+    example: 1
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  baseFare:
+    type: integer
+  distanceKm:
+    type: number
+    format: double
+  pricePerKm:
+    type: integer
+  totalFare:
+    type: integer

@@ -1,0 +1,23 @@
+type: object
+required:
+- vehicleTypeId
+- typeName
+- baseFare
+- pricePerKm
+properties:
+  vehicleTypeId:
+    type: integer
+    format: int32
+    example: 1
+  typeName:
+    type: string
+    enum:
+    - Xe máy
+    - Ô tô 4 chỗ
+    - Ô tô 7 chỗ
+  baseFare:
+    type: integer
+    example: 10000
+  pricePerKm:
+    type: integer
+    example: 8000

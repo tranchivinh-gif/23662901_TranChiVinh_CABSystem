@@ -1,0 +1,17 @@
+type: object
+required:
+- code
+- message
+properties:
+  code:
+    type: string
+    example: INVALID_REQUEST
+  message:
+    type: string
+    example: Dữ liệu đầu vào không hợp lệ
+  details:
+    type: array
+    items:
+      type: string
+    example:
+    - Dữ liệu không hợp lệ

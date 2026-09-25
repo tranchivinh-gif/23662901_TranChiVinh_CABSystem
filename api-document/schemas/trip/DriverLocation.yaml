@@ -1,0 +1,32 @@
+type: object
+required:
+- driverLocationId
+- driverId
+- latitude
+- longitude
+- updatedAt
+properties:
+  driverLocationId:
+    type: integer
+    format: int32
+    example: 1
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  latitude:
+    type: number
+    format: double
+  longitude:
+    type: number
+    format: double
+  etaMinutes:
+    type: integer
+    minimum: 0
+    nullable: true
+  stale:
+    type: boolean
+  updatedAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'

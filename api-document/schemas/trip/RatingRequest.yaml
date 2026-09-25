@@ -1,0 +1,11 @@
+type: object
+required:
+- ratingValue
+properties:
+  ratingValue:
+    type: integer
+    minimum: 1
+    maximum: 5
+  comment:
+    type: string
+    nullable: true

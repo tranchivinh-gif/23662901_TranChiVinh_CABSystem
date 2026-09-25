@@ -1,0 +1,485 @@
+paths:
+  /trip-requests:
+    post:
+      tags:
+      - Trip Requests
+      summary: Tạo TripRequest
+      operationId: createTripRequest
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-07
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/trip/TripRequestCreateRequest.yaml
+      responses:
+        '201':
+          description: TripRequest được tạo với Searching.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/TripRequest.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trip-requests/{tripRequestId}:
+    get:
+      tags:
+      - Trip Requests
+      summary: Xem TripRequest
+      operationId: getTripRequest
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-07
+      - UC-14
+      - UC-35
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripRequestIdParam
+      responses:
+        '200':
+          description: TripRequest.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/TripRequest.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trip-requests/{tripRequestId}/cancel:
+    post:
+      tags:
+      - Trip Requests
+      summary: Hủy TripRequest trước khi Trip bắt đầu
+      operationId: cancelTripRequest
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-12
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripRequestIdParam
+      responses:
+        '200':
+          description: TripRequest đã Cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/TripRequest.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /driver-assignments/{assignmentId}:
+    get:
+      tags:
+      - Driver Assignments
+      summary: Xem DriverAssignment
+      operationId: getDriverAssignment
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-09
+      - UC-10
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/AssignmentIdParam
+      responses:
+        '200':
+          description: DriverAssignment.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/DriverAssignment.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /driver-assignments/{assignmentId}/accept:
+    post:
+      tags:
+      - Driver Assignments
+      summary: Driver nhận chuyến
+      operationId: acceptDriverAssignment
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-10
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/AssignmentIdParam
+      responses:
+        '200':
+          description: Trip được tạo sau khi nhận chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Trip.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /driver-assignments/{assignmentId}/reject:
+    post:
+      tags:
+      - Driver Assignments
+      summary: Driver từ chối yêu cầu
+      operationId: rejectDriverAssignment
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-09
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/AssignmentIdParam
+      responses:
+        '200':
+          description: Assignment chuyển Rejected.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/DriverAssignment.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips:
+    get:
+      tags:
+      - Trips
+      summary: Tra cứu danh sách Trip
+      operationId: listTrips
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-14
+      - UC-35
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/trip/Trip.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}:
+    get:
+      tags:
+      - Trips
+      summary: Xem Trip
+      operationId: getTrip
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-14
+      - UC-35
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Trip.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Trip.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/status:
+    patch:
+      tags:
+      - Trips
+      summary: Cập nhật trạng thái Trip
+      operationId: updateTripStatus
+      x-roles:
+      - Driver
+      x-use-cases:
+      - UC-13
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/trip/TripStatusUpdateRequest.yaml
+      responses:
+        '200':
+          description: Trip được cập nhật trạng thái.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Trip.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/cancel:
+    post:
+      tags:
+      - Trips
+      summary: Hủy Trip trước khi bắt đầu
+      operationId: cancelTrip
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-12
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Trip đã Cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Trip.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/track:
+    get:
+      tags:
+      - Trips
+      summary: Theo dõi trạng thái Trip
+      operationId: trackTrip
+      x-roles:
+      - Customer
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-14
+      - UC-35
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Thông tin Trip và tài xế.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - trip
+                properties:
+                  trip:
+                    $ref: ../../schemas/trip/Trip.yaml
+                  driver:
+                    $ref: ../../schemas/driver/Driver.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/driver-location:
+    get:
+      tags:
+      - Trips
+      summary: Xem vị trí gần nhất của Driver
+      operationId: getDriverLocation
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-16
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Vị trí gần nhất.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/DriverLocation.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/fare:
+    get:
+      tags:
+      - Trips
+      summary: Tính và xem cước Trip
+      operationId: getTripFare
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-17
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Fare của Trip.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Fare.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /trips/{tripId}/rating:
+    post:
+      tags:
+      - Trips
+      summary: Đánh giá Driver sau khi Trip hoàn thành
+      operationId: createRating
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-22
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/trip/RatingRequest.yaml
+      responses:
+        '201':
+          description: Rating được ghi nhận.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Rating.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+
+  /trips/{tripId}/realtime-ticket:
+    post:
+      tags: [Trips]
+      summary: Tạo ticket ngắn hạn để kết nối WebSocket theo Trip
+      operationId: createTripRealtimeTicket
+      x-baseline-requirements: [BR-19, FR-34, NFR-12]
+      x-roles: [Customer, Driver, OperationsStaff, OperationsSupervisor]
+      security: [{bearerAuth: []}]
+      parameters:
+      - $ref: ../../parameters/id.yaml#/TripIdParam
+      responses:
+        '200':
+          description: Ticket chỉ dùng cho Trip này, hết hạn sau 60 giây.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/RealtimeTicket.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

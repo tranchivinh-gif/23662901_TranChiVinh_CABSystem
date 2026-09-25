@@ -1,0 +1,46 @@
+type: object
+required:
+- tripId
+- tripRequestId
+- customerId
+- driverId
+- vehicleId
+- status
+properties:
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  tripRequestId:
+    type: integer
+    format: int32
+    example: 1
+  customerId:
+    type: integer
+    format: int32
+    example: 1
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  vehicleId:
+    type: integer
+    format: int32
+    example: 1
+  status:
+    type: string
+    enum:
+    - Arrived
+    - PickedUp
+    - InProgress
+    - Completed
+    - Cancelled
+    - Failed
+  startedAt:
+    type: string
+    format: date-time
+    nullable: true
+  completedAt:
+    type: string
+    format: date-time
+    nullable: true

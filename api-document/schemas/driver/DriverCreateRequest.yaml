@@ -1,0 +1,21 @@
+type: object
+required:
+- fullName
+- phoneNumber
+- password
+- email
+- address
+properties:
+  fullName:
+    type: string
+  phoneNumber:
+    type: string
+  password:
+    type: string
+    format: password
+    minLength: 10
+  email:
+    type: string
+    format: email
+  address:
+    type: string

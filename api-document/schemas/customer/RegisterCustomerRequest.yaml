@@ -1,0 +1,25 @@
+type: object
+required:
+- phoneNumber
+- password
+- fullName
+- email
+- address
+properties:
+  phoneNumber:
+    type: string
+    example: 0901234567
+  password:
+    type: string
+    format: password
+    example: Abc@12345
+  fullName:
+    type: string
+    example: Nguyễn Văn A
+  email:
+    type: string
+    format: email
+    example: customer@example.com
+  address:
+    type: string
+    example: 123 Lê Lợi, Q1, TP.HCM

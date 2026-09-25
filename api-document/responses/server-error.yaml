@@ -1,0 +1,5 @@
+description: Lỗi hệ thống.
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/common/ErrorResponse.yaml

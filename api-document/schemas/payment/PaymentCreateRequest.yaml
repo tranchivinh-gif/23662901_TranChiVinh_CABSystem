@@ -1,0 +1,15 @@
+description: Amount is calculated by the server from the finalized trip fare; clients must not provide it.
+type: object
+required:
+- tripId
+- paymentMethod
+properties:
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  paymentMethod:
+    type: string
+    enum:
+    - Cash
+    - Electronic

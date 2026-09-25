@@ -1,0 +1,39 @@
+type: object
+required:
+- paymentId
+- tripId
+- customerId
+- paymentMethod
+- amount
+- paymentStatus
+- createdAt
+properties:
+  paymentId:
+    type: integer
+    format: int32
+    example: 1
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  customerId:
+    type: integer
+    format: int32
+    example: 1
+  paymentMethod:
+    type: string
+    enum:
+    - Cash
+    - Electronic
+  amount:
+    type: number
+  paymentStatus:
+    type: string
+    enum:
+    - Pending
+    - Paid
+    - Failed
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'

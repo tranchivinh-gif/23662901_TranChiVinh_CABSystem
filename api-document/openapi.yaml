@@ -1,118 +1,181 @@
 openapi: 3.0.3
 info:
   title: CAB System API
-  version: 1.0.0
-  description: |
-    Hợp đồng API CAB System MVP, truy xuất từ SRS.md (bao gồm phụ lục v2).
-    Các điểm chưa chốt được ghi rõ TBD/Cần xác nhận, không được suy diễn thành quy tắc nghiệp vụ.
+  version: 1.1.0
+  description: API contract theo SRS CAB System hiện hành trong workspace, gồm baseline điều chỉnh 1.1.0.
 servers:
-  - url: https://api.example.com/api/v1
-    description: Placeholder; deployment host requires confirmation.
+- url: /api/v1
+  description: Base URL
 tags:
-  - name: Authentication
-  - name: Users
-  - name: Drivers
-  - name: Trips
-  - name: Payments
-  - name: Operations
-  - name: Reports
+- name: Authentication
+- name: Customers
+- name: Drivers
+- name: Vehicles
+- name: Trip Requests
+- name: Driver Assignments
+- name: Trips
+- name: Payments
+- name: Notifications
+- name: Operations
 paths:
   /auth/register:
-    $ref: './paths/auth/auth.yaml#/register'
+    $ref: ./paths/auth/auth.yaml#/paths/~1auth~1register
+  /auth/register-driver:
+    $ref: ./paths/auth/auth.yaml#/paths/~1auth~1register-driver
   /auth/login:
-    $ref: './paths/auth/auth.yaml#/login'
-  /auth/me:
-    $ref: './paths/auth/auth.yaml#/me'
-  /users/me:
-    $ref: './paths/users/users.yaml#/me'
-  /drivers/me:
-    $ref: './paths/employees/employees.yaml#/driverMe'
-  /drivers/me/location:
-    $ref: './paths/employees/employees.yaml#/driverLocation'
-  /drivers/me/availability:
-    $ref: './paths/employees/employees.yaml#/driverAvailability'
+    $ref: ./paths/auth/auth.yaml#/paths/~1auth~1login
+  /customers:
+    $ref: ./paths/customers/customers.yaml#/paths/~1customers
+  /customers/{customerId}:
+    $ref: ./paths/customers/customers.yaml#/paths/~1customers~1{customerId}
+  /drivers:
+    $ref: ./paths/drivers/drivers.yaml#/paths/~1drivers
+  /drivers/{driverId}:
+    $ref: ./paths/drivers/drivers.yaml#/paths/~1drivers~1{driverId}
+  /drivers/{driverId}/approval:
+    $ref: ./paths/drivers/drivers.yaml#/paths/~1drivers~1{driverId}~1approval
+  /drivers/{driverId}/availability:
+    $ref: ./paths/drivers/drivers.yaml#/paths/~1drivers~1{driverId}~1availability
+  /drivers/{driverId}/location:
+    $ref: ./paths/drivers/drivers.yaml#/paths/~1drivers~1{driverId}~1location
+  /vehicles:
+    $ref: ./paths/vehicles/vehicles.yaml#/paths/~1vehicles
+  /vehicles/{vehicleId}:
+    $ref: ./paths/vehicles/vehicles.yaml#/paths/~1vehicles~1{vehicleId}
+  /trip-requests:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trip-requests
+  /trip-requests/{tripRequestId}:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trip-requests~1{tripRequestId}
+  /trip-requests/{tripRequestId}/cancel:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trip-requests~1{tripRequestId}~1cancel
+  /driver-assignments/{assignmentId}:
+    $ref: ./paths/trips/trips.yaml#/paths/~1driver-assignments~1{assignmentId}
+  /driver-assignments/{assignmentId}/accept:
+    $ref: ./paths/trips/trips.yaml#/paths/~1driver-assignments~1{assignmentId}~1accept
+  /driver-assignments/{assignmentId}/reject:
+    $ref: ./paths/trips/trips.yaml#/paths/~1driver-assignments~1{assignmentId}~1reject
   /trips:
-    $ref: './paths/orders/orders.yaml#/trips'
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips
   /trips/{tripId}:
-    $ref: './paths/orders/orders.yaml#/trip'
-  /trips/{tripId}/assignment:
-    $ref: './paths/orders/orders.yaml#/assignment'
-  /trips/{tripId}/driver-response:
-    $ref: './paths/orders/orders.yaml#/driverResponse'
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}
   /trips/{tripId}/status:
-    $ref: './paths/orders/orders.yaml#/status'
-  /trips/{tripId}/incidents:
-    $ref: './paths/orders/orders.yaml#/incidents'
-  /trips/{tripId}/rating:
-    $ref: './paths/orders/orders.yaml#/rating'
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1status
+  /trips/{tripId}/cancel:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1cancel
+  /trips/{tripId}/track:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1track
+  /trips/{tripId}/realtime-ticket:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1realtime-ticket
+  /trips/{tripId}/driver-location:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1driver-location
   /trips/{tripId}/fare:
-    $ref: './paths/payments/payments.yaml#/fare'
-  /trips/{tripId}/payments/cash:
-    $ref: './paths/payments/payments.yaml#/cashPayment'
-  /trips/{tripId}/payments/electronic:
-    $ref: './paths/payments/payments.yaml#/electronicPayment'
-  /trips/{tripId}/payments:
-    $ref: './paths/payments/payments.yaml#/payments'
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1fare
+  /trips/{tripId}/rating:
+    $ref: ./paths/trips/trips.yaml#/paths/~1trips~1{tripId}~1rating
+  /payments/quote:
+    $ref: ./paths/payments/payments.yaml#/paths/~1payments~1quote
+  /payments:
+    $ref: ./paths/payments/payments.yaml#/paths/~1payments
+  /payments/{paymentId}:
+    $ref: ./paths/payments/payments.yaml#/paths/~1payments~1{paymentId}
+  /payments/{paymentId}/retry:
+    $ref: ./paths/payments/payments.yaml#/paths/~1payments~1{paymentId}~1retry
+  /payments/webhook:
+    $ref: ./paths/payments/payments.yaml#/paths/~1payments~1webhook
   /notifications:
-    $ref: './paths/operations/operations.yaml#/notifications'
-  /incidents/{incidentId}:
-    $ref: './paths/operations/operations.yaml#/incident'
-  /operations/users:
-    $ref: './paths/operations/operations.yaml#/users'
-  /operations/drivers:
-    $ref: './paths/operations/operations.yaml#/drivers'
-  /operations/vehicles:
-    $ref: './paths/operations/operations.yaml#/vehicles'
-  /audit-records:
-    $ref: './paths/operations/operations.yaml#/audit'
-  /reports/activity:
-    $ref: './paths/reports/reports.yaml#/activity'
+    $ref: ./paths/notifications/notifications.yaml#/paths/~1notifications
+  /notifications/{notificationId}/read:
+    $ref: ./paths/notifications/notifications.yaml#/paths/~1notifications~1{notificationId}~1read
+  /operations/transactions:
+    $ref: ./paths/operations/operations.yaml#/paths/~1operations~1transactions
+  /operations/trips/{tripId}/notes:
+    $ref: ./paths/operations/operations.yaml#/paths/~1operations~1trips~1{tripId}~1notes
+  /operations/trips/{tripId}/interventions:
+    $ref: ./paths/operations/operations.yaml#/paths/~1operations~1trips~1{tripId}~1interventions
+  /operations/dashboard:
+    $ref: ./paths/operations/operations.yaml#/paths/~1operations~1dashboard
 components:
-  schemas:
-    Error: { $ref: './schemas/common.yaml#/schemas/Error' }
-    User: { $ref: './schemas/common.yaml#/schemas/User' }
-    RegisterRequest: { $ref: './schemas/common.yaml#/schemas/RegisterRequest' }
-    LoginRequest: { $ref: './schemas/common.yaml#/schemas/LoginRequest' }
-    AuthResponse: { $ref: './schemas/common.yaml#/schemas/AuthResponse' }
-    UpdateProfileRequest: { $ref: './schemas/common.yaml#/schemas/UpdateProfileRequest' }
-    Location: { $ref: './schemas/common.yaml#/schemas/Location' }
-    Trip: { $ref: './schemas/common.yaml#/schemas/Trip' }
-    CreateTripRequest: { $ref: './schemas/common.yaml#/schemas/CreateTripRequest' }
-    DriverResponseRequest: { $ref: './schemas/common.yaml#/schemas/DriverResponseRequest' }
-    StatusUpdateRequest: { $ref: './schemas/common.yaml#/schemas/StatusUpdateRequest' }
-    IncidentRequest: { $ref: './schemas/common.yaml#/schemas/IncidentRequest' }
-    Incident: { $ref: './schemas/common.yaml#/schemas/Incident' }
-    Fare: { $ref: './schemas/common.yaml#/schemas/Fare' }
-    Payment: { $ref: './schemas/common.yaml#/schemas/Payment' }
-    Rating: { $ref: './schemas/common.yaml#/schemas/Rating' }
-    RatingRequest: { $ref: './schemas/common.yaml#/schemas/RatingRequest' }
-    ElectronicPaymentRequest: { $ref: './schemas/common.yaml#/schemas/ElectronicPaymentRequest' }
-    Notification: { $ref: './schemas/common.yaml#/schemas/Notification' }
-    NotificationPage: { $ref: './schemas/common.yaml#/schemas/NotificationPage' }
-    Report: { $ref: './schemas/common.yaml#/schemas/Report' }
-    TripPage: { $ref: './schemas/common.yaml#/schemas/TripPage' }
-    PaymentPage: { $ref: './schemas/common.yaml#/schemas/PaymentPage' }
-    AuditRecordPage: { $ref: './schemas/common.yaml#/schemas/AuditRecordPage' }
-  parameters:
-    TripId:
-      $ref: './parameters/parameters.yaml#/TripId'
-    Page:
-      $ref: './parameters/parameters.yaml#/Page'
-    PageSize:
-      $ref: './parameters/parameters.yaml#/PageSize'
-  responses:
-    BadRequest:
-      $ref: './responses/responses.yaml#/BadRequest'
-    Unauthorized:
-      $ref: './responses/responses.yaml#/Unauthorized'
-    Forbidden:
-      $ref: './responses/responses.yaml#/Forbidden'
-    NotFound:
-      $ref: './responses/responses.yaml#/NotFound'
-    Conflict:
-      $ref: './responses/responses.yaml#/Conflict'
-    ServerError:
-      $ref: './responses/responses.yaml#/ServerError'
   securitySchemes:
     bearerAuth:
-      $ref: './security/bearer.yaml#/bearerAuth'
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      $ref: ./schemas/common/ErrorResponse.yaml
+    Pagination:
+      $ref: ./schemas/common/Pagination.yaml
+    Account:
+      $ref: ./schemas/account/Account.yaml
+    Customer:
+      $ref: ./schemas/customer/Customer.yaml
+    CustomerCreateRequest:
+      $ref: ./schemas/customer/CustomerCreateRequest.yaml
+    CustomerUpdateRequest:
+      $ref: ./schemas/customer/CustomerUpdateRequest.yaml
+    RegisterCustomerRequest:
+      $ref: ./schemas/customer/RegisterCustomerRequest.yaml
+    Driver:
+      $ref: ./schemas/driver/Driver.yaml
+    DriverRegistrationRequest:
+      $ref: ./schemas/driver/DriverRegistrationRequest.yaml
+    DriverApproval:
+      $ref: ./schemas/driver/DriverApproval.yaml
+    DriverCreateRequest:
+      $ref: ./schemas/driver/DriverCreateRequest.yaml
+    DriverUpdateRequest:
+      $ref: ./schemas/driver/DriverUpdateRequest.yaml
+    DriverAvailabilityUpdateRequest:
+      $ref: ./schemas/driver/DriverAvailabilityUpdateRequest.yaml
+    VehicleType:
+      $ref: ./schemas/vehicle/VehicleType.yaml
+    Vehicle:
+      $ref: ./schemas/vehicle/Vehicle.yaml
+    VehicleCreateRequest:
+      $ref: ./schemas/vehicle/VehicleCreateRequest.yaml
+    VehicleUpdateRequest:
+      $ref: ./schemas/vehicle/VehicleUpdateRequest.yaml
+    TripRequest:
+      $ref: ./schemas/trip/TripRequest.yaml
+    TripRequestCreateRequest:
+      $ref: ./schemas/trip/TripRequestCreateRequest.yaml
+    DriverAssignment:
+      $ref: ./schemas/trip/DriverAssignment.yaml
+    Trip:
+      $ref: ./schemas/trip/Trip.yaml
+    TripStatusUpdateRequest:
+      $ref: ./schemas/trip/TripStatusUpdateRequest.yaml
+    TripLiveUpdate:
+      $ref: ./schemas/trip/TripLiveUpdate.yaml
+    RealtimeTicket:
+      $ref: ./schemas/trip/RealtimeTicket.yaml
+    DriverLocation:
+      $ref: ./schemas/trip/DriverLocation.yaml
+    DriverLocationUpdateRequest:
+      $ref: ./schemas/trip/DriverLocationUpdateRequest.yaml
+    Fare:
+      $ref: ./schemas/trip/Fare.yaml
+    Rating:
+      $ref: ./schemas/trip/Rating.yaml
+    RatingRequest:
+      $ref: ./schemas/trip/RatingRequest.yaml
+    Payment:
+      $ref: ./schemas/payment/Payment.yaml
+    PaymentCreateRequest:
+      $ref: ./schemas/payment/PaymentCreateRequest.yaml
+    PaymentRetryRequest:
+      $ref: ./schemas/payment/PaymentRetryRequest.yaml
+    PaymentWebhookRequest:
+      $ref: ./schemas/payment/PaymentWebhookRequest.yaml
+    Notification:
+      $ref: ./schemas/notification/Notification.yaml
+    TripSupportNote:
+      $ref: ./schemas/operations/TripSupportNote.yaml
+    TripSupportNoteCreateRequest:
+      $ref: ./schemas/operations/TripSupportNoteCreateRequest.yaml
+    TripInterventionRequest:
+      $ref: ./schemas/operations/TripInterventionRequest.yaml
+    TransactionLookup:
+      $ref: ./schemas/operations/TransactionLookup.yaml
+    Dashboard:
+      $ref: ./schemas/operations/Dashboard.yaml

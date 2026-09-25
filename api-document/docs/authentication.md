@@ -1,5 +1,9 @@
 # Xác thực
 
-`POST /auth/register` và `POST /auth/login` là public. Các endpoint khác yêu cầu `Authorization: Bearer <accessToken>`.
+- Đăng ký khách hàng: `POST /api/v1/auth/register`.
+- Đăng nhập: `POST /api/v1/auth/login` bằng `phoneNumber` và `password`.
+- API yêu cầu đăng nhập sử dụng `Authorization: Bearer <JWT>`.
+- `Account.PhoneNumber` là nguồn đăng nhập chính và phải duy nhất.
 
-JWT thiếu hoặc không hợp lệ trả `401`; JWT hợp lệ nhưng không đủ quyền trả `403`. SRS chưa chốt refresh token, logout, xác minh email/số điện thoại, password policy, token lifetime và key rotation; vì vậy không có endpoint tương ứng.
+- Driver self-registration: `POST /api/v1/auth/register-driver`; new profile is `PendingApproval`/`Unavailable` until OperationsStaff/Supervisor approval.
+- `OperationsSupervisor` is a separate role and cannot be assigned by public registration.

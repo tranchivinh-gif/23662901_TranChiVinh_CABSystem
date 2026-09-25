@@ -1,149 +1,172 @@
-# Tài liệu API hệ thống CAB
+# CAB System API Document
 
-## 1. Tổng quan thiết kế API
+## 1. Baseline
 
-API được thiết kế theo domain nghiệp vụ và truy xuất về UC/FR/BR trong SRS. Các UC-17 đến
-UC-19 chưa tạo endpoint vì actor, phạm vi và cách triển khai được đánh dấu
-`[NEED CLARIFICATION]`.
+API Document này theo SRS hiện hành trong workspace, gồm baseline điều chỉnh 1.1.0 tại Chương 18. SRS là nguồn chuẩn cho nghiệp vụ, dữ liệu, trạng thái và quyền; API contract và `test-case/TRACEABILITY.md` truy xuất các yêu cầu tương ứng.
 
-| Miền nghiệp vụ | Use Case | Thao tác | Method | Endpoint | Xác thực |
-|---|---|---|---|---|---|
-| Xác thực | UC-01 | Đăng ký, đăng nhập, xem tài khoản hiện tại | POST/GET | `/auth/register`, `/auth/login`, `/auth/me` | Đăng ký/đăng nhập công khai; `/auth/me` dùng JWT |
-| Quản lý người dùng | UC-01 | Xem/cập nhật hồ sơ cá nhân | GET/PUT | `/users/me` | JWT, tài khoản của chính mình |
-| Quản lý tài xế | UC-03/04/06 | Hồ sơ, sẵn sàng, vị trí, phản hồi chuyến | GET/PUT/POST | `/drivers/me`, `/drivers/me/location`, `/drivers/me/availability`, `/trips/{tripId}/driver-response` | JWT tài xế |
-| Quản lý chuyến | UC-02/05/06/07/08 | Tạo, theo dõi, phân công, cập nhật, hủy, báo sự cố | POST/GET/PATCH/DELETE | `/trips...` | JWT và RBAC vận hành |
-| Thanh toán | UC-09/10/11 | Cước, tiền mặt, thanh toán điện tử | GET/POST | `/trips/{tripId}/fare`, `/trips/{tripId}/payments...` | JWT |
-| Vận hành | UC-12/13/14/15 | Thông báo, sự cố, dữ liệu vận hành, audit | GET/PATCH | `/notifications`, `/incidents/{incidentId}`, `/operations/*`, `/audit-records` | JWT, nhân viên vận hành/quản trị viên |
-| Báo cáo | UC-16 | Báo cáo hoạt động | GET | `/reports/activity` | Nhân viên vận hành/quản trị viên |
+## 2. Authentication
 
-## 2. Mapping Yêu cầu -> API
+- `POST /api/v1/auth/register` — UC-01
+- `POST /api/v1/auth/login` — UC-02
+- Login sử dụng `Account.PhoneNumber` và password.
+- API yêu cầu xác thực sử dụng Bearer JWT.
 
-| API | Requirement | Use Case | Business Rule | Business Operation |
-|---|---|---|---|---|
-| `/auth/*`, `/users/me` | BR-01, FR-01 | UC-01 | BRULE-01: tài khoản hợp lệ mới được dùng chức năng bảo vệ | Quản lý tài khoản |
-| `POST /trips` | BR-02, FR-02, FR-03 | UC-02 | BRULE-02: bắt buộc có điểm đón, điểm đến và loại xe | Tạo yêu cầu chuyến |
-| `GET /trips/{tripId}` | BR-03, BR-04, FR-09, FR-10 | UC-07 | BRULE-07: trạng thái chuyến theo đúng tiến trình | Theo dõi chuyến |
-| `/trips/{tripId}/assignment`, `/driver-response` | BR-06, BR-08–BR-10, FR-04–FR-07, FR-12 | UC-03–UC-05 | Lọc theo vị trí, sẵn sàng, loại xe; chờ 30 giây; từ chối/không phản hồi thì tìm tiếp | Tìm và phân công tài xế |
-| `/drivers/me*` | BR-05, BR-08, FR-04, FR-12 | UC-03, UC-06 | Tài xế cung cấp vị trí và trạng thái sẵn sàng | Cập nhật dữ liệu tài xế |
-| `PATCH /trips/{tripId}/status` | BR-07, FR-08 | UC-06 | Không được bỏ qua trạng thái | Cập nhật tiến trình chuyến |
-| `DELETE /trips/{tripId}` | BR-04, FR-09 | UC-07 | Chỉ hủy trước trạng thái khóa hủy và trước khi hoàn thành | Hủy chuyến |
-| `/trips/{tripId}/incidents`, `/incidents/{incidentId}` | BR-16, FR-11, FR-23, FR-24 | UC-08, UC-14 | Ghi nhận và xử lý sự cố | Quản lý sự cố |
-| `/trips/{tripId}/fare` | BR-12, FR-13 | UC-09 | Tính cước sau khi hoàn thành; công thức là `[NEED CLARIFICATION]` | Xem cước |
-| `/payments/cash` | BR-13, BR-14, FR-14, FR-15 | UC-10 | Hoàn tất khi tài xế xác nhận đã thu đủ tiền | Xác nhận tiền mặt |
-| `/payments/electronic`, `/payments` | BR-14, BR-15, FR-16–FR-18 | UC-11 | Tối đa 3 lần thử trong 30 phút; chỉ lưu mã và trạng thái provider | Thanh toán điện tử |
-| `/notifications` | BR-11, FR-19, FR-20 | UC-12 | MVP dùng thông báo trong hệ thống và email | Xem thông báo |
-| `/operations/*`, `/audit-records` | BR-05, BR-17, FR-21, FR-22, FR-25 | UC-13, UC-15 | RBAC và audit chi tiết là `[NEED CLARIFICATION]` | Vận hành và kiểm toán |
-| `/reports/activity` | BR-18, FR-26, FR-27 | UC-16 | Hỗ trợ kỳ báo cáo và bộ lọc; KPI cần xác nhận | Tạo báo cáo |
+## 3. Customer
 
-## 3. API Contract
+| Method | Endpoint | Role | UC |
+|---|---|---|---|
+| POST | `/customers` | OperationsStaff | UC-23 |
+| GET | `/customers` | OperationsStaff | UC-24 |
+| GET | `/customers/{customerId}` | Customer, OperationsStaff | UC-03, UC-24 |
+| PUT | `/customers/{customerId}` | Customer, OperationsStaff | UC-03, UC-25 |
+| DELETE | `/customers/{customerId}` | OperationsStaff | UC-26 |
 
-Mọi request/response dùng JSON. Endpoint được bảo vệ yêu cầu:
+Delete là logical delete.
 
-`Authorization: Bearer <JWT>`
+## 4. Driver
 
-- ID trên path dùng UUID.
-- Body thiếu hoặc sai dữ liệu trả về `400`.
-- JWT thiếu hoặc không hợp lệ trả về `401`.
-- Không đủ quyền trả về `403`.
-- Không tìm thấy tài nguyên trả về `404`.
-- Chuyển trạng thái hoặc thanh toán xung đột trả về `409`.
-- Lỗi máy chủ không dự kiến trả về `500`.
-- Endpoint danh sách dùng `page`, `pageSize` và bộ lọc phù hợp.
-- Request/response schema được khai báo tại [schemas/common.yaml](./schemas/common.yaml).
-- Không expose trực tiếp cấu trúc database.
+| Method | Endpoint | Role | UC |
+|---|---|---|---|
+| POST | `/drivers` | OperationsStaff | UC-27 |
+| GET | `/drivers` | OperationsStaff | UC-28 |
+| GET | `/drivers/{driverId}` | Driver, OperationsStaff | UC-04, UC-28 |
+| PUT | `/drivers/{driverId}` | Driver, OperationsStaff | UC-04, UC-29 |
+| DELETE | `/drivers/{driverId}` | OperationsStaff | UC-30 |
+| PATCH | `/drivers/{driverId}/availability` | Driver | UC-06 |
+| PUT | `/drivers/{driverId}/location` | Driver | UC-15 |
 
-| Nhóm API | Validation chính | Thành công | Lỗi | Phân quyền |
-|---|---|---|---|---|
-| Tài khoản/hồ sơ | Email, mật khẩu, họ tên; field hồ sơ theo schema | `200`, `201` | `400`, `401`, `409`, `500` | Công khai khi đăng ký/đăng nhập; JWT tài khoản |
-| Chuyến | Bắt buộc điểm đón, điểm đến, loại xe; hủy trước khóa hủy | `200`, `201`, `204` | `400`, `401`, `404`, `409`, `500` | Chủ chuyến hoặc vận hành |
-| Tài xế | Tọa độ trong giới hạn latitude/longitude; cập nhật khoảng 10 giây khi hoạt động | `200`, `204` | `400`, `401` | Tài xế của chính mình |
-| Phân công/trạng thái | Phản hồi `ACCEPT`/`REJECT`; không bỏ qua trạng thái | `200` | `400`, `401`, `403`, `409` | Tài xế hoặc vai trò vận hành |
-| Sự cố/thông báo/vận hành | Mô tả sự cố bắt buộc; query phân trang hợp lệ | `200`, `201` | `400`, `401`, `403`, `404` | Người báo sự cố; vận hành xử lý |
-| Cước/thanh toán | Không nhận dữ liệu thanh toán nhạy cảm; retry tối đa 3 lần/30 phút | `200`, `202` | `400`, `404`, `409` | Thành viên chuyến hoặc vận hành |
-| Báo cáo | `period` bắt buộc; `CUSTOM` cần `from` và `to` | `200` | `400`, `403`, `500` | Nhân viên vận hành/quản trị viên |
+## 5. Vehicle
 
-## 4. Thiết kế Schema
+| Method | Endpoint | Role | UC |
+|---|---|---|---|
+| POST | `/vehicles` | OperationsStaff | UC-31 |
+| GET | `/vehicles` | OperationsStaff | UC-32 |
+| GET | `/vehicles/{vehicleId}` | Driver, OperationsStaff | UC-05, UC-32 |
+| PUT | `/vehicles/{vehicleId}` | Driver, OperationsStaff | UC-05, UC-33 |
+| DELETE | `/vehicles/{vehicleId}` | OperationsStaff | UC-34 |
 
-### Request Schema
+VehicleType: `Xe máy`, `Ô tô 4 chỗ`, `Ô tô 7 chỗ`.
 
-`RegisterRequest`, `LoginRequest`, `UpdateProfileRequest`, `CreateTripRequest`,
-`DriverResponseRequest`, `StatusUpdateRequest`, `IncidentRequest`,
-`ElectronicPaymentRequest`.
+## 6. TripRequest / DriverAssignment / Trip
 
-### Response Schema
+Flow:
 
-`AuthResponse`, `User`, `Trip`, `Incident`, `Fare`, `Payment`, `Notification`,
-`NotificationPage`, `Report`, `Page`, `Error`.
+`Customer → TripRequest → DriverAssignment → Driver response → Trip`
 
-### Entity Schema
+TripRequest status: `Searching`, `Assigned`, `Cancelled`, `NoDriverFound`.
+DriverAssignment status: `Pending`, `Accepted`, `Rejected`, `Timeout`.
+Trip status: `Arrived`, `PickedUp`, `InProgress`, `Completed`, `Cancelled`.
 
-Các representation nghiệp vụ gồm `User`, `Trip`, `Incident`, `Fare`, `Payment`,
-`Notification` và `Report`. Các field chỉ phục vụ persistence/database không được expose.
+| Method | Endpoint | Role | UC |
+|---|---|---|---|
+| POST | `/trip-requests` | Customer | UC-07 |
+| GET | `/trip-requests/{tripRequestId}` | Customer, OperationsStaff | UC-07, UC-14, UC-35 |
+| POST | `/trip-requests/{tripRequestId}/cancel` | Customer | UC-12 |
+| GET | `/driver-assignments/{assignmentId}` | Driver | UC-09, UC-10 |
+| POST | `/driver-assignments/{assignmentId}/accept` | Driver | UC-10 |
+| POST | `/driver-assignments/{assignmentId}/reject` | Driver | UC-09 |
+| GET | `/trips` | Customer, OperationsStaff | UC-14, UC-35 |
+| GET | `/trips/{tripId}` | Customer, OperationsStaff | UC-14, UC-35 |
+| PATCH | `/trips/{tripId}/status` | Driver | UC-13 |
+| POST | `/trips/{tripId}/cancel` | Customer | UC-12 |
+| GET | `/trips/{tripId}/track` | Customer, OperationsStaff | UC-14, UC-35 |
+| GET | `/trips/{tripId}/driver-location` | Customer | UC-16 |
+| GET | `/trips/{tripId}/fare` | Customer | UC-17 |
+| POST | `/trips/{tripId}/rating` | Customer | UC-22 |
 
-## 5. Common Components
+Thiết kế nhận chuyến được thực hiện thông qua resource `DriverAssignment`.
 
-- **Parameters:** `TripId`, `Page`, `PageSize`.
-- **Responses:** `BadRequest`, `Unauthorized`, `Forbidden`, `NotFound`, `Conflict`, `ServerError`.
-- **Security:** `bearerAuth` dùng JWT Bearer.
+## 7. Fare
 
-## 6. Cấu trúc API Document
+`TotalFare = BaseFare + (DistanceKm × PricePerKm)`; DistanceKm được làm tròn đến 0,1 km.
 
-```text
-api-document/
-├── openapi.yaml
-├── README.md
-├── paths/
-│   ├── auth/auth.yaml
-│   ├── users/users.yaml
-│   ├── employees/employees.yaml
-│   ├── orders/orders.yaml
-│   ├── payments/payments.yaml
-│   ├── operations/operations.yaml
-│   └── reports/reports.yaml
-├── schemas/common.yaml
-├── parameters/parameters.yaml
-├── responses/responses.yaml
-├── security/bearer.yaml
-├── examples/
-├── docs/
-└── dist/openapi.bundle.yaml
-```
+| VehicleType | BaseFare | PricePerKm |
+|---|---:|---:|
+| Xe máy | 10.000 | 8.000 |
+| Ô tô 4 chỗ | 15.000 | 12.000 |
+| Ô tô 7 chỗ | 20.000 | 14.000 |
 
-SRS không có domain sản phẩm hoặc bàn nên không tạo các thư mục đó.
-Không tạo file/folder chỉ để làm đẹp cấu trúc.
+Không áp dụng phụ phí theo giờ cao điểm, thời tiết, khu vực hoặc điều kiện đặc biệt.
 
-## 7. Source of Truth và Bundle
+## 8. Payment
 
-[openapi.yaml](./openapi.yaml) là file nguồn chính. Các file YAML nguồn được nối qua `$ref`
-để tạo [dist/openapi.bundle.yaml](./dist/openapi.bundle.yaml).
+| Method | Endpoint | UC |
+|---|---|---|
+| POST | `/payments/quote` | UC-17 |
+| POST | `/payments` | UC-18, UC-19 |
+| GET | `/payments/{paymentId}` | UC-18, UC-19, UC-20, UC-36 |
+| POST | `/payments/{paymentId}/retry` | UC-20 |
+| POST | `/payments/webhook` | UC-19, UC-20 |
 
-Bundle chứa độc lập toàn bộ path, schema, parameter, response và security để dùng cho Swagger
-Editor, Swagger UI, kiểm thử và chia sẻ. Không chỉnh sửa trực tiếp file trong `dist/`; mọi thay
-đổi phải bắt đầu từ file nguồn, kiểm tra rồi bundle lại.
+Payment method: `Cash`, `Electronic`. Electronic dùng VNPAY Sandbox. Retry tối đa 3 lần sau lần đầu, tổng cộng tối đa 4 attempts.
 
-## 8. Truy xuất, phạm vi và các điểm chưa chốt
+## 9. Notification
 
-Ma trận FR/UC/AC có tại [docs/traceability.md](./docs/traceability.md); các quyết định cần BA/customer xác nhận có tại [docs/open-issues.md](./docs/open-issues.md). Phạm vi MVP gồm UC-01 đến UC-16. UC-17 đến UC-19 là future extension, không có public endpoint MVP.
+Notification chỉ sử dụng in-app. Schema gồm `notificationId`, `accountId`, `tripId`, `title`, `content`, `isRead`, `createdAt`.
 
-Các bổ sung được xác nhận ngày 23/09/2026 gồm assignment tự động, 30 giây phản hồi tài xế, retry thanh toán tối đa 3 lần/30 phút, `IN_APP`/`EMAIL` với tối đa 3 attempt, audit 12 tháng, công thức cước, chính sách hủy không thu phí và rating 1–5 sao. API phải tuân thủ baseline xác nhận trong SRS.md.
+## 10. Operations / Leadership
 
-## 9. Validation
+| Method | Endpoint | Role | UC |
+|---|---|---|---|
+| GET | `/operations/transactions` | OperationsStaff | UC-36 |
+| GET | `/operations/dashboard` | Leadership | UC-37 |
 
-- Các endpoint map tới UC-01–UC-16 và FR-01–FR-27 trong SRS.
-- Không tạo endpoint ngoài phạm vi; UC-17–UC-19 được đánh dấu `[NEED CLARIFICATION]`.
-- Không có endpoint trùng chức năng và naming convention nhất quán.
-- Các quy tắc phân công, timeout 30 giây, tiến trình chuyến, hủy, thanh toán, thông báo,
-  audit và báo cáo đã được phản ánh.
-- Tất cả file `$ref` nguồn tồn tại và bundle không có external `$ref`.
-- Source cần được lint/bundle bằng Redocly hoặc Swagger CLI trước release. Lệnh chuẩn: `npx @redocly/cli lint api-document/openapi.yaml` và `npx @redocly/cli bundle api-document/openapi.yaml --output api-document/dist/openapi.bundle.yaml`.
-- Bundle chỉ được generate từ source; không chỉnh tay. Release gate cần kiểm tra mọi $ref, operationId và import Swagger Editor.
+Transaction filters: `paymentId`, `tripId`, `customerId`, `paymentMethod`, `paymentStatus`, `createdFrom`, `createdTo`.
 
-## 10. Các điểm còn cần cấu hình kỹ thuật
+## 11. UC Coverage
 
-Tài liệu xác nhận đã chốt phạm vi và quy tắc nghiệp vụ MVP. Các nội dung dưới đây không còn là khoảng trống chức năng, nhưng cần cấu hình hoặc đặc tả kỹ thuật trước khi triển khai:
+| UC | API coverage |
+|---|---|
+| UC-01 | POST /auth/register |
+| UC-02 | POST /auth/login |
+| UC-03 | GET/PUT /customers/{customerId} |
+| UC-04 | GET/PUT /drivers/{driverId} |
+| UC-05 | GET/PUT /vehicles/{vehicleId} |
+| UC-06 | PATCH /drivers/{driverId}/availability |
+| UC-07 | POST /trip-requests |
+| UC-08 | Internal service flow |
+| UC-09 | DriverAssignment GET/Reject |
+| UC-10 | DriverAssignment Accept |
+| UC-11 | Internal service flow + notification |
+| UC-12 | TripRequest/Trip cancel |
+| UC-13 | PATCH /trips/{tripId}/status |
+| UC-14 | Trip GET/track |
+| UC-15 | PUT /drivers/{driverId}/location |
+| UC-16 | GET /trips/{tripId}/driver-location |
+| UC-17 | POST /payments/quote + GET /trips/{tripId}/fare |
+| UC-18 | POST /payments |
+| UC-19 | POST /payments + webhook |
+| UC-20 | POST /payments/{paymentId}/retry |
+| UC-21 | Notifications |
+| UC-22 | POST /trips/{tripId}/rating |
+| UC-23–UC-34 | Customer/Driver/Vehicle CRUD |
+| UC-35 | Trip monitoring |
+| UC-36 | GET /operations/transactions |
+| UC-37 | GET /operations/dashboard |
 
-1. API host và môi trường development/staging/production.
-2. Password policy, refresh token, logout, verification, token lifetime và key rotation.
-3. Tên Payment Provider và Notification Provider cụ thể.
-4. Template thông báo, timezone báo cáo, định dạng export và cách lưu trữ sau thời hạn.
-5. Cơ chế idempotency, hàng đợi gửi lại và xử lý conflict khi mất kết nối.
+UC-08, UC-09 (gửi request), UC-11 và UC-21 có các bước hệ thống nội bộ; API Document chỉ công khai các thao tác cần actor gọi trực tiếp.
+
+## 12. Validation
+
+- Trip, TripRequest và DriverAssignment sử dụng các status riêng theo SRS.
+- VehicleType chỉ gồm ba loại được SRS xác định.
+- ID dùng integer.
+- JSON dùng camelCase.
+- Customer/Driver/Vehicle DELETE là logical delete.
+- Bundle được sinh lại từ `openapi.yaml`.
+
+
+## 13. Baseline 1.1.0 — Real-time, approvals and operations
+
+- Driver self-registration: `POST /auth/register-driver`; Staff-created Driver uses `POST /drivers` and server creates Account and Driver together. Initial state is `PendingApproval` and `Unavailable`. OperationsStaff or OperationsSupervisor approves/rejects via `PATCH /drivers/{driverId}/approval`; rejection requires a reason.
+- Driver location cadence: every 5 seconds while approaching pickup, every 10–15 seconds during a trip, and immediately on trip status changes. Ride service recalculates estimated ETA using an external routing provider. Provider selection, quota, cost and SLA remain deployment decisions.
+- `POST /trips/{tripId}/realtime-ticket` issues a single-trip ticket expiring in 60 seconds. Client connects to returned WebSocket URL using the ticket. Event names: `trip.location.updated`, `trip.eta.updated`, `trip.status.updated`; payload schema is `TripLiveUpdate`. Client reconnects and falls back to `GET /trips/{tripId}/driver-location` every 10 seconds. Location is stale after 30 seconds without a fresh position.
+- Live event fields: `tripId`, `status`, nullable `latitude`/`longitude`, nullable `etaMinutes`, `updatedAt`, `stale`. Events are only sent to trip participants and authorized operations roles. Stop sharing on cancellation or completion.
+- `OperationsStaff` manages profiles, monitors trips, adds support notes and looks up transactions. `OperationsSupervisor` can also cancel/close a trip using the intervention endpoint, with reason, second confirmation and audit. Neither may directly edit finalized fare or payment history.
+- Driver availability is changed only through `PATCH /drivers/{driverId}/availability`; profile update does not accept `availabilityStatus`. The service must reject `Available` unless the Driver is approved.
+- `POST /payments` takes `tripId` and `paymentMethod`; server derives amount from finalized fare. VNPAY webhook signature verification and idempotency by provider reference are mandatory implementation controls.
+- Coursework performance profile: 100 concurrent virtual users, at least 20 trip requests/minute for 10 minutes; ordinary API p95 <2 s, create TripRequest p95 <3 s excluding matching/driver response, live update p95 <=10 s from server receipt to client. These are test targets, not production guarantees.
+
+WebSocket is not an ordinary OpenAPI HTTP operation. Ticket issuance is in OpenAPI; event contract is in `docs/realtime.md`.
+
+New baseline requirement IDs BR-19–BR-23, FR-34–FR-38, NFR-12–NFR-13 and GOV-01 are defined in SRS Chapter 18.8. API operations carry `x-baseline-requirements` metadata where applicable.

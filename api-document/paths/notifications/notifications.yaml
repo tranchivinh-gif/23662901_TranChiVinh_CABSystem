@@ -1,0 +1,66 @@
+paths:
+  /notifications:
+    get:
+      tags:
+      - Notifications
+      summary: Xem thông báo của tài khoản
+      operationId: listNotifications
+      x-roles:
+      - Customer
+      - Driver
+      x-use-cases:
+      - UC-21
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/notification/Notification.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /notifications/{notificationId}/read:
+    patch:
+      tags:
+      - Notifications
+      summary: Đánh dấu đã đọc
+      operationId: markNotificationRead
+      x-roles:
+      - Customer
+      - Driver
+      x-use-cases:
+      - UC-21
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/NotificationIdParam
+      responses:
+        '200':
+          description: Notification đã được đánh dấu đã đọc.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/notification/Notification.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

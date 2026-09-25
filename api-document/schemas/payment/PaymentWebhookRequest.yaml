@@ -1,0 +1,17 @@
+type: object
+required:
+- paymentId
+- providerReference
+- paymentStatus
+properties:
+  paymentId:
+    type: integer
+    format: int32
+    example: 1
+  providerReference:
+    type: string
+  paymentStatus:
+    type: string
+    enum:
+    - Paid
+    - Failed

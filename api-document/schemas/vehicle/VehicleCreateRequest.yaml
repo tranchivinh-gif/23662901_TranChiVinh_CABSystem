@@ -1,0 +1,16 @@
+type: object
+required:
+- driverId
+- vehicleTypeId
+- licensePlate
+properties:
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  vehicleTypeId:
+    type: integer
+    format: int32
+    example: 1
+  licensePlate:
+    type: string

@@ -1,0 +1,34 @@
+type: object
+required:
+- customerId
+- accountId
+- fullName
+- phoneNumber
+- email
+- address
+- isDeleted
+properties:
+  customerId:
+    type: integer
+    format: int32
+    example: 1
+  accountId:
+    type: integer
+    format: int32
+    example: 1
+  fullName:
+    type: string
+    example: Nguyễn Văn A
+  phoneNumber:
+    type: string
+    example: 0901234567
+  email:
+    type: string
+    format: email
+    example: customer@example.com
+  address:
+    type: string
+    example: 123 Lê Lợi, Q1, TP.HCM
+  isDeleted:
+    type: boolean
+    example: false

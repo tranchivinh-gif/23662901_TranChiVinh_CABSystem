@@ -1,0 +1,36 @@
+type: object
+required:
+- ratingId
+- tripId
+- customerId
+- driverId
+- ratingValue
+- createdAt
+properties:
+  ratingId:
+    type: integer
+    format: int32
+    example: 1
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  customerId:
+    type: integer
+    format: int32
+    example: 1
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  ratingValue:
+    type: integer
+    minimum: 1
+    maximum: 5
+  comment:
+    type: string
+    nullable: true
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'

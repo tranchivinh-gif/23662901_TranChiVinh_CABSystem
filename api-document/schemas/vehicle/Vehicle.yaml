@@ -1,0 +1,26 @@
+type: object
+required:
+- vehicleId
+- driverId
+- vehicleTypeId
+- licensePlate
+- isDeleted
+properties:
+  vehicleId:
+    type: integer
+    format: int32
+    example: 1
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  vehicleTypeId:
+    type: integer
+    format: int32
+    example: 1
+  licensePlate:
+    type: string
+    example: 51A-12345
+  isDeleted:
+    type: boolean
+    example: false

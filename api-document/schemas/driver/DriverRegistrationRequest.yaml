@@ -1,0 +1,8 @@
+type: object
+required: [phoneNumber, password, fullName, email, address]
+properties:
+  phoneNumber: {type: string}
+  password: {type: string, format: password, minLength: 10}
+  fullName: {type: string}
+  email: {type: string, format: email}
+  address: {type: string}

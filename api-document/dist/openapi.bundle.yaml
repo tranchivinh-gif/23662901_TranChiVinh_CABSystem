@@ -1,562 +1,2775 @@
 openapi: 3.0.3
 info:
   title: CAB System API
-  version: 1.0.0
-  description: Bundled CAB System MVP API. This file is generated from ../openapi.yaml and is not edited directly.
+  version: 1.1.0
+  description: API contract theo SRS CAB System hiện hành trong workspace, gồm baseline điều chỉnh 1.1.0.
 servers:
-  - url: https://api.example.com/api/v1
-    description: Placeholder; deployment host requires confirmation.
+  - url: /api/v1
+    description: Base URL
 tags:
   - name: Authentication
-  - name: Users
+  - name: Customers
   - name: Drivers
+  - name: Vehicles
+  - name: Trip Requests
+  - name: Driver Assignments
   - name: Trips
   - name: Payments
+  - name: Notifications
   - name: Operations
-  - name: Reports
 paths:
   /auth/register:
     post:
-      tags: [Authentication]
-      summary: Register customer account
-      operationId: register
+      tags:
+        - Authentication
+      summary: Đăng ký tài khoản khách hàng
+      operationId: registerCustomer
+      x-roles: []
+      x-use-cases:
+        - UC-01
+      security: []
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/RegisterRequest' }
+            schema:
+              $ref: '#/components/schemas/RegisterCustomerRequest'
       responses:
-        '201': { description: Account created, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '409': { $ref: '#/components/responses/Conflict' }
+        '201':
+          description: Đăng ký thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /auth/register-driver:
+    post:
+      tags:
+        - Authentication
+      summary: Tài xế tự đăng ký, chờ duyệt
+      operationId: registerDriver
+      x-baseline-requirements:
+        - BR-21
+        - FR-36
+      x-roles: []
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRegistrationRequest'
+      responses:
+        '201':
+          description: Hồ sơ tạo với PendingApproval và Unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
   /auth/login:
     post:
-      tags: [Authentication]
-      summary: Login and issue JWT
-      operationId: login
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/LoginRequest' }
-      responses:
-        '200': { description: Authenticated, content: { application/json: { schema: { $ref: '#/components/schemas/AuthResponse' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '500': { $ref: '#/components/responses/ServerError' }
-  /auth/me:
-    get:
-      tags: [Authentication]
-      summary: Get current authenticated user
-      operationId: getCurrentUser
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Current user, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /users/me:
-    get:
-      tags: [Users]
-      summary: Get customer profile
-      operationId: getOwnProfile
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-    put:
-      tags: [Users]
-      summary: Update customer profile
-      operationId: updateOwnProfile
-      security: [{ bearerAuth: [] }]
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/UpdateProfileRequest' } } }
-      responses:
-        '200': { description: Updated profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /drivers/me:
-    get:
-      tags: [Drivers]
-      summary: Get driver profile
-      operationId: getDriverProfile
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Driver profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-    put:
-      tags: [Drivers]
-      summary: Update driver profile
-      operationId: updateDriverProfile
-      security: [{ bearerAuth: [] }]
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/UpdateProfileRequest' } } }
-      responses:
-        '200': { description: Updated driver profile, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /drivers/me/location:
-    put:
-      tags: [Drivers]
-      summary: Update active driver location
-      operationId: updateDriverLocation
-      description: SRS baseline targets approximately one update every 10 seconds while active.
-      security: [{ bearerAuth: [] }]
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/Location' } } }
-      responses:
-        '204': { description: Location recorded }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /drivers/me/availability:
-    put:
-      tags: [Drivers]
-      summary: Update driver availability
-      operationId: updateDriverAvailability
-      security: [{ bearerAuth: [] }]
+      tags:
+        - Authentication
+      summary: Đăng nhập bằng số điện thoại và mật khẩu
+      operationId: loginUser
+      x-roles: []
+      x-use-cases:
+        - UC-02
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [available]
-              properties: { available: { type: boolean } }
+              required:
+                - phoneNumber
+                - password
+              properties:
+                phoneNumber:
+                  type: string
+                password:
+                  type: string
+                  format: password
       responses:
-        '204': { description: Availability updated }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /trips:
+        '200':
+          description: Đăng nhập thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - accessToken
+                  - tokenType
+                properties:
+                  accessToken:
+                    type: string
+                  tokenType:
+                    type: string
+                    example: bearer
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /customers:
     post:
-      tags: [Trips]
-      summary: Create a trip request
-      operationId: createTrip
-      security: [{ bearerAuth: [] }]
+      tags:
+        - Customers
+      summary: Operations Staff tạo Customer
+      operationId: createCustomer
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-23
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/CreateTripRequest' } } }
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreateRequest'
       responses:
-        '201': { description: Trip accepted and sent to driver search, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '500': { $ref: '#/components/responses/ServerError' }
+        '201':
+          description: Customer được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
     get:
-      tags: [Trips]
-      summary: List current user's trips
-      operationId: listOwnTrips
-      security: [{ bearerAuth: [] }]
+      tags:
+        - Customers
+      summary: Operations Staff tra cứu Customer
+      operationId: listCustomers
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-24
+      security:
+        - bearerAuth: []
       parameters:
-        - { $ref: '#/components/parameters/Page' }
-        - { $ref: '#/components/parameters/PageSize' }
-        - { name: status, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
-        '200': { description: Trip page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-  /trips/{tripId}:
-    parameters: [{ $ref: '#/components/parameters/TripId' }]
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /customers/{customerId}:
     get:
-      tags: [Trips]
-      summary: Get trip status and tracking information
-      operationId: getTrip
-      security: [{ bearerAuth: [] }]
+      tags:
+        - Customers
+      summary: Lấy Customer theo ID
+      operationId: getCustomer
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-03
+        - UC-24
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdParam'
       responses:
-        '200': { description: Trip, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '404': { $ref: '#/components/responses/NotFound' }
-    delete:
-      tags: [Trips]
-      summary: Cancel trip before cancellation lock and completion
-      operationId: cancelTrip
-      security: [{ bearerAuth: [] }]
-      responses:
-        '204': { description: Trip cancelled }
-        '409': { $ref: '#/components/responses/Conflict' }
-  /trips/{tripId}/assignment:
-    post:
-      tags: [Trips]
-      summary: Record driver assignment result
-      operationId: assignDriver
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
-      responses:
-        '200': { description: Assignment result, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-        '409': { $ref: '#/components/responses/Conflict' }
-  /trips/{tripId}/driver-response:
-    post:
-      tags: [Trips]
-      summary: Accept or reject offered trip
-      operationId: respondToTripOffer
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
+        '200':
+          description: Customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+    put:
+      tags:
+        - Customers
+      summary: Cập nhật Customer
+      operationId: updateCustomer
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-03
+        - UC-25
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdParam'
       requestBody:
         required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/DriverResponseRequest' } } }
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
       responses:
-        '200': { description: Response recorded, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
-        '409': { $ref: '#/components/responses/Conflict' }
+        '200':
+          description: Customer được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+    delete:
+      tags:
+        - Customers
+      summary: Logical delete Customer
+      operationId: deleteCustomer
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-26
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CustomerIdParam'
+      responses:
+        '200':
+          description: Customer được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /drivers:
+    post:
+      tags:
+        - Drivers
+      summary: Operations Staff tạo Driver
+      operationId: createDriver
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-27
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverCreateRequest'
+      responses:
+        '201':
+          description: Driver được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+    get:
+      tags:
+        - Drivers
+      summary: Operations Staff tra cứu Driver
+      operationId: listDrivers
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-28
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Driver'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /drivers/{driverId}:
+    get:
+      tags:
+        - Drivers
+      summary: Lấy Driver theo ID
+      operationId: getDriver
+      x-roles:
+        - Driver
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-04
+        - UC-28
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      responses:
+        '200':
+          description: Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+    put:
+      tags:
+        - Drivers
+      summary: Cập nhật Driver
+      operationId: updateDriver
+      x-roles:
+        - Driver
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-04
+        - UC-29
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverUpdateRequest'
+      responses:
+        '200':
+          description: Driver được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+    delete:
+      tags:
+        - Drivers
+      summary: Logical delete Driver
+      operationId: deleteDriver
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-30
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      responses:
+        '200':
+          description: Driver được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /drivers/{driverId}/approval:
+    patch:
+      tags:
+        - Drivers
+      summary: Duyệt hoặc từ chối hồ sơ Driver
+      operationId: updateDriverApproval
+      x-baseline-requirements:
+        - BR-21
+        - FR-36
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverApproval'
+      responses:
+        '200':
+          description: Trạng thái duyệt được cập nhật; từ chối yêu cầu reason.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /drivers/{driverId}/availability:
+    patch:
+      tags:
+        - Drivers
+      summary: Cập nhật trạng thái sẵn sàng
+      operationId: updateDriverAvailability
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-06
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverAvailabilityUpdateRequest'
+      responses:
+        '200':
+          description: Cập nhật trạng thái.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /drivers/{driverId}/location:
+    put:
+      tags:
+        - Drivers
+      summary: Cập nhật vị trí gần nhất của Driver
+      operationId: updateDriverLocation
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-15
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverLocationUpdateRequest'
+      responses:
+        '200':
+          description: Vị trí gần nhất.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverLocation'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /vehicles:
+    post:
+      tags:
+        - Vehicles
+      summary: Operations Staff tạo Vehicle
+      operationId: createVehicle
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-31
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleCreateRequest'
+      responses:
+        '201':
+          description: Vehicle được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+    get:
+      tags:
+        - Vehicles
+      summary: Operations Staff tra cứu Vehicle
+      operationId: listVehicles
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-32
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vehicle'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /vehicles/{vehicleId}:
+    get:
+      tags:
+        - Vehicles
+      summary: Lấy Vehicle theo ID
+      operationId: getVehicle
+      x-roles:
+        - Driver
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-05
+        - UC-32
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/VehicleIdParam'
+      responses:
+        '200':
+          description: Vehicle.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+    put:
+      tags:
+        - Vehicles
+      summary: Cập nhật Vehicle
+      operationId: updateVehicle
+      x-roles:
+        - Driver
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-05
+        - UC-33
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/VehicleIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleUpdateRequest'
+      responses:
+        '200':
+          description: Vehicle được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+    delete:
+      tags:
+        - Vehicles
+      summary: Logical delete Vehicle
+      operationId: deleteVehicle
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-34
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/VehicleIdParam'
+      responses:
+        '200':
+          description: Vehicle được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trip-requests:
+    post:
+      tags:
+        - Trip Requests
+      summary: Tạo TripRequest
+      operationId: createTripRequest
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-07
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripRequestCreateRequest'
+      responses:
+        '201':
+          description: TripRequest được tạo với Searching.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripRequest'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trip-requests/{tripRequestId}:
+    get:
+      tags:
+        - Trip Requests
+      summary: Xem TripRequest
+      operationId: getTripRequest
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-07
+        - UC-14
+        - UC-35
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripRequestIdParam'
+      responses:
+        '200':
+          description: TripRequest.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trip-requests/{tripRequestId}/cancel:
+    post:
+      tags:
+        - Trip Requests
+      summary: Hủy TripRequest trước khi Trip bắt đầu
+      operationId: cancelTripRequest
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-12
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripRequestIdParam'
+      responses:
+        '200':
+          description: TripRequest đã Cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripRequest'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /driver-assignments/{assignmentId}:
+    get:
+      tags:
+        - Driver Assignments
+      summary: Xem DriverAssignment
+      operationId: getDriverAssignment
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-09
+        - UC-10
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AssignmentIdParam'
+      responses:
+        '200':
+          description: DriverAssignment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverAssignment'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /driver-assignments/{assignmentId}/accept:
+    post:
+      tags:
+        - Driver Assignments
+      summary: Driver nhận chuyến
+      operationId: acceptDriverAssignment
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-10
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AssignmentIdParam'
+      responses:
+        '200':
+          description: Trip được tạo sau khi nhận chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /driver-assignments/{assignmentId}/reject:
+    post:
+      tags:
+        - Driver Assignments
+      summary: Driver từ chối yêu cầu
+      operationId: rejectDriverAssignment
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-09
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AssignmentIdParam'
+      responses:
+        '200':
+          description: Assignment chuyển Rejected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverAssignment'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips:
+    get:
+      tags:
+        - Trips
+      summary: Tra cứu danh sách Trip
+      operationId: listTrips
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-14
+        - UC-35
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Trip'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}:
+    get:
+      tags:
+        - Trips
+      summary: Xem Trip
+      operationId: getTrip
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-14
+        - UC-35
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      responses:
+        '200':
+          description: Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
   /trips/{tripId}/status:
     patch:
-      tags: [Trips]
-      summary: Advance trip status
+      tags:
+        - Trips
+      summary: Cập nhật trạng thái Trip
       operationId: updateTripStatus
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      x-roles:
+        - Driver
+      x-use-cases:
+        - UC-13
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
       requestBody:
         required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/StatusUpdateRequest' } } }
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripStatusUpdateRequest'
       responses:
-        '200': { description: Status updated, content: { application/json: { schema: { $ref: '#/components/schemas/Trip' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '409': { $ref: '#/components/responses/Conflict' }
-  /trips/{tripId}/incidents:
+        '200':
+          description: Trip được cập nhật trạng thái.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}/cancel:
     post:
-      tags: [Trips]
-      summary: Report a trip incident
-      operationId: reportTripIncident
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
-      requestBody:
-        required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/IncidentRequest' } } }
+      tags:
+        - Trips
+      summary: Hủy Trip trước khi bắt đầu
+      operationId: cancelTrip
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-12
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
       responses:
-        '201': { description: Incident recorded, content: { application/json: { schema: { $ref: '#/components/schemas/Incident' } } } }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '200':
+          description: Trip đã Cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}/track:
+    get:
+      tags:
+        - Trips
+      summary: Theo dõi trạng thái Trip
+      operationId: trackTrip
+      x-roles:
+        - Customer
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-14
+        - UC-35
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      responses:
+        '200':
+          description: Thông tin Trip và tài xế.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - trip
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/Trip'
+                  driver:
+                    $ref: '#/components/schemas/Driver'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}/realtime-ticket:
+    post:
+      tags:
+        - Trips
+      summary: Tạo ticket ngắn hạn để kết nối WebSocket theo Trip
+      operationId: createTripRealtimeTicket
+      x-baseline-requirements:
+        - BR-19
+        - FR-34
+        - NFR-12
+      x-roles:
+        - Customer
+        - Driver
+        - OperationsStaff
+        - OperationsSupervisor
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      responses:
+        '200':
+          description: Ticket chỉ dùng cho Trip này, hết hạn sau 60 giây.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimeTicket'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}/driver-location:
+    get:
+      tags:
+        - Trips
+      summary: Xem vị trí gần nhất của Driver
+      operationId: getDriverLocation
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-16
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      responses:
+        '200':
+          description: Vị trí gần nhất.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverLocation'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
   /trips/{tripId}/fare:
     get:
-      tags: [Payments]
-      summary: Get calculated trip fare
+      tags:
+        - Trips
+      summary: Tính và xem cước Trip
       operationId: getTripFare
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-17
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
       responses:
-        '200': { description: Fare, content: { application/json: { schema: { $ref: '#/components/schemas/Fare' } } } }
-        '404': { $ref: '#/components/responses/NotFound' }
-  /trips/{tripId}/payments/cash:
+        '200':
+          description: Fare của Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fare'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /trips/{tripId}/rating:
     post:
-      tags: [Payments]
-      summary: Confirm cash collection
-      operationId: confirmCashPayment
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
-      responses:
-        '200': { description: Cash payment, content: { application/json: { schema: { $ref: '#/components/schemas/Payment' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '409': { $ref: '#/components/responses/Conflict' }
-  /trips/{tripId}/payments/electronic:
-    post:
-      tags: [Payments]
-      summary: Start electronic payment
-      operationId: startElectronicPayment
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
+      tags:
+        - Trips
+      summary: Đánh giá Driver sau khi Trip hoàn thành
+      operationId: createRating
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-22
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
       requestBody:
         required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/ElectronicPaymentRequest' } } }
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
       responses:
-        '202': { description: Payment submitted, content: { application/json: { schema: { $ref: '#/components/schemas/Payment' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '409': { $ref: '#/components/responses/Conflict' }
-  /trips/{tripId}/payments:
-    get:
-      tags: [Payments]
-      summary: List trip payment attempts
-      operationId: listTripPayments
-      security: [{ bearerAuth: [] }]
-      parameters: [{ $ref: '#/components/parameters/TripId' }]
-      responses:
-        '200': { description: Payment records, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-  /notifications:
-    get:
-      tags: [Operations]
-      summary: List notifications for current user
-      operationId: listOwnNotifications
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Notifications, content: { application/json: { schema: { $ref: '#/components/schemas/NotificationPage' } } } }
-  /incidents/{incidentId}:
-    patch:
-      tags: [Operations]
-      summary: Update incident handling result
-      operationId: updateIncident
-      security: [{ bearerAuth: [] }]
-      parameters:
-        - name: incidentId
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
+        '201':
+          description: Rating được ghi nhận.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /payments/quote:
+    post:
+      tags:
+        - Payments
+      summary: Tính cước theo loại phương tiện và quãng đường
+      operationId: quoteFare
+      x-roles: []
+      x-use-cases:
+        - UC-17
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [status]
+              required:
+                - vehicleType
+                - distanceKm
               properties:
-                status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
-                resolution: { type: string }
+                vehicleType:
+                  type: string
+                  enum:
+                    - Xe máy
+                    - Ô tô 4 chỗ
+                    - Ô tô 7 chỗ
+                distanceKm:
+                  type: number
+                  format: double
       responses:
-        '200': { description: Updated incident, content: { application/json: { schema: { $ref: '#/components/schemas/Incident' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-        '404': { $ref: '#/components/responses/NotFound' }
-  /operations/users:
+        '200':
+          description: Fare được tính.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fare'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /payments:
+    post:
+      tags:
+        - Payments
+      summary: Tạo giao dịch thanh toán
+      operationId: createPayment
+      x-baseline-requirements:
+        - BR-23
+        - FR-38
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-18
+        - UC-19
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreateRequest'
+      responses:
+        '201':
+          description: Payment được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /payments/{paymentId}:
     get:
-      tags: [Operations]
-      summary: List users for operation
-      operationId: listOperationalUsers
-      security: [{ bearerAuth: [] }]
+      tags:
+        - Payments
+      summary: Xem giao dịch thanh toán
+      operationId: getPayment
+      x-roles:
+        - Customer
+        - OperationsStaff
+      x-use-cases:
+        - UC-18
+        - UC-19
+        - UC-20
+        - UC-36
+      security:
+        - bearerAuth: []
       parameters:
-        - { $ref: '#/components/parameters/Page' }
-        - { $ref: '#/components/parameters/PageSize' }
+        - $ref: '#/components/parameters/PaymentIdParam'
       responses:
-        '200': { description: User page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-  /operations/drivers:
-    get:
-      tags: [Operations]
-      summary: List drivers for operation
-      operationId: listOperationalDrivers
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Driver page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-  /operations/vehicles:
-    get:
-      tags: [Operations]
-      summary: List vehicles for operation
-      operationId: listOperationalVehicles
-      security: [{ bearerAuth: [] }]
-      responses:
-        '200': { description: Vehicle page, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-  /audit-records:
-    get:
-      tags: [Operations]
-      summary: Search audit records
-      operationId: searchAuditRecords
-      security: [{ bearerAuth: [] }]
+        '200':
+          description: Payment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /payments/{paymentId}/retry:
+    post:
+      tags:
+        - Payments
+      summary: Retry thanh toán điện tử
+      operationId: retryPayment
+      x-roles:
+        - Customer
+      x-use-cases:
+        - UC-20
+      security:
+        - bearerAuth: []
       parameters:
-        - { $ref: '#/components/parameters/Page' }
-        - { $ref: '#/components/parameters/PageSize' }
-        - { name: from, in: query, schema: { type: string, format: date-time } }
-        - { name: to, in: query, schema: { type: string, format: date-time } }
+        - $ref: '#/components/parameters/PaymentIdParam'
       responses:
-        '200': { description: Audit records, content: { application/json: { schema: { $ref: '#/components/schemas/Page' } } } }
-        '403': { $ref: '#/components/responses/Forbidden' }
-  /reports/activity:
-    get:
-      tags: [Reports]
-      summary: Generate activity report
-      operationId: getActivityReport
-      security: [{ bearerAuth: [] }]
+        '200':
+          description: Payment sau retry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /payments/webhook:
+    post:
+      tags:
+        - Payments
+      summary: Nhận kết quả thanh toán từ VNPAY Sandbox
+      operationId: paymentWebhook
+      x-baseline-requirements:
+        - BR-23
+        - FR-38
+      x-roles: []
+      x-use-cases:
+        - UC-19
+        - UC-20
+      security: []
       parameters:
-        - { name: period, in: query, required: true, schema: { type: string, enum: [DAY, WEEK, MONTH, CUSTOM] } }
-        - { name: from, in: query, schema: { type: string, format: date-time } }
-        - { name: to, in: query, schema: { type: string, format: date-time } }
-        - { name: driverId, in: query, schema: { type: string, format: uuid } }
-        - { name: vehicleType, in: query, schema: { type: string } }
-        - { name: status, in: query, schema: { type: string } }
+        - name: X-Provider-Signature
+          in: header
+          required: true
+          description: Provider-specific callback signature; verify before processing.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhookRequest'
       responses:
-        '200': { description: Activity report, content: { application/json: { schema: { $ref: '#/components/schemas/Report' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '403': { $ref: '#/components/responses/Forbidden' }
-        '500': { $ref: '#/components/responses/ServerError' }
+        '200':
+          description: Kết quả được ghi nhận.
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Xem thông báo của tài khoản
+      operationId: listNotifications
+      x-roles:
+        - Customer
+        - Driver
+      x-use-cases:
+        - UC-21
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /notifications/{notificationId}/read:
+    patch:
+      tags:
+        - Notifications
+      summary: Đánh dấu đã đọc
+      operationId: markNotificationRead
+      x-roles:
+        - Customer
+        - Driver
+      x-use-cases:
+        - UC-21
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/NotificationIdParam'
+      responses:
+        '200':
+          description: Notification đã được đánh dấu đã đọc.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /operations/transactions:
+    get:
+      tags:
+        - Operations
+      summary: Tra cứu giao dịch
+      operationId: lookupTransactions
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      x-use-cases:
+        - UC-36
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: paymentId
+          in: query
+          schema:
+            type: integer
+        - name: tripId
+          in: query
+          schema:
+            type: integer
+        - name: customerId
+          in: query
+          schema:
+            type: integer
+        - name: paymentMethod
+          in: query
+          schema:
+            type: string
+            enum:
+              - Cash
+              - Electronic
+        - name: paymentStatus
+          in: query
+          schema:
+            type: string
+            enum:
+              - Pending
+              - Paid
+              - Failed
+        - name: createdFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: createdTo
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Danh sách giao dịch phù hợp.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionLookup'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /operations/trips/{tripId}/notes:
+    get:
+      tags:
+        - Operations
+      summary: Xem ghi chú hỗ trợ của chuyến
+      operationId: listTripSupportNotes
+      x-baseline-requirements:
+        - BR-20
+        - FR-35
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      responses:
+        '200':
+          description: Danh sách ghi chú theo thứ tự thời gian.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TripSupportNote'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+    post:
+      tags:
+        - Operations
+      summary: Thêm ghi chú hỗ trợ bất biến cho chuyến
+      operationId: createTripSupportNote
+      x-baseline-requirements:
+        - BR-20
+        - FR-35
+      x-roles:
+        - OperationsStaff
+        - OperationsSupervisor
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripSupportNoteCreateRequest'
+      responses:
+        '201':
+          description: Ghi chú hỗ trợ được lưu và audit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripSupportNote'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /operations/trips/{tripId}/interventions:
+    post:
+      tags:
+        - Operations
+      summary: Supervisor hủy chuyến hoặc đóng chuyến lỗi
+      operationId: interveneTrip
+      x-baseline-requirements:
+        - BR-20
+        - FR-35
+      x-roles:
+        - OperationsSupervisor
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripInterventionRequest'
+      responses:
+        '200':
+          description: Can thiệp hoàn tất và được audit.
+        '400':
+          $ref: '#/components/responses/bad-request'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not-found'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '500':
+          $ref: '#/components/responses/server-error'
+  /operations/dashboard:
+    get:
+      tags:
+        - Operations
+      summary: Theo dõi thông tin hoạt động
+      operationId: getOperationsDashboard
+      x-roles:
+        - Leadership
+      x-use-cases:
+        - UC-37
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Thông tin hoạt động tổng hợp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/server-error'
 components:
-  schemas:
-    Error:
-      type: object
-      required: [code, message]
-      properties:
-        code: { type: string, example: VALIDATION_ERROR }
-        message: { type: string, example: Request data is invalid. }
-        details: { type: array, items: { type: object, additionalProperties: true } }
-        traceId: { type: string }
-    User:
-      type: object
-      required: [id, email, role]
-      properties:
-        id: { type: string, format: uuid }
-        email: { type: string, format: email }
-        fullName: { type: string }
-        phone: { type: string }
-        role: { type: string, enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN] }
-        status: { type: string, enum: [ACTIVE, LOCKED] }
-    RegisterRequest:
-      type: object
-      required: [email, password, fullName]
-      properties:
-        email: { type: string, format: email }
-        password: { type: string, format: password }
-        fullName: { type: string, minLength: 1 }
-        phone: { type: string }
-    LoginRequest:
-      type: object
-      required: [email, password]
-      properties:
-        email: { type: string, format: email }
-        password: { type: string, format: password }
-    AuthResponse:
-      type: object
-      required: [accessToken, user]
-      properties:
-        accessToken: { type: string }
-        tokenType: { type: string, example: Bearer }
-        expiresIn: { type: integer, format: int32 }
-        user: { $ref: '#/components/schemas/User' }
-    UpdateProfileRequest:
-      type: object
-      properties:
-        fullName: { type: string }
-        phone: { type: string }
-    Location:
-      type: object
-      required: [latitude, longitude]
-      properties:
-        latitude: { type: number, format: double, minimum: -90, maximum: 90 }
-        longitude: { type: number, format: double, minimum: -180, maximum: 180 }
-        recordedAt: { type: string, format: date-time }
-    Trip:
-      type: object
-      required: [id, pickup, destination, vehicleType, status]
-      properties:
-        id: { type: string, format: uuid }
-        customerId: { type: string, format: uuid }
-        driverId: { type: string, format: uuid, nullable: true }
-        pickup: { $ref: '#/components/schemas/Location' }
-        destination: { $ref: '#/components/schemas/Location' }
-        vehicleType: { type: string }
-        status: { type: string, enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT] }
-        etaSeconds: { type: integer, nullable: true }
-        createdAt: { type: string, format: date-time }
-    CreateTripRequest:
-      type: object
-      required: [pickup, destination, vehicleType]
-      properties:
-        pickup: { $ref: '#/components/schemas/Location' }
-        destination: { $ref: '#/components/schemas/Location' }
-        vehicleType: { type: string }
-    DriverResponseRequest:
-      type: object
-      required: [response]
-      properties:
-        response: { type: string, enum: [ACCEPT, REJECT] }
-        reason: { type: string }
-    StatusUpdateRequest:
-      type: object
-      required: [status]
-      properties:
-        status: { type: string, enum: [RECEIVED, SEARCHING_DRIVER, DRIVER_ASSIGNED, DRIVER_ARRIVED, PASSENGER_PICKED_UP, IN_PROGRESS, COMPLETED, CANCELLED, INCIDENT] }
-    IncidentRequest:
-      type: object
-      required: [description]
-      properties:
-        description: { type: string, minLength: 1 }
-        type: { type: string }
-    Incident:
-      type: object
-      required: [id, tripId, description, status]
-      properties:
-        id: { type: string, format: uuid }
-        tripId: { type: string, format: uuid }
-        description: { type: string }
-        type: { type: string }
-        status: { type: string, enum: [OPEN, IN_PROGRESS, RESOLVED] }
-    Fare:
-      type: object
-      required: [tripId, amount, currency, status]
-      properties:
-        tripId: { type: string, format: uuid }
-        amount: { type: number, format: decimal, minimum: 0 }
-        currency: { type: string, example: VND }
-        basis: { type: string }
-        status: { type: string, enum: [CALCULATED, PENDING_CONFIRMATION] }
-    Payment:
-      type: object
-      required: [id, tripId, method, status]
-      properties:
-        id: { type: string, format: uuid }
-        tripId: { type: string, format: uuid }
-        method: { type: string, enum: [CASH, ELECTRONIC] }
-        status: { type: string, enum: [PENDING, PROCESSING, SUCCEEDED, FAILED] }
-        providerTransactionId: { type: string, nullable: true }
-    ElectronicPaymentRequest:
-      type: object
-      required: [provider, paymentToken]
-      properties:
-        provider: { type: string }
-        paymentToken: { type: string, description: Token from provider; CAB does not store sensitive payment data. }
-    Report:
-      type: object
-      properties:
-        from: { type: string, format: date-time }
-        to: { type: string, format: date-time }
-        totalTrips: { type: integer }
-        completedTrips: { type: integer }
-        cancelledTrips: { type: integer }
-        revenue: { type: number, format: decimal }
-        completionRate: { type: number, format: double }
-        cancellationRate: { type: number, format: double }
-    Notification:
-      type: object
-      required: [id, eventType, recipientId, channel, status]
-      properties:
-        id: { type: string, format: uuid }
-        eventType: { type: string }
-        recipientId: { type: string, format: uuid }
-        channel: { type: string, enum: [IN_APP, EMAIL] }
-        status: { type: string, enum: [PENDING, SENT, FAILED] }
-        attempts: { type: integer, maximum: 3 }
-    NotificationPage:
-      type: object
-      required: [items, page, pageSize, total]
-      properties:
-        items: { type: array, items: { $ref: '#/components/schemas/Notification' } }
-        page: { type: integer, minimum: 1 }
-        pageSize: { type: integer, minimum: 1 }
-        total: { type: integer, minimum: 0 }
-    Page:
-      type: object
-      properties:
-        items: { type: array, items: { type: object, additionalProperties: true } }
-        page: { type: integer, minimum: 1 }
-        pageSize: { type: integer, minimum: 1 }
-        total: { type: integer, minimum: 0 }
-  parameters:
-    TripId:
-      name: tripId
-      in: path
-      required: true
-      schema: { type: string, format: uuid }
-    Page:
-      name: page
-      in: query
-      schema: { type: integer, minimum: 1, default: 1 }
-    PageSize:
-      name: pageSize
-      in: query
-      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
-  responses:
-    BadRequest:
-      description: Invalid request or business validation failure.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
-    Unauthorized:
-      description: Missing or invalid JWT.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
-    Forbidden:
-      description: Authenticated user is not authorized.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
-    NotFound:
-      description: Resource was not found.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
-    Conflict:
-      description: State or uniqueness conflict.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
-    ServerError:
-      description: Unexpected server error.
-      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_REQUEST
+        message:
+          type: string
+          example: Dữ liệu đầu vào không hợp lệ
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Dữ liệu không hợp lệ
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        limit:
+          type: integer
+          minimum: 1
+          example: 20
+        total:
+          type: integer
+          minimum: 0
+          example: 100
+    Account:
+      type: object
+      required:
+        - accountId
+        - phoneNumber
+        - role
+      properties:
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        phoneNumber:
+          type: string
+          example: 901234567
+        password:
+          type: string
+          format: password
+          writeOnly: true
+          example: Abc@12345
+        role:
+          type: string
+          enum:
+            - Customer
+            - Driver
+            - OperationsStaff
+            - OperationsSupervisor
+            - Leadership
+          example: Customer
+    Customer:
+      type: object
+      required:
+        - customerId
+        - accountId
+        - fullName
+        - phoneNumber
+        - email
+        - address
+        - isDeleted
+      properties:
+        customerId:
+          type: integer
+          format: int32
+          example: 1
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        fullName:
+          type: string
+          example: Nguyễn Văn A
+        phoneNumber:
+          type: string
+          example: 901234567
+        email:
+          type: string
+          format: email
+          example: customer@example.com
+        address:
+          type: string
+          example: 123 Lê Lợi, Q1, TP.HCM
+        isDeleted:
+          type: boolean
+          example: false
+    CustomerCreateRequest:
+      type: object
+      required:
+        - accountId
+        - fullName
+        - phoneNumber
+        - email
+        - address
+      properties:
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+    CustomerUpdateRequest:
+      type: object
+      required:
+        - fullName
+        - phoneNumber
+        - email
+        - address
+      properties:
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+    RegisterCustomerRequest:
+      type: object
+      required:
+        - phoneNumber
+        - password
+        - fullName
+        - email
+        - address
+      properties:
+        phoneNumber:
+          type: string
+          example: 901234567
+        password:
+          type: string
+          format: password
+          example: Abc@12345
+        fullName:
+          type: string
+          example: Nguyễn Văn A
+        email:
+          type: string
+          format: email
+          example: customer@example.com
+        address:
+          type: string
+          example: 123 Lê Lợi, Q1, TP.HCM
+    Driver:
+      type: object
+      required:
+        - driverId
+        - accountId
+        - fullName
+        - phoneNumber
+        - email
+        - address
+        - availabilityStatus
+        - approvalStatus
+        - isDeleted
+      properties:
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        fullName:
+          type: string
+          example: Trần Văn B
+        phoneNumber:
+          type: string
+          example: 912345678
+        email:
+          type: string
+          format: email
+          example: driver@example.com
+        address:
+          type: string
+          example: 123 Nguyễn Huệ, Q1, TP.HCM
+        availabilityStatus:
+          type: string
+          enum:
+            - Available
+            - Unavailable
+          example: Available
+        approvalStatus:
+          type: string
+          enum:
+            - PendingApproval
+            - Approved
+            - Rejected
+          example: PendingApproval
+        isDeleted:
+          type: boolean
+          example: false
+    DriverRegistrationRequest:
+      type: object
+      required:
+        - phoneNumber
+        - password
+        - fullName
+        - email
+        - address
+      properties:
+        phoneNumber:
+          type: string
+        password:
+          type: string
+          format: password
+          minLength: 10
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+    DriverApproval:
+      type: object
+      required:
+        - approvalStatus
+      properties:
+        approvalStatus:
+          type: string
+          enum:
+            - PendingApproval
+            - Approved
+            - Rejected
+        reason:
+          type: string
+          maxLength: 500
+    DriverCreateRequest:
+      type: object
+      required:
+        - fullName
+        - phoneNumber
+        - password
+        - email
+        - address
+      properties:
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: string
+          format: password
+          minLength: 10
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+    DriverUpdateRequest:
+      type: object
+      required:
+        - fullName
+        - phoneNumber
+        - email
+        - address
+      properties:
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+    DriverAvailabilityUpdateRequest:
+      type: object
+      required:
+        - availabilityStatus
+      properties:
+        availabilityStatus:
+          type: string
+          enum:
+            - Available
+            - Unavailable
+    VehicleType:
+      type: object
+      required:
+        - vehicleTypeId
+        - typeName
+        - baseFare
+        - pricePerKm
+      properties:
+        vehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+        typeName:
+          type: string
+          enum:
+            - Xe máy
+            - Ô tô 4 chỗ
+            - Ô tô 7 chỗ
+        baseFare:
+          type: integer
+          example: 10000
+        pricePerKm:
+          type: integer
+          example: 8000
+    Vehicle:
+      type: object
+      required:
+        - vehicleId
+        - driverId
+        - vehicleTypeId
+        - licensePlate
+        - isDeleted
+      properties:
+        vehicleId:
+          type: integer
+          format: int32
+          example: 1
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        vehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+        licensePlate:
+          type: string
+          example: 51A-12345
+        isDeleted:
+          type: boolean
+          example: false
+    VehicleCreateRequest:
+      type: object
+      required:
+        - driverId
+        - vehicleTypeId
+        - licensePlate
+      properties:
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        vehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+        licensePlate:
+          type: string
+    VehicleUpdateRequest:
+      type: object
+      required:
+        - licensePlate
+        - vehicleTypeId
+      properties:
+        licensePlate:
+          type: string
+        vehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+    TripRequest:
+      type: object
+      required:
+        - tripRequestId
+        - customerId
+        - requestedVehicleTypeId
+        - pickupLatitude
+        - pickupLongitude
+        - destinationLatitude
+        - destinationLongitude
+        - status
+        - createdAt
+      properties:
+        tripRequestId:
+          type: integer
+          format: int32
+          example: 1
+        customerId:
+          type: integer
+          format: int32
+          example: 1
+        requestedVehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+        pickupLatitude:
+          type: number
+          format: double
+        pickupLongitude:
+          type: number
+          format: double
+        destinationLatitude:
+          type: number
+          format: double
+        destinationLongitude:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - Searching
+            - Assigned
+            - Cancelled
+            - NoDriverFound
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    TripRequestCreateRequest:
+      type: object
+      required:
+        - requestedVehicleTypeId
+        - pickupLatitude
+        - pickupLongitude
+        - destinationLatitude
+        - destinationLongitude
+      properties:
+        requestedVehicleTypeId:
+          type: integer
+          format: int32
+          example: 1
+        pickupLatitude:
+          type: number
+          format: double
+        pickupLongitude:
+          type: number
+          format: double
+        destinationLatitude:
+          type: number
+          format: double
+        destinationLongitude:
+          type: number
+          format: double
+    DriverAssignment:
+      type: object
+      required:
+        - assignmentId
+        - tripRequestId
+        - driverId
+        - assignmentStatus
+        - assignedAt
+      properties:
+        assignmentId:
+          type: integer
+          format: int32
+          example: 1
+        tripRequestId:
+          type: integer
+          format: int32
+          example: 1
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        assignmentStatus:
+          type: string
+          enum:
+            - Pending
+            - Accepted
+            - Rejected
+            - Timeout
+        assignedAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+        respondedAt:
+          type: string
+          format: date-time
+          nullable: true
+    Trip:
+      type: object
+      required:
+        - tripId
+        - tripRequestId
+        - customerId
+        - driverId
+        - vehicleId
+        - status
+      properties:
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        tripRequestId:
+          type: integer
+          format: int32
+          example: 1
+        customerId:
+          type: integer
+          format: int32
+          example: 1
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        vehicleId:
+          type: integer
+          format: int32
+          example: 1
+        status:
+          type: string
+          enum:
+            - Arrived
+            - PickedUp
+            - InProgress
+            - Completed
+            - Cancelled
+            - Failed
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+    TripStatusUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - PickedUp
+            - InProgress
+            - Completed
+    TripLiveUpdate:
+      type: object
+      required:
+        - tripId
+        - status
+        - updatedAt
+        - stale
+      properties:
+        tripId:
+          type: integer
+          format: int32
+        status:
+          type: string
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        etaMinutes:
+          type: integer
+          minimum: 0
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+        stale:
+          type: boolean
+    RealtimeTicket:
+      type: object
+      required:
+        - ticket
+        - websocketUrl
+        - expiresAt
+      properties:
+        ticket:
+          type: string
+        websocketUrl:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    DriverLocation:
+      type: object
+      required:
+        - driverLocationId
+        - driverId
+        - latitude
+        - longitude
+        - updatedAt
+      properties:
+        driverLocationId:
+          type: integer
+          format: int32
+          example: 1
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        etaMinutes:
+          type: integer
+          minimum: 0
+          nullable: true
+        stale:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    DriverLocationUpdateRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        recordedAt:
+          type: string
+          format: date-time
+    Fare:
+      type: object
+      required:
+        - fareId
+        - tripId
+        - baseFare
+        - distanceKm
+        - pricePerKm
+        - totalFare
+      properties:
+        fareId:
+          type: integer
+          format: int32
+          example: 1
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        baseFare:
+          type: integer
+        distanceKm:
+          type: number
+          format: double
+        pricePerKm:
+          type: integer
+        totalFare:
+          type: integer
+    Rating:
+      type: object
+      required:
+        - ratingId
+        - tripId
+        - customerId
+        - driverId
+        - ratingValue
+        - createdAt
+      properties:
+        ratingId:
+          type: integer
+          format: int32
+          example: 1
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        customerId:
+          type: integer
+          format: int32
+          example: 1
+        driverId:
+          type: integer
+          format: int32
+          example: 1
+        ratingValue:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    RatingRequest:
+      type: object
+      required:
+        - ratingValue
+      properties:
+        ratingValue:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          nullable: true
+    Payment:
+      type: object
+      required:
+        - paymentId
+        - tripId
+        - amount
+        - paymentMethod
+        - paymentStatus
+        - retryCount
+        - createdAt
+      properties:
+        paymentId:
+          type: integer
+          format: int32
+          example: 1
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+          enum:
+            - Cash
+            - Electronic
+        paymentStatus:
+          type: string
+          enum:
+            - Pending
+            - Paid
+            - Failed
+        retryCount:
+          type: integer
+          minimum: 0
+          maximum: 3
+        providerReference:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    PaymentCreateRequest:
+      description: Amount is calculated by the server from the finalized trip fare; clients must not provide it.
+      type: object
+      required:
+        - tripId
+        - paymentMethod
+      properties:
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        paymentMethod:
+          type: string
+          enum:
+            - Cash
+            - Electronic
+    PaymentRetryRequest:
+      type: object
+      required:
+        - paymentId
+      properties:
+        paymentId:
+          type: integer
+          format: int32
+          example: 1
+    PaymentWebhookRequest:
+      type: object
+      required:
+        - paymentId
+        - providerReference
+        - paymentStatus
+      properties:
+        paymentId:
+          type: integer
+          format: int32
+          example: 1
+        providerReference:
+          type: string
+        paymentStatus:
+          type: string
+          enum:
+            - Paid
+            - Failed
+    Notification:
+      type: object
+      required:
+        - notificationId
+        - accountId
+        - tripId
+        - title
+        - content
+        - isRead
+        - createdAt
+      properties:
+        notificationId:
+          type: integer
+          format: int32
+          example: 1
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        title:
+          type: string
+        content:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    TripSupportNote:
+      type: object
+      required:
+        - noteId
+        - tripId
+        - authorAccountId
+        - content
+        - createdAt
+      properties:
+        noteId:
+          type: integer
+          format: int32
+        tripId:
+          type: integer
+          format: int32
+        authorAccountId:
+          type: integer
+          format: int32
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    TripSupportNoteCreateRequest:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    TripInterventionRequest:
+      type: object
+      required:
+        - action
+        - reason
+        - confirmation
+      properties:
+        action:
+          type: string
+          enum:
+            - CancelTrip
+            - CloseFailedTrip
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        confirmation:
+          type: boolean
+          enum:
+            - true
+    TransactionLookup:
+      type: object
+      required:
+        - paymentId
+        - tripId
+        - customerId
+        - paymentMethod
+        - amount
+        - paymentStatus
+        - createdAt
+      properties:
+        paymentId:
+          type: integer
+          format: int32
+          example: 1
+        tripId:
+          type: integer
+          format: int32
+          example: 1
+        customerId:
+          type: integer
+          format: int32
+          example: 1
+        paymentMethod:
+          type: string
+          enum:
+            - Cash
+            - Electronic
+        amount:
+          type: number
+        paymentStatus:
+          type: string
+          enum:
+            - Pending
+            - Paid
+            - Failed
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-09-24T12:00:00Z'
+    Dashboard:
+      type: object
+      required:
+        - tripCount
+        - revenue
+        - completionRate
+        - cancellationRate
+        - driverPerformance
+      properties:
+        tripCount:
+          type: integer
+        revenue:
+          type: number
+        completionRate:
+          type: number
+        cancellationRate:
+          type: number
+        driverPerformance:
+          type: number
+  responses:
+    bad-request:
+      description: Dữ liệu đầu vào không hợp lệ.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    conflict:
+      description: Tài nguyên bị xung đột.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    server-error:
+      description: Lỗi hệ thống.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    unauthorized:
+      description: Chưa xác thực.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    forbidden:
+      description: Không có quyền truy cập.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    not-found:
+      description: Không tìm thấy tài nguyên.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    CustomerIdParam:
+      name: customerId
+      in: path
+      required: true
+      description: Customer ID
+      schema:
+        type: integer
+        format: int32
+    DriverIdParam:
+      name: driverId
+      in: path
+      required: true
+      description: Driver ID
+      schema:
+        type: integer
+        format: int32
+    VehicleIdParam:
+      name: vehicleId
+      in: path
+      required: true
+      description: Vehicle ID
+      schema:
+        type: integer
+        format: int32
+    TripRequestIdParam:
+      name: tripRequestId
+      in: path
+      required: true
+      description: TripRequest ID
+      schema:
+        type: integer
+        format: int32
+    AssignmentIdParam:
+      name: assignmentId
+      in: path
+      required: true
+      description: Assignment ID
+      schema:
+        type: integer
+        format: int32
+    TripIdParam:
+      name: tripId
+      in: path
+      required: true
+      description: Trip ID
+      schema:
+        type: integer
+        format: int32
+    PaymentIdParam:
+      name: paymentId
+      in: path
+      required: true
+      description: Payment ID
+      schema:
+        type: integer
+        format: int32
+    NotificationIdParam:
+      name: notificationId
+      in: path
+      required: true
+      description: Notification ID
+      schema:
+        type: integer
+        format: int32

@@ -1,0 +1,177 @@
+paths:
+  /vehicles:
+    post:
+      tags:
+      - Vehicles
+      summary: Operations Staff tạo Vehicle
+      operationId: createVehicle
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-31
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/vehicle/VehicleCreateRequest.yaml
+      responses:
+        '201':
+          description: Vehicle được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/vehicle/Vehicle.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    get:
+      tags:
+      - Vehicles
+      summary: Operations Staff tra cứu Vehicle
+      operationId: listVehicles
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-32
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/pagination.yaml#/PageParam
+      - $ref: ../../parameters/pagination.yaml#/LimitParam
+      responses:
+        '200':
+          description: Danh sách dữ liệu.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../../schemas/vehicle/Vehicle.yaml
+                  pagination:
+                    $ref: ../../schemas/common/Pagination.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /vehicles/{vehicleId}:
+    get:
+      tags:
+      - Vehicles
+      summary: Lấy Vehicle theo ID
+      operationId: getVehicle
+      x-roles:
+      - Driver
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-05
+      - UC-32
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/VehicleIdParam
+      responses:
+        '200':
+          description: Vehicle.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/vehicle/Vehicle.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    put:
+      tags:
+      - Vehicles
+      summary: Cập nhật Vehicle
+      operationId: updateVehicle
+      x-roles:
+      - Driver
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-05
+      - UC-33
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/VehicleIdParam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/vehicle/VehicleUpdateRequest.yaml
+      responses:
+        '200':
+          description: Vehicle được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/vehicle/Vehicle.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+    delete:
+      tags:
+      - Vehicles
+      summary: Logical delete Vehicle
+      operationId: deleteVehicle
+      x-roles:
+      - OperationsStaff
+      - OperationsSupervisor
+      x-use-cases:
+      - UC-34
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/VehicleIdParam
+      responses:
+        '200':
+          description: Vehicle được logical delete.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/vehicle/Vehicle.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

@@ -1,0 +1,46 @@
+type: object
+required:
+- driverId
+- accountId
+- fullName
+- phoneNumber
+- email
+- address
+- availabilityStatus
+- approvalStatus
+- isDeleted
+properties:
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  accountId:
+    type: integer
+    format: int32
+    example: 1
+  fullName:
+    type: string
+    example: Trần Văn B
+  phoneNumber:
+    type: string
+    example: 0912345678
+  email:
+    type: string
+    format: email
+    example: driver@example.com
+  address:
+    type: string
+    example: 123 Nguyễn Huệ, Q1, TP.HCM
+  availabilityStatus:
+    type: string
+    enum:
+    - Available
+    - Unavailable
+    example: Available
+  approvalStatus:
+    type: string
+    enum: [PendingApproval, Approved, Rejected]
+    example: PendingApproval
+  isDeleted:
+    type: boolean
+    example: false

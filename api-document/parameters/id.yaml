@@ -1,0 +1,64 @@
+CustomerIdParam:
+  name: customerId
+  in: path
+  required: true
+  description: Customer ID
+  schema:
+    type: integer
+    format: int32
+DriverIdParam:
+  name: driverId
+  in: path
+  required: true
+  description: Driver ID
+  schema:
+    type: integer
+    format: int32
+VehicleIdParam:
+  name: vehicleId
+  in: path
+  required: true
+  description: Vehicle ID
+  schema:
+    type: integer
+    format: int32
+TripRequestIdParam:
+  name: tripRequestId
+  in: path
+  required: true
+  description: TripRequest ID
+  schema:
+    type: integer
+    format: int32
+AssignmentIdParam:
+  name: assignmentId
+  in: path
+  required: true
+  description: Assignment ID
+  schema:
+    type: integer
+    format: int32
+TripIdParam:
+  name: tripId
+  in: path
+  required: true
+  description: Trip ID
+  schema:
+    type: integer
+    format: int32
+PaymentIdParam:
+  name: paymentId
+  in: path
+  required: true
+  description: Payment ID
+  schema:
+    type: integer
+    format: int32
+NotificationIdParam:
+  name: notificationId
+  in: path
+  required: true
+  description: Notification ID
+  schema:
+    type: integer
+    format: int32

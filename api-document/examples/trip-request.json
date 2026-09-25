@@ -1,11 +1,11 @@
 {
-  "pickup": {
-    "latitude": 10.7769,
-    "longitude": 106.7009
-  },
-  "destination": {
-    "latitude": 10.8231,
-    "longitude": 106.6297
-  },
-  "vehicleType": "STANDARD"
+  "tripRequestId": 1,
+  "customerId": 1,
+  "requestedVehicleTypeId": 1,
+  "pickupLatitude": 10.776889,
+  "pickupLongitude": 106.700806,
+  "destinationLatitude": 10.801918,
+  "destinationLongitude": 106.650362,
+  "status": "Searching",
+  "createdAt": "2026-09-24T12:00:00Z"
 }

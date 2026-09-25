@@ -1,0 +1,8 @@
+type: object
+required: [action, reason, confirmation]
+properties:
+  action:
+    type: string
+    enum: [CancelTrip, CloseFailedTrip]
+  reason: {type: string, minLength: 1, maxLength: 1000}
+  confirmation: {type: boolean, enum: [true]}

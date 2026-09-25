@@ -1,0 +1,10 @@
+{
+  "paymentId": 1,
+  "tripId": 1,
+  "amount": 120000,
+  "paymentMethod": "Electronic",
+  "paymentStatus": "Paid",
+  "retryCount": 0,
+  "providerReference": "VNPAY-20260924-000123",
+  "createdAt": "2026-09-24T12:10:00Z"
+}

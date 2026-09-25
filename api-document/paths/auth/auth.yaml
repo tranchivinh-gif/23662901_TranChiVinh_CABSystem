@@ -1,34 +1,105 @@
-register:
-  post:
-    tags: [Authentication]
-    summary: Register customer account
-    operationId: register
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/RegisterRequest' } } }
-    responses:
-      '201': { description: Account created, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/User' } } } }
-      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
-      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
-login:
-  post:
-    tags: [Authentication]
-    summary: Login and issue JWT
-    operationId: login
-    requestBody:
-      required: true
-      content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/LoginRequest' } } }
-    responses:
-      '200': { description: Authenticated, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/AuthResponse' } } } }
-      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '500': { $ref: '../../responses/responses.yaml#/ServerError' }
-me:
-  get:
-    tags: [Authentication]
-    summary: Get current authenticated user
-    operationId: getCurrentUser
-    security: [{ bearerAuth: [] }]
-    responses:
-      '200': { description: Current user, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/User' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
+paths:
+  /auth/register:
+    post:
+      tags:
+      - Authentication
+      summary: Đăng ký tài khoản khách hàng
+      operationId: registerCustomer
+      x-roles: []
+      x-use-cases:
+      - UC-01
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/customer/RegisterCustomerRequest.yaml
+      responses:
+        '201':
+          description: Đăng ký thành công.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/customer/Customer.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Đăng nhập bằng số điện thoại và mật khẩu
+      operationId: loginUser
+      x-roles: []
+      x-use-cases:
+      - UC-02
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - phoneNumber
+              - password
+              properties:
+                phoneNumber:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Đăng nhập thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accessToken
+                - tokenType
+                properties:
+                  accessToken:
+                    type: string
+                  tokenType:
+                    type: string
+                    example: bearer
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+
+  /auth/register-driver:
+    post:
+      tags: [Authentication]
+      summary: Tài xế tự đăng ký, chờ duyệt
+      operationId: registerDriver
+      x-baseline-requirements: [BR-21, FR-36]
+      x-roles: []
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/driver/DriverRegistrationRequest.yaml
+      responses:
+        '201':
+          description: Hồ sơ tạo với PendingApproval và Unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/driver/Driver.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

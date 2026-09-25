@@ -1,0 +1,27 @@
+type: object
+required:
+- accountId
+- phoneNumber
+- role
+properties:
+  accountId:
+    type: integer
+    format: int32
+    example: 1
+  phoneNumber:
+    type: string
+    example: 0901234567
+  password:
+    type: string
+    format: password
+    writeOnly: true
+    example: Abc@12345
+  role:
+    type: string
+    enum:
+    - Customer
+    - Driver
+    - OperationsStaff
+    - OperationsSupervisor
+    - Leadership
+    example: Customer

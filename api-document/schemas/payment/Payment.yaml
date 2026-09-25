@@ -1,0 +1,42 @@
+type: object
+required:
+- paymentId
+- tripId
+- amount
+- paymentMethod
+- paymentStatus
+- retryCount
+- createdAt
+properties:
+  paymentId:
+    type: integer
+    format: int32
+    example: 1
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  amount:
+    type: number
+  paymentMethod:
+    type: string
+    enum:
+    - Cash
+    - Electronic
+  paymentStatus:
+    type: string
+    enum:
+    - Pending
+    - Paid
+    - Failed
+  retryCount:
+    type: integer
+    minimum: 0
+    maximum: 3
+  providerReference:
+    type: string
+    nullable: true
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'

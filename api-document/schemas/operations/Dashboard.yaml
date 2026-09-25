@@ -1,0 +1,18 @@
+type: object
+required:
+- tripCount
+- revenue
+- completionRate
+- cancellationRate
+- driverPerformance
+properties:
+  tripCount:
+    type: integer
+  revenue:
+    type: number
+  completionRate:
+    type: number
+  cancellationRate:
+    type: number
+  driverPerformance:
+    type: number

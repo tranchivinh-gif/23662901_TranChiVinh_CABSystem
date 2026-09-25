@@ -1,0 +1,35 @@
+type: object
+required:
+- assignmentId
+- tripRequestId
+- driverId
+- assignmentStatus
+- assignedAt
+properties:
+  assignmentId:
+    type: integer
+    format: int32
+    example: 1
+  tripRequestId:
+    type: integer
+    format: int32
+    example: 1
+  driverId:
+    type: integer
+    format: int32
+    example: 1
+  assignmentStatus:
+    type: string
+    enum:
+    - Pending
+    - Accepted
+    - Rejected
+    - Timeout
+  assignedAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'
+  respondedAt:
+    type: string
+    format: date-time
+    nullable: true

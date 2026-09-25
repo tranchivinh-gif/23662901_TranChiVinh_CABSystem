@@ -1,56 +1,174 @@
-fare:
-  get:
-    tags: [Payments]
-    summary: Xem cước tự động tính sau khi hoàn thành
-    operationId: getTripFare
-    description: "Cước chỉ được tính khi chuyến COMPLETED theo Fare = Base Fare + Distance × Price Per KM + Surcharge. MVP hỗ trợ BIKE, CAR4, CAR7 và CAR16; không áp dụng dynamic pricing."
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    responses:
-      '200': { description: "Cước của chuyến.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Fare' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
-      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
-cashPayment:
-  post:
-    tags: [Payments]
-    summary: Tài xế xác nhận đã thu đủ tiền mặt
-    operationId: confirmCashPayment
-    description: "Chỉ DRIVER được phân công xác nhận. CASH chỉ SUCCEEDED khi tài xế xác nhận đã thu đủ tiền sau khi chuyến hoàn thành."
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    responses:
-      '200': { description: "Trạng thái thanh toán tiền mặt.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
-      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
-electronicPayment:
-  post:
-    tags: [Payments]
-    summary: Khởi tạo hoặc thử lại thanh toán điện tử
-    operationId: startElectronicPayment
-    description: "CUSTOMER của chuyến gửi token do provider phát hành. CAB chỉ lưu tham chiếu/kết quả provider, không lưu dữ liệu nhạy cảm. Tối đa 3 attempt trong 30 phút kể từ failure đầu tiên; sau đó FAILED hoặc UNCOMPLETED và thông báo khách hàng."
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }]
-    requestBody: { required: true, content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/ElectronicPaymentRequest' } } } }
-    responses:
-      '202': { description: "Yêu cầu đã gửi provider.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/Payment' } } } }
-      '400': { $ref: '../../responses/responses.yaml#/BadRequest' }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
-      '409': { $ref: '../../responses/responses.yaml#/Conflict' }
-payments:
-  get:
-    tags: [Payments]
-    summary: Xem lịch sử attempt thanh toán
-    operationId: listTripPayments
-    security: [{ bearerAuth: [] }]
-    parameters: [{ $ref: '../../parameters/parameters.yaml#/TripId' }, { $ref: '../../parameters/parameters.yaml#/Page' }, { $ref: '../../parameters/parameters.yaml#/PageSize' }]
-    responses:
-      '200': { description: "Lịch sử giao dịch được phép tra cứu.", content: { application/json: { schema: { $ref: '../../schemas/common.yaml#/schemas/PaymentPage' } } } }
-      '401': { $ref: '../../responses/responses.yaml#/Unauthorized' }
-      '403': { $ref: '../../responses/responses.yaml#/Forbidden' }
-      '404': { $ref: '../../responses/responses.yaml#/NotFound' }
+paths:
+  /payments/quote:
+    post:
+      tags:
+      - Payments
+      summary: Tính cước theo loại phương tiện và quãng đường
+      operationId: quoteFare
+      x-roles: []
+      x-use-cases:
+      - UC-17
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - vehicleType
+              - distanceKm
+              properties:
+                vehicleType:
+                  type: string
+                  enum:
+                  - Xe máy
+                  - Ô tô 4 chỗ
+                  - Ô tô 7 chỗ
+                distanceKm:
+                  type: number
+                  format: double
+      responses:
+        '200':
+          description: Fare được tính.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/trip/Fare.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /payments:
+    post:
+      tags:
+      - Payments
+      summary: Tạo giao dịch thanh toán
+      operationId: createPayment
+      x-baseline-requirements: [BR-23, FR-38]
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-18
+      - UC-19
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/payment/PaymentCreateRequest.yaml
+      responses:
+        '201':
+          description: Payment được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/payment/Payment.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /payments/{paymentId}:
+    get:
+      tags:
+      - Payments
+      summary: Xem giao dịch thanh toán
+      operationId: getPayment
+      x-roles:
+      - Customer
+      - OperationsStaff
+      x-use-cases:
+      - UC-18
+      - UC-19
+      - UC-20
+      - UC-36
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/PaymentIdParam
+      responses:
+        '200':
+          description: Payment.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/payment/Payment.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '403':
+          $ref: ../../responses/forbidden.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /payments/{paymentId}/retry:
+    post:
+      tags:
+      - Payments
+      summary: Retry thanh toán điện tử
+      operationId: retryPayment
+      x-roles:
+      - Customer
+      x-use-cases:
+      - UC-20
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: ../../parameters/id.yaml#/PaymentIdParam
+      responses:
+        '200':
+          description: Payment sau retry.
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/payment/Payment.yaml
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '401':
+          $ref: ../../responses/unauthorized.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '409':
+          $ref: ../../responses/conflict.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml
+  /payments/webhook:
+    post:
+      tags:
+      - Payments
+      summary: Nhận kết quả thanh toán từ VNPAY Sandbox
+      operationId: paymentWebhook
+      x-baseline-requirements: [BR-23, FR-38]
+      x-roles: []
+      x-use-cases:
+      - UC-19
+      - UC-20
+      security: []
+      parameters:
+      - name: X-Provider-Signature
+        in: header
+        required: true
+        description: Provider-specific callback signature; verify before processing.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../../schemas/payment/PaymentWebhookRequest.yaml
+      responses:
+        '200':
+          description: Kết quả được ghi nhận.
+        '400':
+          $ref: ../../responses/bad-request.yaml
+        '404':
+          $ref: ../../responses/not-found.yaml
+        '500':
+          $ref: ../../responses/server-error.yaml

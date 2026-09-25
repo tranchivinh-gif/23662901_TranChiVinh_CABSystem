@@ -1,0 +1,32 @@
+type: object
+required:
+- notificationId
+- accountId
+- tripId
+- title
+- content
+- isRead
+- createdAt
+properties:
+  notificationId:
+    type: integer
+    format: int32
+    example: 1
+  accountId:
+    type: integer
+    format: int32
+    example: 1
+  tripId:
+    type: integer
+    format: int32
+    example: 1
+  title:
+    type: string
+  content:
+    type: string
+  isRead:
+    type: boolean
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-09-24T12:00:00Z'
