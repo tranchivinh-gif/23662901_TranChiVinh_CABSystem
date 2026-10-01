@@ -729,7 +729,7 @@ Các yêu cầu nghiệp vụ, quy trình và yêu cầu chức năng được l
 | BP-R12 | Hệ thống sử dụng thông báo trong ứng dụng.                                                    |
 | BP-R13 | Hệ thống sử dụng vị trí gần nhất được lưu của tài xế.                                         |
 | BP-R14 | Hệ thống không áp dụng phụ phí theo giờ cao điểm, thời tiết, khu vực hoặc điều kiện đặc biệt. |
-| BP-R15 | Hệ thống sử dụng OperationsStaff và OperationsSupervisor theo mục 18.2.                         |
+| BP-R15 | Hệ thống sử dụng OperationsStaff và OperationsSupervisor theo mục 18.2.                       |
 
 ---
 
@@ -1313,9 +1313,9 @@ Các Functional Requirements được thực hiện theo các quy tắc nghiệp
 | BRULE-11 | Thanh toán điện tử       | Thanh toán điện tử trong phiên bản hiện tại sử dụng VNPAY Sandbox.                                                                                             | Khi chọn thanh toán điện tử         | FR-21/BP-07       | STK-01, STK-06         |
 | BRULE-12 | Thử lại thanh toán       | Khi thanh toán điện tử thất bại, khách hàng được retry 3 lần sau lần đầu, tối đa 4 attempts.                                                                   | Thanh toán điện tử thất bại         | FR-22/BP-07       | STK-01                 |
 | BRULE-13 | Kênh thông báo           | Thông báo nghiệp vụ được gửi trong ứng dụng; phiên bản hiện tại không sử dụng SMS hoặc email.                                                                  | Khi phát sinh sự kiện cần thông báo | FR-23/BP-08       | STK-01, STK-02         |
-| BRULE-14 | Vị trí tài xế            | Fleet chỉ lưu vị trí gần nhất; hệ thống phát vị trí/ETA real-time theo mục 18.1, không lưu lịch sử tuyến đường.                                                            | Khi cập nhật hoặc xem vị trí        | FR-18/BP-06       | STK-01, STK-02         |
+| BRULE-14 | Vị trí tài xế            | Fleet chỉ lưu vị trí gần nhất; hệ thống phát vị trí/ETA real-time theo mục 18.1, không lưu lịch sử tuyến đường.                                                | Khi cập nhật hoặc xem vị trí        | FR-18/BP-06       | STK-01, STK-02         |
 | BRULE-15 | Lưu trữ dữ liệu          | Dữ liệu hệ thống được lưu trữ tối thiểu 12 tháng và phiên bản hiện tại không tự động xóa dữ liệu.                                                              | Khi lưu trữ dữ liệu                 | Toàn hệ thống     | STK-01, STK-02, STK-03 |
-| BRULE-16 | Vai trò vận hành         | OperationsStaff quản lý/xem/hỗ trợ; OperationsSupervisor có thêm can thiệp giới hạn theo mục 18.2.                                                            | Khi thực hiện chức năng vận hành    | FR-25–FR-29/BP-10 | STK-03                 |
+| BRULE-16 | Vai trò vận hành         | OperationsStaff quản lý/xem/hỗ trợ; OperationsSupervisor có thêm can thiệp giới hạn theo mục 18.2.                                                             | Khi thực hiện chức năng vận hành    | FR-25–FR-29/BP-10 | STK-03                 |
 | BRULE-17 | Khả năng mở rộng         | Hệ thống hỗ trợ định hướng bổ sung loại dịch vụ, phương thức hoặc nhà cung cấp thanh toán và kênh thông báo trong các phiên bản tương lai.                     | Khi mở rộng hệ thống                | FR-31–FR-33/BP-11 | STK-04, STK-05         |
 
 ### 10.1.1. Mức cước
@@ -4441,13 +4441,13 @@ Cung cấp thông tin hoạt động của hệ thống cho Leadership.
 
 Trip được tạo tại UC-10 với trạng thái ban đầu `Arrived` theo baseline; các trạng thái tiếp theo phản ánh quá trình thực hiện chuyến. `Failed` là trạng thái terminal chỉ OperationsSupervisor được gán qua intervention có reason, xác nhận lần hai và audit.
 
-| Trạng thái   | Ý nghĩa                    |
-| ------------ | -------------------------- |
-| `Arrived`    | Tài xế đã đến điểm đón     |
-| `PickedUp`   | Tài xế đã đón khách        |
-| `InProgress` | Chuyến đang được thực hiện |
-| `Completed`  | Chuyến đã hoàn thành       |
-| `Cancelled`  | Chuyến đã bị hủy           |
+| Trạng thái   | Ý nghĩa                                |
+| ------------ | -------------------------------------- |
+| `Arrived`    | Tài xế đã đến điểm đón                 |
+| `PickedUp`   | Tài xế đã đón khách                    |
+| `InProgress` | Chuyến đang được thực hiện             |
+| `Completed`  | Chuyến đã hoàn thành                   |
+| `Cancelled`  | Chuyến đã bị hủy                       |
 | `Failed`     | Supervisor đóng chuyến do lỗi vận hành |
 
 ## 15.38.3. Payment
@@ -5068,7 +5068,6 @@ RTM không sử dụng NEED ID và Step ID.
 - `AC`: Acceptance Criteria.
 - `—`: Không có liên kết trực tiếp được xác định trong SRS.
 
-
 # 18. BASELINE ĐIỀU CHỈNH ĐƯỢC CHỐT
 
 Chương này là phần bổ sung có hiệu lực cho phiên bản đồ án hiện tại. Khi nội dung Chương 18 khác với các phần trước, áp dụng Chương 18. Các quy tắc nghiệp vụ nền không được nêu thay đổi tiếp tục giữ nguyên. Các mục dưới đây là baseline nhóm đã chốt để cập nhật tài liệu; trạng thái xác nhận chính thức từ khách hàng cần được theo dõi riêng trong Decision Log, không mặc định là khách hàng đã phê duyệt.
@@ -5116,43 +5115,42 @@ Các quy tắc được làm rõ trong SRS (giá/đơn giá và làm tròn, matc
 
 PostgreSQL là hệ quản trị cơ sở dữ liệu duy nhất của phiên bản. Mỗi bounded context sở hữu dữ liệu của mình; không dùng NoSQL. WebSocket là kênh truyền cập nhật, không phải cơ sở dữ liệu. DriverLocation chỉ lưu vị trí mới nhất và ETA hiện hành.
 
-
 ## 18.8. Requirement ID và truy xuất baseline mới
 
-| ID | Requirement | Acceptance evidence |
-|---|---|---|
-| BR-19 / FR-34 | Theo dõi vị trí và ETA real-time qua WebSocket theo quyền Trip | AC-165–AC-170, AC-187; TC-RT-001–008 |
-| BR-20 / FR-35 | Phân quyền OperationsStaff/Supervisor, ghi chú hỗ trợ và can thiệp có audit | AC-171–AC-175; TC-OPS-001–007; TC-AUD-001 |
-| BR-21 / FR-36 | Driver self-registration hoặc Staff-created, approval trước khi Available | AC-176–AC-179; TC-DRV-001–005 |
-| BR-22 / FR-37 | Tải nghiệm thu, response/delivery target, PostgreSQL backup/restore | AC-180–AC-183; TC-NFR-001–003 |
-| BR-23 / FR-38 | Server-derived payment amount, signed/idempotent callback | AC-184–AC-185; TC-PAY-001–002 |
-| NFR-12 | Real-time update p95 ≤10s, stale sau 30s | AC-165–AC-170, AC-187; TC-RT-001–008; TC-NFR-002 |
-| NFR-13 | Workload/API p95, backup and restore targets defined in 18.5 | AC-180–AC-183; TC-NFR-001–003 |
-| GOV-01 | Customer decisions are recorded with confirmation evidence | AC-186; decision_log.md |
+| ID            | Requirement                                                                 | Acceptance evidence                              |
+| ------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
+| BR-19 / FR-34 | Theo dõi vị trí và ETA real-time qua WebSocket theo quyền Trip              | AC-165–AC-170, AC-187; TC-RT-001–008             |
+| BR-20 / FR-35 | Phân quyền OperationsStaff/Supervisor, ghi chú hỗ trợ và can thiệp có audit | AC-171–AC-175; TC-OPS-001–007; TC-AUD-001        |
+| BR-21 / FR-36 | Driver self-registration hoặc Staff-created, approval trước khi Available   | AC-176–AC-179; TC-DRV-001–005                    |
+| BR-22 / FR-37 | Tải nghiệm thu, response/delivery target, PostgreSQL backup/restore         | AC-180–AC-183; TC-NFR-001–003                    |
+| BR-23 / FR-38 | Server-derived payment amount, signed/idempotent callback                   | AC-184–AC-185; TC-PAY-001–002                    |
+| NFR-12        | Real-time update p95 ≤10s, stale sau 30s                                    | AC-165–AC-170, AC-187; TC-RT-001–008; TC-NFR-002 |
+| NFR-13        | Workload/API p95, backup and restore targets defined in 18.5                | AC-180–AC-183; TC-NFR-001–003                    |
+| GOV-01        | Customer decisions are recorded with confirmation evidence                  | AC-186; decision_log.md                          |
 
-| AC ID | Given | When | Then |
-|---|---|---|---|
-| AC-165 | Trip active, authorized client connected | Driver sends valid position or trip status changes | Fleet stores latest location and Ride emits the applicable location/ETA/status event |
-| AC-166 | Driver approaching pickup | Position update received | Driver app cadence is 5 seconds; ETA is recalculated using configured route provider |
-| AC-167 | Trip in progress | Position update received | Driver app cadence is 10–15 seconds; ETA is refreshed |
-| AC-168 | No fresh position for 30 seconds | Client/API receives state | Update is marked stale and last updatedAt remains visible |
-| AC-169 | Client WebSocket disconnects | Reconnection is pending | Client polls latest location every 10 seconds and reconnects with authorized ticket |
-| AC-170 | Trip is terminal or caller lacks ownership | Client requests live stream | Sharing stops for terminal Trip; unauthorized caller receives 403 |
-| AC-171 | OperationsStaff logged in | Adds support note | Note is immutable and audited |
-| AC-172 | OperationsStaff logged in | Attempts trip intervention | System denies with 403 and leaves Trip unchanged |
-| AC-173 | OperationsSupervisor logged in | Cancels eligible Trip with reason/confirmation | Trip changes according to action; audit records before/after |
-| AC-174 | OperationsSupervisor logged in | Closes failed Trip | Trip becomes terminal Failed and action is audited |
-| AC-175 | Operations role attempts direct fare/payment edit | Sends edit request | System denies and leaves financial record unchanged |
-| AC-176 | New Driver submits valid registration | Registration is accepted | Account/Driver created PendingApproval and Unavailable |
-| AC-177 | Driver is PendingApproval | Sets Available or matching runs | System rejects eligibility |
-| AC-178 | OperationsStaff/Supervisor reviews Driver | Approves | Approval becomes Approved; Driver may later set Available |
-| AC-179 | Reviewer rejects without reason | Submits rejection | System returns 400 and does not change approval state |
-| AC-180 | Performance environment meets stated profile | 100 VU and 20 trip requests/min for 10 minutes | p95 targets in 18.5 are measured and reported |
-| AC-181 | Normal API/load test runs | Requests complete | p95 ordinary API <2s and create TripRequest <3s excluding matching/response |
-| AC-182 | WebSocket update/load test runs | Location update reaches client | p95 delivery ≤10s |
-| AC-183 | PostgreSQL backup exists | Restore is performed | Restore succeeds and evidence is recorded |
-| AC-184 | Client sends payment request | Client supplies forged amount | Server derives amount from finalized fare or rejects client amount |
-| AC-185 | Signed provider callback has been processed | Same reference is delivered again | Duplicate callback produces no duplicate financial effect |
+| AC ID  | Given                                             | When                                               | Then                                                                                 |
+| ------ | ------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| AC-165 | Trip active, authorized client connected          | Driver sends valid position or trip status changes | Fleet stores latest location and Ride emits the applicable location/ETA/status event |
+| AC-166 | Driver approaching pickup                         | Position update received                           | Driver app cadence is 5 seconds; ETA is recalculated using configured route provider |
+| AC-167 | Trip in progress                                  | Position update received                           | Driver app cadence is 10–15 seconds; ETA is refreshed                                |
+| AC-168 | No fresh position for 30 seconds                  | Client/API receives state                          | Update is marked stale and last updatedAt remains visible                            |
+| AC-169 | Client WebSocket disconnects                      | Reconnection is pending                            | Client polls latest location every 10 seconds and reconnects with authorized ticket  |
+| AC-170 | Trip is terminal or caller lacks ownership        | Client requests live stream                        | Sharing stops for terminal Trip; unauthorized caller receives 403                    |
+| AC-171 | OperationsStaff logged in                         | Adds support note                                  | Note is immutable and audited                                                        |
+| AC-172 | OperationsStaff logged in                         | Attempts trip intervention                         | System denies with 403 and leaves Trip unchanged                                     |
+| AC-173 | OperationsSupervisor logged in                    | Cancels eligible Trip with reason/confirmation     | Trip changes according to action; audit records before/after                         |
+| AC-174 | OperationsSupervisor logged in                    | Closes failed Trip                                 | Trip becomes terminal Failed and action is audited                                   |
+| AC-175 | Operations role attempts direct fare/payment edit | Sends edit request                                 | System denies and leaves financial record unchanged                                  |
+| AC-176 | New Driver submits valid registration             | Registration is accepted                           | Account/Driver created PendingApproval and Unavailable                               |
+| AC-177 | Driver is PendingApproval                         | Sets Available or matching runs                    | System rejects eligibility                                                           |
+| AC-178 | OperationsStaff/Supervisor reviews Driver         | Approves                                           | Approval becomes Approved; Driver may later set Available                            |
+| AC-179 | Reviewer rejects without reason                   | Submits rejection                                  | System returns 400 and does not change approval state                                |
+| AC-180 | Performance environment meets stated profile      | 100 VU and 20 trip requests/min for 10 minutes     | p95 targets in 18.5 are measured and reported                                        |
+| AC-181 | Normal API/load test runs                         | Requests complete                                  | p95 ordinary API <2s and create TripRequest <3s excluding matching/response          |
+| AC-182 | WebSocket update/load test runs                   | Location update reaches client                     | p95 delivery ≤10s                                                                    |
+| AC-183 | PostgreSQL backup exists                          | Restore is performed                               | Restore succeeds and evidence is recorded                                            |
+| AC-184 | Client sends payment request                      | Client supplies forged amount                      | Server derives amount from finalized fare or rejects client amount                   |
+| AC-185 | Signed provider callback has been processed       | Same reference is delivered again                  | Duplicate callback produces no duplicate financial effect                            |
 
 | AC-186 | Decision evidence is present in decision_log.md | Baseline is reviewed | Each decision has a recorded status, rationale, confirmer and confirmation date; undocumented approvals are not treated as approved |
 | AC-187 | Configured routing provider is unavailable | Ride recalculates ETA | Ride retains the last ETA, marks it stale/unavailable and does not publish a fabricated new ETA |
