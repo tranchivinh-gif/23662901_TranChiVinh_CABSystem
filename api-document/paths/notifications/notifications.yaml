@@ -3,7 +3,10 @@ paths:
     get:
       tags:
       - Notifications
-      summary: Xem thông báo của tài khoản
+      summary: Xem danh sách thông báo của tài khoản hiện tại
+      description: "QRY-NOT-001. Returns only notifications belonging to the authenticated Customer or Driver, newest first. `isRead` is read from persistent Notifications PostgreSQL state."
+      x-contract-id: QRY-NOT-001
+      x-contract-status: FINALIZED
       operationId: listNotifications
       x-roles:
       - Customer
@@ -17,7 +20,7 @@ paths:
       - $ref: ../../parameters/pagination.yaml#/LimitParam
       responses:
         '200':
-          description: Danh sách dữ liệu.
+          description: Recipient-scoped notification page; persisted read state is included.
           content:
             application/json:
               schema:
@@ -40,7 +43,10 @@ paths:
     patch:
       tags:
       - Notifications
-      summary: Đánh dấu đã đọc
+      summary: Đánh dấu thông báo đã đọc
+      description: "QRY-NOT-001. Idempotently changes `isRead` from false to true for a notification owned by the authenticated recipient. The updated persisted notification is returned. A missing or non-owned notification returns 404."
+      x-contract-id: QRY-NOT-001
+      x-contract-status: FINALIZED
       operationId: markNotificationRead
       x-roles:
       - Customer
@@ -53,7 +59,7 @@ paths:
       - $ref: ../../parameters/id.yaml#/NotificationIdParam
       responses:
         '200':
-          description: Notification đã được đánh dấu đã đọc.
+          description: Updated notification with persistent `isRead=true`.
           content:
             application/json:
               schema:

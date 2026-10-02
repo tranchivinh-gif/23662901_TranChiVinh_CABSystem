@@ -5,6 +5,11 @@ required:
 - completionRate
 - cancellationRate
 - driverPerformance
+- paymentMetrics
+- periodStart
+- periodEnd
+- refreshedAt
+- isStale
 properties:
   tripCount:
     type: integer
@@ -15,4 +20,50 @@ properties:
   cancellationRate:
     type: number
   driverPerformance:
-    type: number
+    type: array
+    description: Per-driver accepted/completed trip summary; completion rate is 0–100 percent.
+    items:
+      type: object
+      required: [driverReference, displayName, acceptedTripCount, completedTripCount, completionRate]
+      properties:
+        driverReference:
+          type: string
+        displayName:
+          type: string
+        acceptedTripCount:
+          type: integer
+          minimum: 0
+        completedTripCount:
+          type: integer
+          minimum: 0
+        completionRate:
+          type: number
+          minimum: 0
+          maximum: 100
+  paymentMetrics:
+    type: array
+    items:
+      type: object
+      required: [paymentMethod, paymentStatus, paymentCount, amount]
+      properties:
+        paymentMethod:
+          type: string
+        paymentStatus:
+          type: string
+        paymentCount:
+          type: integer
+          minimum: 0
+        amount:
+          type: number
+          minimum: 0
+  periodStart:
+    type: string
+    format: date-time
+  periodEnd:
+    type: string
+    format: date-time
+  refreshedAt:
+    type: string
+    format: date-time
+  isStale:
+    type: boolean

@@ -1,7 +1,8 @@
 type: object
 required:
 - notificationId
-- accountId
+- recipientAccountId
+- notificationType
 - tripId
 - title
 - content
@@ -12,7 +13,7 @@ properties:
     type: integer
     format: int32
     example: 1
-  accountId:
+  recipientAccountId:
     type: integer
     format: int32
     example: 1
@@ -20,12 +21,17 @@ properties:
     type: integer
     format: int32
     example: 1
+  notificationType:
+    type: string
+    description: Type derived from one of the four baseline event facts.
+    enum: [TripLifecycleChanged, TripCompleted, TripCanceled, PaymentOutcomeRecorded]
   title:
     type: string
   content:
     type: string
   isRead:
     type: boolean
+    description: Persistent recipient read state; false on creation and true after mark-read.
   createdAt:
     type: string
     format: date-time

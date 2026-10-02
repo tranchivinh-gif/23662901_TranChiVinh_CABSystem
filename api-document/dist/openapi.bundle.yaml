@@ -1438,7 +1438,10 @@ paths:
     get:
       tags:
         - Notifications
-      summary: Xem thông báo của tài khoản
+      summary: Xem danh sách thông báo của tài khoản hiện tại
+      description: QRY-NOT-001. Returns only notifications belonging to the authenticated Customer or Driver, newest first. `isRead` is read from persistent Notifications PostgreSQL state.
+      x-contract-id: QRY-NOT-001
+      x-contract-status: FINALIZED
       operationId: listNotifications
       x-roles:
         - Customer
@@ -1452,7 +1455,7 @@ paths:
         - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
-          description: Danh sách dữ liệu.
+          description: Recipient-scoped notification page; persisted read state is included.
           content:
             application/json:
               schema:
@@ -1475,7 +1478,10 @@ paths:
     patch:
       tags:
         - Notifications
-      summary: Đánh dấu đã đọc
+      summary: Đánh dấu thông báo đã đọc
+      description: QRY-NOT-001. Idempotently changes `isRead` from false to true for a notification owned by the authenticated recipient. The updated persisted notification is returned. A missing or non-owned notification returns 404.
+      x-contract-id: QRY-NOT-001
+      x-contract-status: FINALIZED
       operationId: markNotificationRead
       x-roles:
         - Customer
@@ -1488,7 +1494,7 @@ paths:
         - $ref: '#/components/parameters/NotificationIdParam'
       responses:
         '200':
-          description: Notification đã được đánh dấu đã đọc.
+          description: Updated notification with persistent `isRead=true`.
           content:
             application/json:
               schema:
@@ -1652,9 +1658,16 @@ paths:
         - Operations
       summary: Supervisor hủy chuyến hoặc đóng chuyến lỗi
       operationId: interveneTrip
+      x-contract-id: CMD-OPS-002
+      x-contract-status: FINALIZED
       x-baseline-requirements:
         - BR-20
         - FR-35
+        - AC-171
+        - AC-172
+        - AC-173
+        - AC-174
+        - AC-175
       x-roles:
         - OperationsSupervisor
       security:
@@ -1669,7 +1682,7 @@ paths:
               $ref: '#/components/schemas/TripInterventionRequest'
       responses:
         '200':
-          description: Can thiệp hoàn tất và được audit.
+          description: Can thiệp hoàn tất; Ride-owned Trip đã được cập nhật và audit ghi đủ các trường SRS 18.2.
         '400':
           $ref: '#/components/responses/bad-request'
         '401':
@@ -1688,19 +1701,38 @@ paths:
         - Operations
       summary: Theo dõi thông tin hoạt động
       operationId: getOperationsDashboard
+      x-contract-id: QRY-OPS-005
+      x-contract-status: FINALIZED
       x-roles:
         - Leadership
       x-use-cases:
         - UC-37
       security:
         - bearerAuth: []
+      parameters:
+        - name: periodStart
+          in: query
+          required: false
+          description: UTC start of the reporting window. Defaults to 30 days before the query time.
+          schema:
+            type: string
+            format: date-time
+        - name: periodEnd
+          in: query
+          required: false
+          description: UTC end of the reporting window. Defaults to query time.
+          schema:
+            type: string
+            format: date-time
       responses:
         '200':
-          description: Thông tin hoạt động tổng hợp.
+          description: KPI dashboard from the Operations-owned projection, including refresh time and stale indicator.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dashboard'
+        '400':
+          $ref: '#/components/responses/bad-request'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -2516,7 +2548,8 @@ components:
       type: object
       required:
         - notificationId
-        - accountId
+        - recipientAccountId
+        - notificationType
         - tripId
         - title
         - content
@@ -2527,7 +2560,7 @@ components:
           type: integer
           format: int32
           example: 1
-        accountId:
+        recipientAccountId:
           type: integer
           format: int32
           example: 1
@@ -2535,12 +2568,21 @@ components:
           type: integer
           format: int32
           example: 1
+        notificationType:
+          type: string
+          description: Type derived from one of the four baseline event facts.
+          enum:
+            - TripLifecycleChanged
+            - TripCompleted
+            - TripCanceled
+            - PaymentOutcomeRecorded
         title:
           type: string
         content:
           type: string
         isRead:
           type: boolean
+          description: Persistent recipient read state; false on creation and true after mark-read.
         createdAt:
           type: string
           format: date-time
@@ -2645,6 +2687,11 @@ components:
         - completionRate
         - cancellationRate
         - driverPerformance
+        - paymentMetrics
+        - periodStart
+        - periodEnd
+        - refreshedAt
+        - isStale
       properties:
         tripCount:
           type: integer
@@ -2655,7 +2702,62 @@ components:
         cancellationRate:
           type: number
         driverPerformance:
-          type: number
+          type: array
+          description: Per-driver accepted/completed trip summary; completion rate is 0–100 percent.
+          items:
+            type: object
+            required:
+              - driverReference
+              - displayName
+              - acceptedTripCount
+              - completedTripCount
+              - completionRate
+            properties:
+              driverReference:
+                type: string
+              displayName:
+                type: string
+              acceptedTripCount:
+                type: integer
+                minimum: 0
+              completedTripCount:
+                type: integer
+                minimum: 0
+              completionRate:
+                type: number
+                minimum: 0
+                maximum: 100
+        paymentMetrics:
+          type: array
+          items:
+            type: object
+            required:
+              - paymentMethod
+              - paymentStatus
+              - paymentCount
+              - amount
+            properties:
+              paymentMethod:
+                type: string
+              paymentStatus:
+                type: string
+              paymentCount:
+                type: integer
+                minimum: 0
+              amount:
+                type: number
+                minimum: 0
+        periodStart:
+          type: string
+          format: date-time
+        periodEnd:
+          type: string
+          format: date-time
+        refreshedAt:
+          type: string
+          format: date-time
+        isStale:
+          type: boolean
   responses:
     bad-request:
       description: Dữ liệu đầu vào không hợp lệ.

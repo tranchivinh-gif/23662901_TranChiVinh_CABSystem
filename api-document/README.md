@@ -102,14 +102,16 @@ Payment method: `Cash`, `Electronic`. Electronic dùng VNPAY Sandbox. Retry tố
 
 ## 9. Notification
 
-Notification chỉ sử dụng in-app. Schema gồm `notificationId`, `accountId`, `tripId`, `title`, `content`, `isRead`, `createdAt`.
+Notification chỉ sử dụng in-app. Notifications Service sở hữu persistence trong Notifications PostgreSQL. Schema gồm `notificationId`, `recipientAccountId` (cross-service reference to Identity & Access Account; not a foreign key), `tripId` (reference), `notificationType`, `title`, `content`, persistent `isRead`, `createdAt`. `GET /notifications` trả danh sách mới nhất của recipient đang xác thực; `PATCH /notifications/{notificationId}/read` idempotently đặt `isRead=true`. Cả hai operation thuộc QRY-NOT-001 đã FINALIZED; notification retention/delivery retry là implementation details.
 
 ## 10. Operations / Leadership
 
 | Method | Endpoint | Role | UC |
 |---|---|---|---|
 | GET | `/operations/transactions` | OperationsStaff | UC-36 |
-| GET | `/operations/dashboard` | Leadership | UC-37 |
+| GET | `/operations/dashboard` | Leadership; QRY-OPS-005 | UC-37, SC-20 |
+
+Dashboard reads Operations-owned projection in Operations PostgreSQL. It refreshes each minute from existing owner query contracts; values older than five minutes are marked stale. Default period is the trailing 30 days UTC. Response includes revenue, terminal-trip completion/cancellation rates, per-driver accepted/completed performance, payment count/amount by method/status, `refreshedAt`, and `isStale`.
 
 Transaction filters: `paymentId`, `tripId`, `customerId`, `paymentMethod`, `paymentStatus`, `createdFrom`, `createdTo`.
 

@@ -83,15 +83,34 @@ paths:
       - Operations
       summary: Theo dõi thông tin hoạt động
       operationId: getOperationsDashboard
+      x-contract-id: QRY-OPS-005
+      x-contract-status: FINALIZED
       x-roles:
       - Leadership
       x-use-cases:
       - UC-37
       security:
       - bearerAuth: []
+      parameters:
+      - name: periodStart
+        in: query
+        required: false
+        description: UTC start of the reporting window. Defaults to 30 days before the query time.
+        schema:
+          type: string
+          format: date-time
+      - name: periodEnd
+        in: query
+        required: false
+        description: UTC end of the reporting window. Defaults to query time.
+        schema:
+          type: string
+          format: date-time
       responses:
+        '400':
+          $ref: ../../responses/bad-request.yaml
         '200':
-          description: Thông tin hoạt động tổng hợp.
+          description: KPI dashboard from the Operations-owned projection, including refresh time and stale indicator.
           content:
             application/json:
               schema:
@@ -165,7 +184,9 @@ paths:
       tags: [Operations]
       summary: Supervisor hủy chuyến hoặc đóng chuyến lỗi
       operationId: interveneTrip
-      x-baseline-requirements: [BR-20, FR-35]
+      x-contract-id: CMD-OPS-002
+      x-contract-status: FINALIZED
+      x-baseline-requirements: [BR-20, FR-35, AC-171, AC-172, AC-173, AC-174, AC-175]
       x-roles: [OperationsSupervisor]
       security: [{bearerAuth: []}]
       parameters:
@@ -177,7 +198,8 @@ paths:
             schema:
               $ref: ../../schemas/operations/TripInterventionRequest.yaml
       responses:
-        '200': {description: Can thiệp hoàn tất và được audit.}
+        '200': {description: Can thiệp hoàn tất; Ride-owned Trip đã được cập nhật và audit ghi đủ các trường SRS 18.2.}
+
         '400':
           $ref: ../../responses/bad-request.yaml
         '401':
