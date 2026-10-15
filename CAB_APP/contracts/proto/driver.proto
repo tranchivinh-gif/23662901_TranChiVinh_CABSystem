@@ -1,0 +1,47 @@
+syntax = "proto3";
+package cab.driver.v1;
+import "common.proto";
+
+service DriverService {
+  rpc ResolveAccount(cab.common.v1.IdRequest) returns (cab.common.v1.IdRequest);
+  rpc GetTravelDistance(TravelDistanceRequest) returns (TravelDistance);
+  rpc CreateProfile(CreateDriverProfileRequest) returns (Driver);
+  rpc DecideDriver(DriverDecisionRequest) returns (Driver);
+  rpc Heartbeat(LocationRequest) returns (HeartbeatResponse);
+  rpc GetDriver(cab.common.v1.IdRequest) returns (Driver);
+  rpc ApproveDriver(cab.common.v1.IdRequest) returns (Driver);
+  rpc SetAvailability(AvailabilityRequest) returns (Driver);
+  rpc UpdateLocation(LocationRequest) returns (cab.common.v1.Empty);
+  rpc GetNearbyDrivers(NearbyRequest) returns (DriverPage);
+  rpc ListDrivers(DriverListRequest) returns (DriverPage);
+  rpc GetEligibleDrivers(EligibleRequest) returns (DriverPage);
+  rpc GetByAccount(cab.common.v1.IdRequest) returns (Driver);
+  rpc GetProfileByAccount(cab.common.v1.IdRequest) returns (Driver);
+  rpc ClaimDriver(DriverClaim) returns (Driver);
+  rpc ReleaseDriver(DriverClaim) returns (Driver);
+}
+message TravelDistanceRequest { string driver_id = 1; string started_at = 2; string ended_at = 3; }
+message TravelDistance { string distance_km = 1; bool complete = 2; }
+message Driver { string driver_id = 1; string account_id = 2; string status = 3; string availability = 4; string full_name = 5; string phone_number = 6; Vehicle vehicle = 7; double distance_km = 8; }
+message AvailabilityRequest { string driver_id = 1; string availability = 2; }
+message LocationRequest { string driver_id = 1; cab.common.v1.GeoPoint location = 2; string observed_at = 3; optional double heading = 4; optional double speed = 5; optional double accuracy = 6; }
+message NearbyRequest {
+  cab.common.v1.GeoPoint location = 1;
+  double radius_km = 2; // grading endpoint: 1 km
+  cab.common.v1.PageRequest pagination = 3;
+  string status = 4;
+}
+message EligibleRequest {
+  cab.common.v1.GeoPoint pickup = 1;
+  string service_type = 2;
+  double radius_km = 3; // booking matching: 5 km
+  int32 max_candidates = 4; // 10 per round
+}
+message DriverPage { repeated Driver items = 1; cab.common.v1.PageMeta meta = 2; }
+message DriverListRequest { cab.common.v1.PageRequest pagination = 1; string approval_status = 2; string availability = 3; string driver_id = 4; string phone = 5; string name = 6; string service_type = 7; }
+message Vehicle { string vehicle_id = 1; string license_plate = 2; string service_type = 3; string make = 4; string model = 5; string color = 6; bool active = 7; }
+message DriverDocument { string filename = 1; string media_type = 2; bytes content = 3; }
+message CreateDriverProfileRequest { string account_id = 1; string profile_json = 2; repeated DriverDocument documents = 3; }
+message DriverDecisionRequest { string driver_id = 1; string decision = 2; string reason = 3; }
+message HeartbeatResponse { string driver_id = 1; string accepted_at = 2; string availability = 3; }
+message DriverClaim { string driver_id = 1; string booking_id = 2; string service_type = 3; cab.common.v1.GeoPoint pickup = 4; bool check_only = 5; }

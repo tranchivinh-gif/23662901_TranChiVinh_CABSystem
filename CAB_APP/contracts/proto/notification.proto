@@ -1,0 +1,12 @@
+syntax = "proto3";
+package cab.notification.v1;
+import "common.proto";
+
+service NotificationService {
+  rpc GetNotification(cab.common.v1.IdRequest) returns (Notification);
+  rpc ListNotifications(ListRequest) returns (NotificationPage);
+  rpc MarkRead(cab.common.v1.IdRequest) returns (cab.common.v1.Empty);
+}
+message Notification { string notification_id = 1; string account_id = 2; string status = 3; string template_code = 4; string channel = 5; string title = 6; string body = 7; string content_json = 8; string read_at = 9; string created_at = 10; string correlation_id = 11; string event_id = 12; }
+message ListRequest { string account_id = 1; cab.common.v1.PageRequest pagination = 2; }
+message NotificationPage { repeated Notification items = 1; cab.common.v1.PageMeta meta = 2; }

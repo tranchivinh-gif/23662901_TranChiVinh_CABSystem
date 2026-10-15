@@ -1,0 +1,1399 @@
+adminDriversIdApprove:
+  post:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin duyệt Driver
+    operationId: approveDriver
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/DriverDecisionRequest
+    responses:
+      '200':
+        description: Driver Active.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-11
+    - FR-36
+    - PC-34
+    x-contract-confidence: DESIGN_LOCKED
+    description: Approve request body optional; reason nếu có chỉ phục vụ audit.
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminDriversIdReject:
+  post:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin từ chối Driver
+    operationId: rejectDriver
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/DriverDecisionRequest
+    responses:
+      '200':
+        description: Driver Rejected.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-11
+    - FR-36
+    - PC-34
+    x-contract-confidence: DESIGN_LOCKED
+    description: Reject bắt buộc reason.
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminTrips:
+  get:
+    tags:
+    - Admin
+    - Trip
+    summary: Staff/Admin giám sát Trip
+    operationId: adminListTrips
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Danh sách Trip + cờ stuck.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminTripPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-26
+    - FR-39
+    - PC-40
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminDriversOnline:
+  get:
+    tags:
+    - Admin
+    - Driver
+    summary: Danh sách Driver online
+    operationId: adminListOnlineDrivers
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Driver online/available theo dashboard.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminDriverOnlinePage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-26
+    - FR-39
+    - PC-40
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminPayments:
+  get:
+    tags:
+    - Admin
+    - Payment
+    summary: Staff/Admin tra cứu Payment
+    operationId: adminListPayments
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: tripId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: paymentId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: customerId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: method
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - name: to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Payment list đã mask dữ liệu nhạy cảm.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-28
+    - FR-41
+    - PC-43
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminCustomers:
+  get:
+    tags:
+    - Admin
+    - Customer
+    summary: Staff/Admin tìm Customer
+    operationId: adminListCustomers
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: customerId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: phone
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: name
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - ACTIVE
+        - SUSPENDED
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Customer list đã mask dữ liệu nhạy cảm.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminCustomerPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-23
+    - FR-35
+    - PC-51
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: customer-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminCustomersId:
+  put:
+    tags:
+    - Admin
+    - Customer
+    summary: Staff/Admin cập nhật Customer theo quyền
+    operationId: adminUpdateCustomer
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/AdminCustomerUpdateRequest
+    responses:
+      '200':
+        description: Customer đã cập nhật.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/customer.yaml#/CustomerProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - UC-23
+    - FR-35
+    - PC-51
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: customer-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminCustomersIdSuspend:
+  post:
+    tags:
+    - Admin
+    - Customer
+    summary: Admin khóa Customer account
+    operationId: suspendCustomer
+    description: Staff phải bị 403. Source chưa chốt endpoint activate/unlock tương ứng.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Account bị suspend; reason + audit bắt buộc.
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-23
+    - FR-43A
+    - PC-51
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - customer-service
+adminVehicles:
+  get:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin tìm phương tiện
+    operationId: adminListVehicles
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: licensePlate
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: driverId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: serviceType
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - MOTORBIKE
+        - CAR_4_SEATS
+    - name: active
+      in: query
+      required: false
+      schema:
+        type: boolean
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Vehicle list.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/VehiclePage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-25
+    - FR-38
+    - PC-53
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+  post:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin tạo phương tiện
+    operationId: adminCreateVehicle
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/VehicleAdminRequest
+    responses:
+      '201':
+        description: Vehicle created.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/VehicleSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-25
+    - FR-38
+    - PC-53
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminVehiclesId:
+  put:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin cập nhật/vô hiệu phương tiện
+    operationId: adminUpdateVehicle
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/VehicleAdminRequest
+    responses:
+      '200':
+        description: Vehicle updated.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/VehicleSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-25
+    - FR-38
+    - PC-53
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminDrivers:
+  get:
+    tags:
+    - Admin
+    - Driver
+    summary: Staff/Admin tìm và lọc Driver
+    operationId: adminListDrivers
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: driverId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: phone
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: name
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: approvalStatus
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - PENDING
+        - ACTIVE
+        - REJECTED
+        - SUSPENDED
+    - name: availability
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - ONLINE
+        - OFFLINE
+        - BUSY
+    - name: serviceType
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - MOTORBIKE
+        - CAR_4_SEATS
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Driver list theo quyền; PII masked cho Staff.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminDriverPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-24
+    - FR-36
+    - FR-37
+    - PC-52
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminDriversIdSuspend:
+  post:
+    tags:
+    - Admin
+    - Driver
+    summary: Admin suspend Driver account
+    operationId: suspendDriver
+    description: Admin only. Staff must receive 403. reason bắt buộc.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Driver account SUSPENDED; audit required.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-24
+    - FR-43A
+    - PC-52
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - driver-service
+adminDriversIdActivate:
+  post:
+    tags:
+    - Admin
+    - Driver
+    summary: Admin activate Driver account
+    operationId: activateDriver
+    description: Admin only. Staff must receive 403. reason bắt buộc.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Driver account ACTIVE; audit required.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-24
+    - FR-43A
+    - PC-52
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - driver-service
+adminCustomersIdActivate:
+  post:
+    tags:
+    - Admin
+    - Customer
+    summary: Admin mở khóa Customer account
+    operationId: activateCustomer
+    description: Admin only; Staff phải 403.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Customer account ACTIVE; reason + audit required.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-23
+    - FR-43A
+    - PC-51
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - customer-service
+adminTripsIdRedispatch:
+  post:
+    tags:
+    - Admin
+    - Trip
+    - Booking
+    summary: Staff/Admin kích hoạt redispatch
+    operationId: adminRedispatchTrip
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Redispatch triggered without manual Driver assignment.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-27
+    - FR-40
+    - PC-41
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - booking-service
+    - driver-service
+    - trip-service
+adminTripsIdForceClose:
+  post:
+    tags:
+    - Admin
+    - Trip
+    summary: Admin force-close Trip
+    operationId: adminForceCloseTrip
+    description: Admin only; Staff must receive 403.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/ReasonRequest
+    responses:
+      '200':
+        description: Trip force-closed; before/after + audit persisted.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-27
+    - FR-43B
+    - PC-42
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminTripsIdFareAdjustments:
+  post:
+    tags:
+    - Admin
+    - Trip
+    summary: Admin điều chỉnh fare
+    operationId: adminAdjustTripFare
+    description: Admin only.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/FareAdjustmentRequest
+    responses:
+      '200':
+        description: Fare adjustment recorded with before/after/reason/audit.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-27
+    - FR-43C
+    - PC-42
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - trip-service
+    - booking-service
+adminPaymentsIdAdjustments:
+  post:
+    tags:
+    - Admin
+    - Payment
+    summary: Admin điều chỉnh transaction/payment amount
+    operationId: adminAdjustPayment
+    description: Admin only; không chứa card data.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/PaymentAdjustmentRequest
+    responses:
+      '200':
+        description: Payment adjustment recorded with before/after/reason/audit.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-27
+    - FR-43C
+    - PC-42
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminAccounts:
+  get:
+    tags:
+    - Admin
+    - Account
+    summary: Admin list Staff/Admin accounts
+    operationId: adminListAccounts
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: role
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - STAFF
+        - ADMIN
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - ACTIVE
+        - DISABLED
+    - name: q
+      in: query
+      required: false
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Staff/Admin account list.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminAccountPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-29
+    - FR-42
+    - PC-44
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+  post:
+    tags:
+    - Admin
+    - Account
+    summary: Admin tạo Staff/Admin account
+    operationId: adminCreateAccount
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/AdminAccountCreateRequest
+    responses:
+      '201':
+        description: Staff/Admin account created.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminAccountResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-29
+    - FR-42
+    - PC-44
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminAccountsId:
+  put:
+    tags:
+    - Admin
+    - Account
+    summary: Admin cập nhật/vô hiệu/kích hoạt Staff/Admin account
+    operationId: adminUpdateAccount
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/AdminAccountUpdateRequest
+    responses:
+      '200':
+        description: Account updated; permission-affecting change revokes sessions.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminAccountResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-29
+    - FR-42
+    - PC-44
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminAccountsIdRole:
+  put:
+    tags:
+    - Admin
+    - Account
+    summary: Admin thay đổi role Staff/Admin
+    operationId: adminUpdateAccountRole
+    description: Không cho gỡ quyền Admin cuối cùng → 409.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/AdminRoleUpdateRequest
+    responses:
+      '200':
+        description: Role changed; sessions revoked; RoleChanged audit written.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AdminAccountResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-29
+    - FR-42
+    - PC-44
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminPoliciesPolicyKey:
+  get:
+    tags:
+    - Admin
+    - Policy
+    summary: Admin xem policy version hiện hành
+    operationId: adminGetPolicy
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: policyKey
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - service-type
+        - fare
+        - matching
+        - cancellation
+        - operations
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Current policy version.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/PolicyVersionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - UC-30
+    - FR-44
+    - PC-45
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+adminPoliciesPolicyKeyVersions:
+  post:
+    tags:
+    - Admin
+    - Policy
+    summary: Admin tạo policy version mới
+    operationId: adminCreatePolicyVersion
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: policyKey
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - service-type
+        - fare
+        - matching
+        - cancellation
+        - operations
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/admin.yaml#/PolicyVersionRequest
+    responses:
+      '201':
+        description: New policy version created; applies only to new booking/trip/offer according to snapshot rules.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/PolicyVersionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-30
+    - FR-44
+    - PC-23
+    - PC-45
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - booking-service
+    - trip-service
+adminAuditLogs:
+  get:
+    tags:
+    - Admin
+    - Audit
+    summary: Admin tra cứu audit log append-only
+    operationId: adminQueryAuditLogs
+    description: Read-only; không expose update/delete audit API.
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - name: to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - name: actorId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: action
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: resourceType
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: resourceId
+      in: query
+      required: false
+      schema:
+        type: string
+    - name: correlationId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    - name: result
+      in: query
+      required: false
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Audit records; query itself is audited.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/AuditLogPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-32
+    - FR-34
+    - FR-46
+    - PC-46
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

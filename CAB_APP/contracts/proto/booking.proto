@@ -1,0 +1,40 @@
+syntax = "proto3";
+package cab.booking.v1;
+import "common.proto";
+
+service BookingService {
+  rpc GetServiceTypes(cab.common.v1.Empty) returns (ServiceTypeList);
+  rpc CreateBooking(CreateBookingRequest) returns (Booking);
+  rpc ListCustomerBookings(ListBookingsRequest) returns (BookingPage);
+  rpc EstimateFare(FareRequest) returns (FareEstimate);
+  rpc AcceptOffer(OfferRequest) returns (Booking);
+  rpc RejectOffer(OfferRequest) returns (cab.common.v1.Empty);
+  rpc ActOnOffer(OfferRequest) returns (OfferAction);
+  rpc GetDriverOffers(cab.common.v1.Empty) returns (OfferList);
+  rpc FinalizeTrip(TripTerminalRequest) returns (cab.common.v1.Empty);
+  rpc CalculateFinalFare(TripFareRequest) returns (FareEstimate);
+}
+message FareRequest {
+  cab.common.v1.GeoPoint pickup = 1;
+  cab.common.v1.GeoPoint destination = 2;
+  string service_type = 3;
+}
+message CreateBookingRequest {
+  string customer_id = 1;
+  FareRequest route = 2;
+  string idempotency_key = 3;
+  string payment_method = 4;
+  string payload_json = 5;
+}
+message Booking { string booking_id = 1; string customer_id = 2; string status = 3; string driver_id = 4; string trip_id = 5; string service_type = 6; string payment_method = 7; FareEstimate fare = 8; }
+message ListBookingsRequest { string customer_id = 1; cab.common.v1.PageRequest pagination = 2; }
+message BookingPage { repeated Booking items = 1; cab.common.v1.PageMeta meta = 2; }
+message FareEstimate { cab.common.v1.Money total = 1; string distance_km = 2; string fare_rule_version = 3; string base_fare = 4; string price_per_km = 5; string surcharge = 6; bool estimated = 7; double eta_minutes = 8; string fare_rule_id = 9; }
+message ServiceType { string code = 1; bool active = 2; }
+message ServiceTypeList { repeated ServiceType items = 1; }
+message OfferRequest { string offer_id = 1; string driver_id = 2; string idempotency_key = 3; string decision = 4; string reason = 5; }
+message OfferAction { string offer_id = 1; string trip_id = 2; string offer_status = 3; string trip_state = 4; string booking_id = 5; string driver_id = 6; }
+message DriverOffer { string offer_id = 1; string booking_id = 2; string trip_id = 3; string expires_at = 4; }
+message OfferList { repeated DriverOffer items = 1; }
+message TripTerminalRequest { string trip_id = 1; string booking_id = 2; string state = 3; }
+message TripFareRequest { string booking_id = 1; string driver_id = 2; string started_at = 3; string ended_at = 4; }

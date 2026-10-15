@@ -1,0 +1,85 @@
+health:
+  get:
+    tags:
+    - Health
+    summary: Gateway liveness/overall health
+    operationId: getHealth
+    security: []
+    responses:
+      '200':
+        description: Gateway sống, status=HEALTHY.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/health.yaml#/HealthResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+    x-cab-trace:
+    - GA-03
+    - Design §5.2
+    x-contract-confidence: EXACT
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: api-gateway
+    x-cab-public-via: api-gateway
+ready:
+  get:
+    tags:
+    - Health
+    summary: Gateway readiness
+    operationId: getReady
+    security: []
+    responses:
+      '200':
+        description: Gateway READY.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/health.yaml#/ReadyResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '503':
+        $ref: ../components/responses.yaml#/ServiceUnavailable
+    x-cab-trace:
+    - GA-03
+    - Design §5.2
+    x-contract-confidence: EXACT
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: api-gateway
+    x-cab-public-via: api-gateway
+healthServices:
+  get:
+    tags:
+    - Health
+    summary: Tổng hợp health Gateway + 7 business service
+    operationId: getServicesHealth
+    security: []
+    responses:
+      '200':
+        description: Danh sách Gateway + đúng 7 business service.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/health.yaml#/ServicesHealthResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+    x-cab-trace:
+    - GA-03
+    - Design §5.2
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: api-gateway
+    x-cab-public-via: api-gateway
+    x-cab-orchestrates:
+    - identity-account-service
+    - customer-service
+    - driver-service
+    - booking-service
+    - trip-service
+    - payment-service
+    - notification-service

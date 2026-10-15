@@ -1,0 +1,161 @@
+customersCustomerIdBookings:
+  get:
+    tags:
+    - Customer
+    - Booking
+    summary: Danh sách Booking của Customer có phân trang
+    operationId: getCustomerBookings
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: customerId
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Booking page.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/booking.yaml#/BookingPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - GA-06
+    - PC-59
+    - §16.2.6
+    x-contract-confidence: EXACT
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+serviceTypes:
+  get:
+    tags:
+    - Booking
+    summary: Lấy service types P1
+    operationId: getServiceTypes
+    security:
+    - bearerAuth: []
+    responses:
+      '200':
+        description: Danh sách service type active.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/booking.yaml#/ServiceTypeList
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+    x-cab-trace:
+    - UC-04
+    - FR-07
+    - PC-07
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+faresEstimate:
+  post:
+    tags:
+    - Booking
+    summary: Ước tính cước
+    operationId: estimateFare
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/booking.yaml#/FareEstimateRequest
+    responses:
+      '200':
+        description: Ước tính theo fare rule.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/booking.yaml#/FareEstimateResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '503':
+        $ref: ../components/responses.yaml#/ServiceUnavailable
+    x-cab-trace:
+    - UC-04
+    - UC-20
+    - FR-28
+    - PC-07
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+bookings:
+  post:
+    tags:
+    - Booking
+    summary: Tạo Booking và bắt đầu automatic matching
+    operationId: createBooking
+    description: 'Bắt buộc Idempotency-Key (retention 24h). Rate-limit grading: burst >1000 req/s phải quan sát 429 + Retry-After
+      và hệ thống vẫn healthy. Unknown serviceType → 400 INVALID_SERVICE_TYPE; known but disabled → 409 SERVICE_TYPE_DISABLED;
+      reuse same key different payload → 409 IDEMPOTENCY_KEY_REUSED.'
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/booking.yaml#/BookingCreateRequest
+    responses:
+      '201':
+        description: Booking tạo đúng một lần; public state SEARCHING.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/booking.yaml#/BookingSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+      '503':
+        $ref: ../components/responses.yaml#/ServiceUnavailable
+    x-cab-trace:
+    - UC-04
+    - FR-06..08
+    - PC-08..10
+    - §16.2.6
+    - ADR-21 §21.10
+    x-contract-confidence: EXACT
+    x-cab-owner-service: booking-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - booking-service
+    - driver-service
+    - trip-service

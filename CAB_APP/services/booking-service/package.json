@@ -1,0 +1,16 @@
+{
+  "name": "@cab/booking-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Booking/matching/offer/reservation/fare/Map adapter",
+  "type": "commonjs",
+  "engines": {
+    "node": "24.19.0"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "1.14.5",
+    "@grpc/proto-loader": "0.8.1",
+    "jsonwebtoken": "9.0.3",
+    "pg": "8.23.1"
+  }
+}

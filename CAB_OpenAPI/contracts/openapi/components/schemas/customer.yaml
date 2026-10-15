@@ -1,0 +1,30 @@
+CustomerProfile:
+  type: object
+  properties:
+    customerId:
+      type: string
+    fullName:
+      type: string
+    phoneNumber:
+      type: string
+      description: 'Mask rule: self thấy full; Staff thấy ****** + 4 số cuối; Admin full only when authorized and access is
+        audited.'
+    email:
+      type: string
+    avatar:
+      type: string
+  required:
+  - customerId
+  - fullName
+  - phoneNumber
+  additionalProperties: false
+CustomerUpdateRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+    email:
+      type: string
+    avatar:
+      type: string
+  additionalProperties: true

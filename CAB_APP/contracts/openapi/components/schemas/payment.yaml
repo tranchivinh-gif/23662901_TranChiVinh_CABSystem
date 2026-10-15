@@ -1,0 +1,125 @@
+PaymentSummary:
+  type: object
+  properties:
+    paymentId:
+      type: string
+    tripId:
+      type: string
+    amount:
+      type: integer
+      minimum: 0
+      description: VND integer amount.
+    currency:
+      type: string
+      enum:
+      - VND
+    method:
+      type: string
+      enum:
+      - CASH
+      - ELECTRONIC
+    status:
+      type: string
+      enum:
+      - PENDING
+      - COMPLETED
+      - FAILED
+    providerReference:
+      type: string
+  required:
+  - paymentId
+  - tripId
+  - amount
+  - currency
+  - method
+  - status
+  additionalProperties: false
+CashConfirmResponse:
+  $ref: ./payment.yaml#/PaymentSummary
+PaymentWebhookRequest:
+  type: object
+  properties:
+    providerReference:
+      type: string
+      minLength: 1
+    amount:
+      type: integer
+      minimum: 0
+      description: VND integer amount.
+    status:
+      type: string
+      enum:
+      - COMPLETED
+      - FAILED
+  required:
+  - providerReference
+  - amount
+  - status
+  additionalProperties: false
+PaymentWebhookResponse:
+  type: object
+  properties:
+    paymentId:
+      type: string
+    status:
+      type: string
+      enum:
+      - COMPLETED
+  required:
+  - paymentId
+  - status
+  additionalProperties: false
+PaymentPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./payment.yaml#/PaymentSummary
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+PaymentInitiationResponse:
+  type: object
+  properties:
+    payment:
+      $ref: ./payment.yaml#/PaymentSummary
+    provider:
+      type: string
+      enum:
+      - mock
+    checkoutUrl:
+      type: string
+    checkoutToken:
+      type: string
+    attemptNo:
+      type: integer
+      minimum: 1
+      maximum: 3
+  required:
+  - payment
+  - provider
+  - attemptNo
+  additionalProperties: false

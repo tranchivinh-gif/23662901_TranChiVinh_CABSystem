@@ -1,5 +1,0 @@
-description: Tài nguyên bị xung đột.
-content:
-  application/json:
-    schema:
-      $ref: ../schemas/common/ErrorResponse.yaml

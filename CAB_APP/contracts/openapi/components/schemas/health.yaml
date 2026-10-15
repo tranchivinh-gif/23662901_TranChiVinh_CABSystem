@@ -1,0 +1,49 @@
+HealthResponse:
+  type: object
+  properties:
+    status:
+      type: string
+      enum:
+      - HEALTHY
+  required:
+  - status
+  additionalProperties: true
+ReadyResponse:
+  type: object
+  properties:
+    status:
+      type: string
+      enum:
+      - READY
+    dependencies:
+      type: array
+      items:
+        type: object
+        additionalProperties: true
+  required:
+  - status
+  additionalProperties: true
+ServiceHealth:
+  type: object
+  properties:
+    name:
+      type: string
+    status:
+      type: string
+    ready:
+      type: boolean
+  required:
+  - name
+  - status
+  - ready
+  additionalProperties: true
+ServicesHealthResponse:
+  type: object
+  properties:
+    services:
+      type: array
+      items:
+        $ref: ./health.yaml#/ServiceHealth
+  required:
+  - services
+  additionalProperties: true

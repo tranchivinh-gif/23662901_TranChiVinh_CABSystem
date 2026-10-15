@@ -1,0 +1,16 @@
+syntax = "proto3";
+package cab.customer.v1;
+import "common.proto";
+
+service CustomerService {
+  rpc ResolveAccount(cab.common.v1.IdRequest) returns (cab.common.v1.IdRequest);
+  rpc CreateProfile(CreateProfileRequest) returns (Customer);
+  rpc GetCustomer(cab.common.v1.IdRequest) returns (Customer);
+  rpc GetByAccount(cab.common.v1.IdRequest) returns (Customer);
+  rpc ListCustomers(cab.common.v1.PageRequest) returns (CustomerPage);
+  rpc SetStatus(SetStatusRequest) returns (Customer);
+}
+message CreateProfileRequest { string account_id = 1; string full_name = 2; string phone = 3; string email = 4; }
+message Customer { string customer_id = 1; string account_id = 2; string full_name = 3; string status = 4; string phone_number = 5; string email = 6; }
+message CustomerPage { repeated Customer items = 1; cab.common.v1.PageMeta meta = 2; }
+message SetStatusRequest { string customer_id = 1; string status = 2; string reason = 3; }

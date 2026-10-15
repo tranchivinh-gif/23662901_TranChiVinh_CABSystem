@@ -1,0 +1,24 @@
+syntax = "proto3";
+package cab.payment.v1;
+import "common.proto";
+
+service PaymentService {
+  rpc GetPayment(cab.common.v1.IdRequest) returns (Payment);
+  rpc InitiatePayment(InitiateRequest) returns (Payment);
+  rpc ConfirmCash(CashRequest) returns (Payment);
+  rpc HandleCallback(CallbackRequest) returns (Payment);
+  rpc RetryPayment(RetryRequest) returns (Payment);
+}
+message Payment { string payment_id = 1; string trip_id = 2; string status = 3; cab.common.v1.Money amount = 4; string method = 5; string provider_reference = 6; int32 attempt_no = 7; string provider = 8; string checkout_token = 9; bool callback_accepted = 10; }
+message InitiateRequest { string trip_id = 1; string method = 2; string idempotency_key = 3; }
+message RetryRequest { string payment_id = 1; string idempotency_key = 2; }
+message CallbackRequest {
+  string provider = 1;
+  string provider_reference = 2;
+  cab.common.v1.Money amount = 3;
+  string status = 4;
+  string signature = 5;
+  int64 timestamp = 6;
+}
+
+message CashRequest { string id = 1; string idempotency_key = 2; }

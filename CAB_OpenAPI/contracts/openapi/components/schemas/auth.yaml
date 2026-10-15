@@ -1,0 +1,281 @@
+CustomerRegisterRequest:
+  type: object
+  description: Customer registration payload. Customer phải hoàn tất request-otp + verify-otp và gửi registrationContext hợp
+    lệ.
+  properties:
+    fullName:
+      type: string
+      description: Tên đầy đủ. Tên wire được chuẩn hóa từ “họ tên” trong SRS.
+    phoneNumber:
+      type: string
+      description: Số điện thoại, định danh đăng ký.
+    password:
+      type: string
+      description: Mật khẩu; server lưu dạng băm.
+    email:
+      type: string
+      description: Email tùy chọn.
+    registrationContext:
+      type: string
+      minLength: 1
+  required:
+  - registrationContext
+  - fullName
+  - phoneNumber
+  - password
+  additionalProperties: false
+AccountCreatedResponse:
+  type: object
+  properties:
+    accountId:
+      type: string
+    role:
+      type: string
+      enum:
+      - CUSTOMER
+      - DRIVER
+      - STAFF
+      - ADMIN
+    status:
+      type: string
+      enum:
+      - ACTIVE
+      - PENDING
+      - REJECTED
+      - SUSPENDED
+      - DISABLED
+  required:
+  - accountId
+  - role
+  - status
+  additionalProperties: false
+LoginRequest:
+  type: object
+  properties:
+    phoneNumber:
+      type: string
+    password:
+      type: string
+  required:
+  - phoneNumber
+  - password
+  additionalProperties: false
+LoginResponse:
+  type: object
+  properties:
+    accountId:
+      type: string
+    role:
+      type: string
+      enum:
+      - CUSTOMER
+      - DRIVER
+      - STAFF
+      - ADMIN
+    accessToken:
+      type: string
+    refreshToken:
+      type: string
+    tokenType:
+      type: string
+      example: Bearer
+    accessTokenTtlSeconds:
+      type: integer
+      example: 900
+    refreshTokenTtlSeconds:
+      type: integer
+      example: 604800
+  required:
+  - accountId
+  - role
+  - accessToken
+  - refreshToken
+  - tokenType
+  - accessTokenTtlSeconds
+  - refreshTokenTtlSeconds
+  additionalProperties: false
+LogoutRequest:
+  type: object
+  properties:
+    refreshToken:
+      type: string
+  required:
+  - refreshToken
+  additionalProperties: false
+OtpRequest:
+  type: object
+  properties:
+    phoneNumber:
+      type: string
+  required:
+  - phoneNumber
+  additionalProperties: false
+OtpVerifyRequest:
+  type: object
+  properties:
+    phoneNumber:
+      type: string
+    otp:
+      type: string
+  required:
+  - phoneNumber
+  - otp
+  additionalProperties: false
+OtpVerifyResponse:
+  type: object
+  properties:
+    verified:
+      type: boolean
+    registrationContext:
+      type: string
+      description: Opaque short-lived registration context issued only after OTP verification; required by subsequent register
+        call.
+  required:
+  - verified
+  - registrationContext
+  additionalProperties: false
+DriverRegisterRequest:
+  type: object
+  properties:
+    registrationContext:
+      type: string
+      description: Verified registration context sau OTP; cách truyền chính xác chưa được tài liệu chốt.
+    fullName:
+      type: string
+    phoneNumber:
+      type: string
+    identityDocument:
+      type: string
+      description: CCCD/giấy tờ định danh; phải mã hóa at-rest.
+    driverLicense:
+      type: string
+      description: GPLX; phải bảo vệ theo yêu cầu dữ liệu nhạy cảm.
+    vehicle:
+      type: object
+      properties:
+        licensePlate:
+          type: string
+        make:
+          type: string
+          description: Hãng xe
+        model:
+          type: string
+          description: Mẫu xe
+        color:
+          type: string
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        seatCount:
+          type: integer
+          minimum: 1
+      required:
+      - licensePlate
+      - serviceType
+      additionalProperties: true
+    documents:
+      type: array
+      items:
+        type: object
+        description: Metadata tài liệu upload. Cơ chế multipart/presigned URL chưa được chốt.
+        additionalProperties: true
+  required:
+  - fullName
+  - phoneNumber
+  - identityDocument
+  - driverLicense
+  - vehicle
+  additionalProperties: true
+DriverRegistrationResponse:
+  type: object
+  properties:
+    driverId:
+      type: string
+    status:
+      type: string
+      enum:
+      - PENDING
+  required:
+  - driverId
+  - status
+  additionalProperties: false
+RefreshTokenRequest:
+  type: object
+  properties:
+    refreshToken:
+      type: string
+      minLength: 1
+  required:
+  - refreshToken
+  additionalProperties: false
+DriverRegistrationProfile:
+  type: object
+  properties:
+    fullName:
+      type: string
+      minLength: 1
+    phoneNumber:
+      type: string
+      minLength: 6
+    identityDocument:
+      type: string
+      minLength: 1
+      description: CCCD/identity number; encrypted at rest.
+    driverLicense:
+      type: string
+      minLength: 1
+      description: Driver license identifier; protected at rest.
+    vehicle:
+      type: object
+      properties:
+        licensePlate:
+          type: string
+        make:
+          type: string
+          description: Hãng xe
+        model:
+          type: string
+          description: Mẫu xe
+        color:
+          type: string
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        seatCount:
+          type: integer
+          minimum: 1
+      required:
+      - licensePlate
+      - serviceType
+      additionalProperties: true
+  required:
+  - fullName
+  - phoneNumber
+  - identityDocument
+  - driverLicense
+  - vehicle
+  additionalProperties: false
+DriverRegistrationMultipart:
+  type: object
+  properties:
+    registrationContext:
+      type: string
+      minLength: 1
+    profile:
+      $ref: ./auth.yaml#/DriverRegistrationProfile
+    documents:
+      type: array
+      minItems: 1
+      items:
+        type: string
+        format: binary
+      description: Required driver document files.
+  required:
+  - registrationContext
+  - profile
+  - documents
+  additionalProperties: false

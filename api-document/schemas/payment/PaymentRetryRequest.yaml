@@ -1,8 +1,0 @@
-type: object
-required:
-- paymentId
-properties:
-  paymentId:
-    type: integer
-    format: int32
-    example: 1

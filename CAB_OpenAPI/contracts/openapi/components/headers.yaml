@@ -1,0 +1,5 @@
+CorrelationId:
+  description: Correlation ID của request. Gateway dùng giá trị hợp lệ từ client hoặc tự sinh UUID và truyền xuyên gRPC/Kafka.
+  schema:
+    type: string
+    format: uuid

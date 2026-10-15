@@ -1,0 +1,6 @@
+.env
+secrets/
+**/node_modules/
+**/.cache/
+**/coverage/
+*.log

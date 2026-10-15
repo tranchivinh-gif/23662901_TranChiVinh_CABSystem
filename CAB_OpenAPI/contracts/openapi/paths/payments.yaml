@@ -1,0 +1,251 @@
+tripsIdPayment:
+  get:
+    tags:
+    - Payment
+    summary: Lấy Payment của Trip
+    operationId: getTripPayment
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Payment của Trip.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - UC-09
+    - UC-21
+    - PC-27
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+paymentsIdCashConfirm:
+  post:
+    tags:
+    - Payment
+    summary: Driver xác nhận đã thu Cash
+    operationId: confirmCashPayment
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Payment Succeeded.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-09
+    - FR-13
+    - FR-21
+    - PC-26
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+webhooksPaymentProvider:
+  post:
+    tags:
+    - Payment
+    summary: Payment Provider callback/webhook
+    operationId: paymentWebhook
+    description: P1 provider path value = mock. Signature = HMAC-SHA256 over `${timestamp}.${providerReference}.${amount}.${status}`.
+      Replay window ±300s. Duplicate valid callback returns 200 duplicate-safe. Invalid signature → 401 INVALID_WEBHOOK_SIGNATURE;
+      amount/reference mismatch or stale replay → 409 PAYMENT_CALLBACK_MISMATCH/WEBHOOK_REPLAY_REJECTED.
+    security: []
+    parameters:
+    - name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - mock
+    - $ref: ../components/parameters.yaml#/PaymentWebhookTimestamp
+    - $ref: ../components/parameters.yaml#/PaymentWebhookSignature
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/payment.yaml#/PaymentWebhookRequest
+    responses:
+      '200':
+        description: Callback hợp lệ/idempotent; success expose public status COMPLETED.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentWebhookResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        description: Malformed callback body/header.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/common.yaml#/ErrorResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        description: INVALID_WEBHOOK_SIGNATURE.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/common.yaml#/ErrorResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '409':
+        description: PAYMENT_CALLBACK_MISMATCH hoặc WEBHOOK_REPLAY_REJECTED.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/common.yaml#/ErrorResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+    x-cab-trace:
+    - UC-21
+    - FR-31
+    - PC-27
+    - PC-28
+    - §16.2.6
+    - ADR-18
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdPaymentElectronic:
+  post:
+    tags:
+    - Payment
+    summary: Khởi tạo Electronic Payment cho Trip
+    operationId: initiateElectronicPayment
+    description: P1 provider route = mock qua adapter. Card data không đi qua CAB. Idempotency retention 24h.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '201':
+        description: Electronic payment attempt created.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentInitiationResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+      '503':
+        $ref: ../components/responses.yaml#/ServiceUnavailable
+    x-cab-trace:
+    - UC-09
+    - UC-21
+    - FR-13
+    - FR-29
+    - PC-27
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+paymentsIdRetry:
+  post:
+    tags:
+    - Payment
+    summary: Retry Electronic Payment
+    operationId: retryElectronicPayment
+    description: Không auto-fallback sang CASH. Vượt 3 lần hoặc 24h → 409 PAYMENT_RETRY_LIMIT_REACHED.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '201':
+        description: Retry attempt created nếu còn trong max 3 lần/24h.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentInitiationResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+      '503':
+        $ref: ../components/responses.yaml#/ServiceUnavailable
+    x-cab-trace:
+    - UC-10
+    - FR-14
+    - PC-50
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: payment-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

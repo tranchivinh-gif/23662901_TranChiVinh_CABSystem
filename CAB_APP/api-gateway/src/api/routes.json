@@ -1,0 +1,498 @@
+[
+  {
+    "method": "post",
+    "path": "/auth/register/customer",
+    "operationId": "registerCustomer",
+    "owner": "identity-account-service",
+    "rpc": "registerCustomer",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/login",
+    "operationId": "login",
+    "owner": "identity-account-service",
+    "rpc": "login",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/logout",
+    "operationId": "logout",
+    "owner": "identity-account-service",
+    "rpc": "logout",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/auth/register/driver/request-otp",
+    "operationId": "requestDriverRegistrationOtp",
+    "owner": "identity-account-service",
+    "rpc": "requestOtp",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/register/driver/verify-otp",
+    "operationId": "verifyDriverRegistrationOtp",
+    "owner": "identity-account-service",
+    "rpc": "verifyOtp",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/register/driver",
+    "operationId": "registerDriver",
+    "owner": "identity-account-service",
+    "rpc": "registerDriver",
+    "public": true
+  },
+  {
+    "method": "put",
+    "path": "/customers/me",
+    "operationId": "updateMyCustomerProfile",
+    "owner": "customer-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/drivers/nearby",
+    "operationId": "getNearbyDrivers",
+    "owner": "driver-service",
+    "rpc": "getNearbyDrivers",
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/drivers/me/availability",
+    "operationId": "updateMyDriverAvailability",
+    "owner": "driver-service",
+    "rpc": "setAvailability",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/service-types",
+    "operationId": "getServiceTypes",
+    "owner": "booking-service",
+    "rpc": "getServiceTypes",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/fares/estimate",
+    "operationId": "estimateFare",
+    "owner": "booking-service",
+    "rpc": "estimateFare",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/bookings",
+    "operationId": "createBooking",
+    "owner": "booking-service",
+    "rpc": "createBooking",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/trips",
+    "operationId": "listTrips",
+    "owner": "trip-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/trips",
+    "operationId": "adminListTrips",
+    "owner": "trip-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/drivers/online",
+    "operationId": "adminListOnlineDrivers",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/payments",
+    "operationId": "adminListPayments",
+    "owner": "payment-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/customers",
+    "operationId": "adminListCustomers",
+    "owner": "customer-service",
+    "rpc": "listCustomers",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/vehicles",
+    "operationId": "adminListVehicles",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/vehicles",
+    "operationId": "adminCreateVehicle",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/auth/register/customer/request-otp",
+    "operationId": "requestCustomerRegistrationOtp",
+    "owner": "identity-account-service",
+    "rpc": "requestOtp",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/register/customer/verify-otp",
+    "operationId": "verifyCustomerRegistrationOtp",
+    "owner": "identity-account-service",
+    "rpc": "verifyOtp",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/auth/refresh",
+    "operationId": "refreshToken",
+    "owner": "identity-account-service",
+    "rpc": "refresh",
+    "public": true
+  },
+  {
+    "method": "put",
+    "path": "/drivers/me",
+    "operationId": "updateMyDriverProfile",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/drivers/me/location",
+    "operationId": "updateMyDriverLocation",
+    "owner": "driver-service",
+    "rpc": "updateLocation",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/drivers",
+    "operationId": "adminListDrivers",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/accounts",
+    "operationId": "adminListAccounts",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/accounts",
+    "operationId": "adminCreateAccount",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/audit-logs",
+    "operationId": "adminQueryAuditLogs",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/customers/:customerId",
+    "operationId": "getCustomerById",
+    "owner": "customer-service",
+    "rpc": "getCustomer",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/customers/me/bookings",
+    "operationId": "getMyBookings",
+    "owner": "booking-service",
+    "rpc": "listCustomerBookings",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/customers/:customerId/bookings",
+    "operationId": "getCustomerBookings",
+    "owner": "booking-service",
+    "rpc": "listCustomerBookings",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/drivers/:driverId",
+    "operationId": "getDriverById",
+    "owner": "driver-service",
+    "rpc": "getDriver",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/trips/:id",
+    "operationId": "getTripById",
+    "owner": "trip-service",
+    "rpc": "getTrip",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/arrive",
+    "operationId": "markTripArrived",
+    "owner": "trip-service",
+    "rpc": "transition",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/pickup",
+    "operationId": "markTripPickedUp",
+    "owner": "trip-service",
+    "rpc": "transition",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/start",
+    "operationId": "startTrip",
+    "owner": "trip-service",
+    "rpc": "transition",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/complete",
+    "operationId": "completeTrip",
+    "owner": "trip-service",
+    "rpc": "transition",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/cancel",
+    "operationId": "cancelTrip",
+    "owner": "trip-service",
+    "rpc": "cancelTrip",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/rating",
+    "operationId": "rateTripDriver",
+    "owner": "trip-service",
+    "rpc": "rateTrip",
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/trips/:id/payment",
+    "operationId": "getTripPayment",
+    "owner": "payment-service",
+    "rpc": "getPayment",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/payments/:id/cash-confirm",
+    "operationId": "confirmCashPayment",
+    "owner": "payment-service",
+    "rpc": "confirmCash",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/webhooks/payment/:provider",
+    "operationId": "paymentWebhook",
+    "owner": "payment-service",
+    "rpc": "handleCallback",
+    "public": true
+  },
+  {
+    "method": "post",
+    "path": "/admin/drivers/:id/approve",
+    "operationId": "approveDriver",
+    "owner": "driver-service",
+    "rpc": "approveDriver",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/drivers/:id/reject",
+    "operationId": "rejectDriver",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/admin/customers/:id",
+    "operationId": "adminUpdateCustomer",
+    "owner": "customer-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/customers/:id/suspend",
+    "operationId": "suspendCustomer",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/admin/vehicles/:id",
+    "operationId": "adminUpdateVehicle",
+    "owner": "driver-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/driver-offers/:offerId/accept",
+    "operationId": "acceptDriverOffer",
+    "owner": "booking-service",
+    "rpc": "actOnOffer",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/driver-offers/:offerId/reject",
+    "operationId": "rejectDriverOffer",
+    "owner": "booking-service",
+    "rpc": "actOnOffer",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/trips/:id/payment/electronic",
+    "operationId": "initiateElectronicPayment",
+    "owner": "payment-service",
+    "rpc": "initiatePayment",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/payments/:id/retry",
+    "operationId": "retryElectronicPayment",
+    "owner": "payment-service",
+    "rpc": "retryPayment",
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/drivers/:id/suspend",
+    "operationId": "suspendDriver",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/drivers/:id/activate",
+    "operationId": "activateDriver",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/customers/:id/activate",
+    "operationId": "activateCustomer",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/trips/:id/redispatch",
+    "operationId": "adminRedispatchTrip",
+    "owner": "booking-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/trips/:id/force-close",
+    "operationId": "adminForceCloseTrip",
+    "owner": "trip-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/trips/:id/fare-adjustments",
+    "operationId": "adminAdjustTripFare",
+    "owner": "trip-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/payments/:id/adjustments",
+    "operationId": "adminAdjustPayment",
+    "owner": "payment-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/admin/accounts/:id",
+    "operationId": "adminUpdateAccount",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "put",
+    "path": "/admin/accounts/:id/role",
+    "operationId": "adminUpdateAccountRole",
+    "owner": "identity-account-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "get",
+    "path": "/admin/policies/:policyKey",
+    "operationId": "adminGetPolicy",
+    "owner": "booking-service",
+    "rpc": null,
+    "public": false
+  },
+  {
+    "method": "post",
+    "path": "/admin/policies/:policyKey/versions",
+    "operationId": "adminCreatePolicyVersion",
+    "owner": "booking-service",
+    "rpc": null,
+    "public": false
+  }
+]

@@ -1,0 +1,4903 @@
+openapi: 3.1.0
+info:
+  title: CAB System Public API — Final Modular Contract
+  version: 1.0.4
+  description: 'CAB System Public API Contract P1 — FINAL/LOCKED baseline 1.0.4. Public REST contract is exposed only through
+    API Gateway. This release changes file organization only: one root OpenAPI document with modular paths/components. The
+    62 paths and 64 operations from baseline 1.0.3 are preserved.'
+  x-source-documents:
+  - srs_baseline_1.0.1(4).md
+  - mcroservice_design_final(3).md
+  x-refactor:
+    fromBaseline: 1.0.3
+    type: non-breaking structural modularization
+    status: FINAL_LOCKED
+    principle: one public Gateway OpenAPI; split paths/components only; no per-microservice public REST specs
+servers:
+- url: /
+  description: P1 public API Gateway root. Không dùng version prefix trong P1 để giữ exact grading paths như /health, /auth/login,
+    /bookings.
+tags:
+- name: Health
+- name: Auth
+- name: Customer
+- name: Driver
+- name: Booking
+- name: Trip
+- name: Payment
+- name: Admin
+- name: Offer
+- name: Audit
+- name: Policy
+- name: Account
+security:
+- bearerAuth: []
+x-cab-baseline:
+  phase: P1
+  srsBaseline: 1.0.1
+  apiContractBaseline: 1.0.4
+  decisionDate: '2026-10-03'
+  architecture: API Gateway + 7 Spring Boot business services + gRPC + Kafka + PostgreSQL + Redis
+  publicEntryPoint: API Gateway only
+  basePath: /
+  jsonNaming: camelCase
+  queryNaming: camelCase
+  publicStatusCasing: UPPER_SNAKE_CASE
+  correlationHeader: X-Correlation-Id
+  idempotencyRetentionHours: 24
+  paymentWebhook:
+    providerP1: mock
+    signatureHeader: X-CAB-Signature
+    timestampHeader: X-CAB-Timestamp
+    algorithm: HMAC-SHA256
+    replayWindowSeconds: 300
+    signatureEncoding: lowercase-hex-64
+  masking:
+    staffPhone: '****** + last4'
+    adminSensitiveAccess: full only when authorized + audited
+  serviceArea: TP. Hồ Chí Minh
+  serviceTypes:
+  - MOTORBIKE
+  - CAR_4_SEATS
+  apiStatus: FINAL_LOCKED
+x-cab-routing:
+  publicEntryPoint: api-gateway
+  publicProtocol: REST/HTTPS/JSON
+  internalSynchronousProtocol: gRPC
+  internalAsynchronousProtocol: Kafka
+  businessServicePortsPublic: false
+paths:
+  /health:
+    get:
+      tags:
+      - Health
+      summary: Gateway liveness/overall health
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Gateway sống, status=HEALTHY.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+      x-cab-trace:
+      - GA-03
+      - Design §5.2
+      x-contract-confidence: EXACT
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: api-gateway
+      x-cab-public-via: api-gateway
+  /ready:
+    get:
+      tags:
+      - Health
+      summary: Gateway readiness
+      operationId: getReady
+      security: []
+      responses:
+        '200':
+          description: Gateway READY.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadyResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-cab-trace:
+      - GA-03
+      - Design §5.2
+      x-contract-confidence: EXACT
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: api-gateway
+      x-cab-public-via: api-gateway
+  /health/services:
+    get:
+      tags:
+      - Health
+      summary: Tổng hợp health Gateway + 7 business service
+      operationId: getServicesHealth
+      security: []
+      responses:
+        '200':
+          description: Danh sách Gateway + đúng 7 business service.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicesHealthResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+      x-cab-trace:
+      - GA-03
+      - Design §5.2
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: api-gateway
+      x-cab-public-via: api-gateway
+      x-cab-orchestrates:
+      - identity-account-service
+      - customer-service
+      - driver-service
+      - booking-service
+      - trip-service
+      - payment-service
+      - notification-service
+  /auth/register/customer:
+    post:
+      tags:
+      - Auth
+      summary: Đăng ký Customer
+      operationId: registerCustomer
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRegisterRequest'
+      responses:
+        '201':
+          description: Tạo Customer Active trực tiếp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCreatedResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cab-trace:
+      - UC-01
+      - FR-04
+      - PC-01
+      - PC-02
+      x-contract-confidence: DESIGN_LOCKED
+      description: Đăng ký Customer trực tiếp bằng họ tên, số điện thoại, email và mật khẩu; OTP không bắt buộc. Customer đăng nhập bằng email.
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - customer-service
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Đăng nhập
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Cấp access/refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - UC-02
+      - FR-01
+      - PC-03
+      - PC-04
+      - ADR-13
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/logout:
+    post:
+      tags:
+      - Auth
+      summary: Đăng xuất và revoke refresh session
+      operationId: logout
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      responses:
+        '200':
+          description: Refresh session hiện tại đã bị revoke.
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cab-trace:
+      - UC-02
+      - FR-02
+      - PC-05
+      - ADR-13
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/register/driver/request-otp:
+    post:
+      tags:
+      - Auth
+      - Driver
+      summary: Gửi OTP cho Driver self-registration
+      operationId: requestDriverRegistrationOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpRequest'
+      responses:
+        '200':
+          description: OTP đã được gửi/khởi tạo. OTP không được trả trong response.
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - GA-07
+      - UC-11
+      - PC-34
+      - PC-60
+      - ADR-18
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/register/driver/verify-otp:
+    post:
+      tags:
+      - Auth
+      - Driver
+      summary: Xác minh OTP Driver self-registration
+      operationId: verifyDriverRegistrationOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpVerifyRequest'
+      responses:
+        '200':
+          description: OTP hợp lệ; phát verified registration context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpVerifyResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - GA-07
+      - UC-11
+      - PC-34
+      - PC-60
+      - ADR-18
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/register/driver:
+    post:
+      tags:
+      - Auth
+      - Driver
+      summary: Tạo hồ sơ Driver Pending
+      operationId: registerDriver
+      security: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DriverRegistrationMultipart'
+            encoding:
+              profile:
+                contentType: application/json
+      responses:
+        '201':
+          description: Driver profile Pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverRegistrationResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - GA-07
+      - UC-11
+      - FR-15
+      - PC-34
+      - PC-60
+      x-contract-confidence: DESIGN_LOCKED
+      description: Self-registration dùng multipart/form-data để gửi profile + required documents. Missing registrationContext
+        → 400; invalid/expired → 401. Valid request tạo Driver PENDING.
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - driver-service
+  /customers/me:
+    get:
+      tags:
+      - Customer
+      summary: Lấy hồ sơ Customer của chính mình từ access token
+      operationId: getMyCustomerProfile
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Hồ sơ Customer của tài khoản đang đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+    put:
+      tags:
+      - Customer
+      summary: Cập nhật hồ sơ Customer của chính mình
+      operationId: updateMyCustomerProfile
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+      responses:
+        '200':
+          description: Hồ sơ đã cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-03
+      - FR-05
+      - PC-06
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /customers/{customerId}:
+    get:
+      tags:
+      - Customer
+      summary: Lấy Customer theo ID
+      operationId: getCustomerById
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Customer theo quyền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - GA-05
+      - PC-56
+      - §16.2.6
+      x-contract-confidence: EXACT
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /customers/me/bookings:
+    get:
+      tags:
+      - Customer
+      - Booking
+      summary: Danh sách Booking của Customer đang đăng nhập
+      operationId: getMyBookings
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Booking page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /customers/{customerId}/bookings:
+    get:
+      tags:
+      - Customer
+      - Booking
+      summary: Danh sách Booking của Customer có phân trang
+      operationId: getCustomerBookings
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Booking page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - GA-06
+      - PC-59
+      - §16.2.6
+      x-contract-confidence: EXACT
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /drivers/{driverId}:
+    get:
+      tags:
+      - Driver
+      summary: Lấy Driver theo ID
+      operationId: getDriverById
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: driverId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Driver theo quyền; Customer chỉ dữ liệu tối thiểu của Driver gán cho active Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - GA-05
+      - PC-57
+      - §16.2.6
+      x-contract-confidence: EXACT
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /drivers/nearby:
+    get:
+      tags:
+      - Driver
+      - Admin
+      summary: Tìm Driver quanh tọa độ cho Staff/Admin grading query
+      operationId: getNearbyDrivers
+      description: Endpoint grading riêng. radiusKm=1 không thay thế matching business radius 5 km.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: true
+        schema:
+          type: number
+          minimum: -180
+          maximum: 180
+      - name: radiusKm
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0
+          default: 1
+        description: Baseline grading dùng 1 km.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          - BUSY
+        description: Public availability wire values.
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Drivers trong bán kính theo paging.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearbyDriverPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - GA-06
+      - PC-58
+      - ADR-21
+      - §16.2.6
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /drivers/me/availability:
+    put:
+      tags:
+      - Driver
+      summary: Cập nhật availability Driver
+      operationId: updateMyDriverAvailability
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityUpdateRequest'
+      responses:
+        '200':
+          description: Availability cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-13
+      - FR-17
+      - PC-35
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /service-types:
+    get:
+      tags:
+      - Booking
+      summary: Lấy service types P1
+      operationId: getServiceTypes
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Danh sách service type active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceTypeList'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+      x-cab-trace:
+      - UC-04
+      - FR-07
+      - PC-07
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /fares/estimate:
+    post:
+      tags:
+      - Booking
+      summary: Ước tính cước
+      operationId: estimateFare
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FareEstimateRequest'
+      responses:
+        '200':
+          description: Ước tính theo fare rule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FareEstimateResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-cab-trace:
+      - UC-04
+      - UC-20
+      - FR-28
+      - PC-07
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /bookings:
+    post:
+      tags:
+      - Booking
+      summary: Tạo Booking và bắt đầu automatic matching
+      operationId: createBooking
+      description: 'Bắt buộc Idempotency-Key (retention 24h). Rate-limit grading: burst >1000 req/s phải quan sát 429 + Retry-After
+        và hệ thống vẫn healthy. Unknown serviceType → 400 INVALID_SERVICE_TYPE; known but disabled → 409 SERVICE_TYPE_DISABLED;
+        reuse same key different payload → 409 IDEMPOTENCY_KEY_REUSED.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+      responses:
+        '201':
+          description: Booking tạo đúng một lần; public state SEARCHING.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-cab-trace:
+      - UC-04
+      - FR-06..08
+      - PC-08..10
+      - §16.2.6
+      - ADR-21 §21.10
+      x-contract-confidence: EXACT
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - booking-service
+      - driver-service
+      - trip-service
+  /trips:
+    get:
+      tags:
+      - Trip
+      summary: Lịch sử Trip của Customer
+      operationId: listTrips
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - SEARCHING
+          - DRIVER_ASSIGNED
+          - ARRIVED
+          - PICKED_UP
+          - IN_PROGRESS
+          - COMPLETED
+          - CANCELED
+          - FAILED
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Trip history mới nhất trước, có phân trang.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cab-trace:
+      - UC-07
+      - FR-11
+      - PC-32
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}:
+    get:
+      tags:
+      - Trip
+      summary: Lấy chi tiết Trip
+      operationId: getTripById
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Chi tiết Trip theo quyền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - UC-05
+      - UC-07
+      - FR-09
+      - FR-11
+      - PC-19
+      - PC-32
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/arrive:
+    post:
+      tags:
+      - Trip
+      summary: Đánh dấu Driver đã đến điểm đón
+      operationId: markTripArrived
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Trip chuyển trạng thái hợp lệ tới DriverArrived.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-16
+      - FR-20
+      - PC-20
+      - PC-21
+      x-contract-confidence: EXACT
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/pickup:
+    post:
+      tags:
+      - Trip
+      summary: Đánh dấu đã đón Customer
+      operationId: markTripPickedUp
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Trip chuyển trạng thái hợp lệ tới PickedUp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-16
+      - FR-20
+      - PC-20
+      - PC-21
+      x-contract-confidence: EXACT
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/start:
+    post:
+      tags:
+      - Trip
+      summary: Bắt đầu Trip
+      operationId: startTrip
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Trip chuyển trạng thái hợp lệ tới InProgress.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-16
+      - FR-20
+      - PC-20
+      - PC-21
+      x-contract-confidence: EXACT
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/complete:
+    post:
+      tags:
+      - Trip
+      summary: Hoàn thành Trip
+      operationId: completeTrip
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Trip chuyển trạng thái hợp lệ tới Completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-16
+      - FR-20
+      - PC-20
+      - PC-21
+      x-contract-confidence: EXACT
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - trip-service
+      - driver-service
+      - payment-service
+  /trips/{id}/cancel:
+    post:
+      tags:
+      - Trip
+      summary: Hủy Trip theo policy
+      operationId: cancelTrip
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripCancelRequest'
+      responses:
+        '200':
+          description: Trip hủy hợp lệ; public state CANCELED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripCancelResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-06
+      - FR-10
+      - PC-24
+      - PC-25
+      - §16.2.6
+      x-contract-confidence: EXACT
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/rating:
+    post:
+      tags:
+      - Trip
+      summary: Customer đánh giá Driver
+      operationId: rateTripDriver
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
+      responses:
+        '201':
+          description: Rating được tạo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-08
+      - FR-12
+      - PC-33
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /trips/{id}/payment:
+    get:
+      tags:
+      - Payment
+      summary: Lấy Payment của Trip
+      operationId: getTripPayment
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Payment của Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - UC-09
+      - UC-21
+      - PC-27
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /payments/{id}/cash-confirm:
+    post:
+      tags:
+      - Payment
+      summary: Driver xác nhận đã thu Cash
+      operationId: confirmCashPayment
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Payment Succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-09
+      - FR-13
+      - FR-21
+      - PC-26
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /webhooks/payment/{provider}:
+    post:
+      tags:
+      - Payment
+      summary: Payment Provider callback/webhook
+      operationId: paymentWebhook
+      description: P1 provider path value = mock. Signature = HMAC-SHA256 over `${timestamp}.${providerReference}.${amount}.${status}`.
+        Replay window ±300s. Duplicate valid callback returns 200 duplicate-safe. Invalid signature → 401 INVALID_WEBHOOK_SIGNATURE;
+        amount/reference mismatch or stale replay → 409 PAYMENT_CALLBACK_MISMATCH/WEBHOOK_REPLAY_REJECTED.
+      security: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - mock
+      - $ref: '#/components/parameters/PaymentWebhookTimestamp'
+      - $ref: '#/components/parameters/PaymentWebhookSignature'
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhookRequest'
+      responses:
+        '200':
+          description: Callback hợp lệ/idempotent; success expose public status COMPLETED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentWebhookResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          description: Malformed callback body/header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          description: INVALID_WEBHOOK_SIGNATURE.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '409':
+          description: PAYMENT_CALLBACK_MISMATCH hoặc WEBHOOK_REPLAY_REJECTED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+      x-cab-trace:
+      - UC-21
+      - FR-31
+      - PC-27
+      - PC-28
+      - §16.2.6
+      - ADR-18
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/drivers/{id}/approve:
+    post:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin duyệt Driver
+      operationId: approveDriver
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverDecisionRequest'
+      responses:
+        '200':
+          description: Driver Active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-11
+      - FR-36
+      - PC-34
+      x-contract-confidence: DESIGN_LOCKED
+      description: Approve request body optional; reason nếu có chỉ phục vụ audit.
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/drivers/{id}/reject:
+    post:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin từ chối Driver
+      operationId: rejectDriver
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverDecisionRequest'
+      responses:
+        '200':
+          description: Driver Rejected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-11
+      - FR-36
+      - PC-34
+      x-contract-confidence: DESIGN_LOCKED
+      description: Reject bắt buộc reason.
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/trips:
+    get:
+      tags:
+      - Admin
+      - Trip
+      summary: Staff/Admin giám sát Trip
+      operationId: adminListTrips
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Danh sách Trip + cờ stuck.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTripPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-26
+      - FR-39
+      - PC-40
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/drivers/online:
+    get:
+      tags:
+      - Admin
+      - Driver
+      summary: Danh sách Driver online
+      operationId: adminListOnlineDrivers
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Driver online/available theo dashboard.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDriverOnlinePage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-26
+      - FR-39
+      - PC-40
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/payments:
+    get:
+      tags:
+      - Admin
+      - Payment
+      summary: Staff/Admin tra cứu Payment
+      operationId: adminListPayments
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: tripId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: paymentId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: customerId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: method
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Payment list đã mask dữ liệu nhạy cảm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-28
+      - FR-41
+      - PC-43
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/customers:
+    get:
+      tags:
+      - Admin
+      - Customer
+      summary: Staff/Admin tìm Customer
+      operationId: adminListCustomers
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: customerId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: phone
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - SUSPENDED
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Customer list đã mask dữ liệu nhạy cảm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCustomerPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-23
+      - FR-35
+      - PC-51
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/customers/{id}:
+    put:
+      tags:
+      - Admin
+      - Customer
+      summary: Staff/Admin cập nhật Customer theo quyền
+      operationId: adminUpdateCustomer
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCustomerUpdateRequest'
+      responses:
+        '200':
+          description: Customer đã cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - UC-23
+      - FR-35
+      - PC-51
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/customers/{id}/suspend:
+    post:
+      tags:
+      - Admin
+      - Customer
+      summary: Admin khóa Customer account
+      operationId: suspendCustomer
+      description: Staff phải bị 403. Source chưa chốt endpoint activate/unlock tương ứng.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Account bị suspend; reason + audit bắt buộc.
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-23
+      - FR-43A
+      - PC-51
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - customer-service
+  /admin/vehicles:
+    get:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin tìm phương tiện
+      operationId: adminListVehicles
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: licensePlate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: driverId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: serviceType
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Vehicle list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehiclePage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-25
+      - FR-38
+      - PC-53
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+    post:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin tạo phương tiện
+      operationId: adminCreateVehicle
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleAdminRequest'
+      responses:
+        '201':
+          description: Vehicle created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-25
+      - FR-38
+      - PC-53
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/vehicles/{id}:
+    put:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin cập nhật/vô hiệu phương tiện
+      operationId: adminUpdateVehicle
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleAdminRequest'
+      responses:
+        '200':
+          description: Vehicle updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleSummary'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-25
+      - FR-38
+      - PC-53
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/register/customer/request-otp:
+    post:
+      tags:
+      - Auth
+      - Customer
+      summary: Gửi OTP cho Customer registration
+      operationId: requestCustomerRegistrationOtp
+      description: Rate-limited public endpoint. Demo-test provider có thể dùng fixed OTP theo Design ADR-18 nhưng API không
+        trả OTP.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpRequest'
+      responses:
+        '200':
+          description: OTP request accepted; OTP không trả trong response.
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - UC-01
+      - FR-04
+      - PC-01
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/register/customer/verify-otp:
+    post:
+      tags:
+      - Auth
+      - Customer
+      summary: Verify OTP Customer registration
+      operationId: verifyCustomerRegistrationOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpVerifyRequest'
+      responses:
+        '200':
+          description: OTP hợp lệ; phát registrationContext.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpVerifyResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - UC-01
+      - FR-04
+      - PC-01
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /auth/refresh:
+    post:
+      tags:
+      - Auth
+      summary: Rotate refresh token và cấp token mới
+      operationId: refreshToken
+      description: POST được khóa cho P1. Refresh token rotate mỗi lần theo ADR-13.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Refresh rotation thành công. Token cũ bị revoke.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-cab-trace:
+      - UC-02
+      - FR-02
+      - PC-05
+      - ADR-13
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /drivers/me:
+    get:
+      tags:
+      - Driver
+      summary: Lấy hồ sơ Driver của chính mình từ access token
+      operationId: getMyDriverProfile
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Hồ sơ Driver của tài khoản đang đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+    put:
+      tags:
+      - Driver
+      summary: Cập nhật hồ sơ/phương tiện Driver của chính mình
+      operationId: updateMyDriverProfile
+      description: Không tự đưa hồ sơ về PENDING sau update; license plate duplicate → 409.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverSelfUpdateRequest'
+      responses:
+        '200':
+          description: Driver profile/vehicle updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-12
+      - FR-16
+      - PC-36
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /drivers/me/location:
+    put:
+      tags:
+      - Driver
+      summary: Heartbeat/cập nhật current location Driver
+      operationId: updateMyDriverLocation
+      description: Gọi khoảng mỗi 10s khi ONLINE/BUSY; timestamp stale/coordinate invalid → 400; >30s không heartbeat được
+        xử lý thành OFFLINE theo domain rule.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverLocationUpdateRequest'
+      responses:
+        '200':
+          description: Current location accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverLocationUpdateResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-14
+      - FR-18
+      - PC-37
+      - PC-38
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /driver-offers/{offerId}/accept:
+    post:
+      tags:
+      - Offer
+      - Booking
+      - Driver
+      summary: Driver chấp nhận offer
+      operationId: acceptDriverOffer
+      description: Driver chỉ accept offer của chính mình. Expired/canceled/already-assigned → 409. Duplicate cùng Idempotency-Key
+        trả cùng business result.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: offerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Offer accepted exactly once; Trip DRIVER_ASSIGNED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverOfferActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-15
+      - FR-19
+      - PC-13
+      - PC-17
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - booking-service
+      - driver-service
+      - trip-service
+  /driver-offers/{offerId}/reject:
+    post:
+      tags:
+      - Offer
+      - Booking
+      - Driver
+      summary: Driver từ chối offer
+      operationId: rejectDriverOffer
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: offerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferRejectRequest'
+      responses:
+        '200':
+          description: Offer REJECTED; booking-service redispatch nếu còn candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverOfferActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-15
+      - UC-19
+      - FR-19
+      - FR-26
+      - PC-14
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - booking-service
+  /trips/{id}/payment/electronic:
+    post:
+      tags:
+      - Payment
+      summary: Khởi tạo Electronic Payment cho Trip
+      operationId: initiateElectronicPayment
+      description: P1 provider route = mock qua adapter. Card data không đi qua CAB. Idempotency retention 24h.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '201':
+          description: Electronic payment attempt created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInitiationResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-cab-trace:
+      - UC-09
+      - UC-21
+      - FR-13
+      - FR-29
+      - PC-27
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /payments/{id}/retry:
+    post:
+      tags:
+      - Payment
+      summary: Retry Electronic Payment
+      operationId: retryElectronicPayment
+      description: Không auto-fallback sang CASH. Vượt 3 lần hoặc 24h → 409 PAYMENT_RETRY_LIMIT_REACHED.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '201':
+          description: Retry attempt created nếu còn trong max 3 lần/24h.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInitiationResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-cab-trace:
+      - UC-10
+      - FR-14
+      - PC-50
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/drivers:
+    get:
+      tags:
+      - Admin
+      - Driver
+      summary: Staff/Admin tìm và lọc Driver
+      operationId: adminListDrivers
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: driverId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: phone
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: approvalStatus
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - ACTIVE
+          - REJECTED
+          - SUSPENDED
+      - name: availability
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          - BUSY
+      - name: serviceType
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Driver list theo quyền; PII masked cho Staff.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDriverPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-24
+      - FR-36
+      - FR-37
+      - PC-52
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: driver-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/drivers/{id}/suspend:
+    post:
+      tags:
+      - Admin
+      - Driver
+      summary: Admin suspend Driver account
+      operationId: suspendDriver
+      description: Admin only. Staff must receive 403. reason bắt buộc.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Driver account SUSPENDED; audit required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-24
+      - FR-43A
+      - PC-52
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - driver-service
+  /admin/drivers/{id}/activate:
+    post:
+      tags:
+      - Admin
+      - Driver
+      summary: Admin activate Driver account
+      operationId: activateDriver
+      description: Admin only. Staff must receive 403. reason bắt buộc.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Driver account ACTIVE; audit required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-24
+      - FR-43A
+      - PC-52
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - driver-service
+  /admin/customers/{id}/activate:
+    post:
+      tags:
+      - Admin
+      - Customer
+      summary: Admin mở khóa Customer account
+      operationId: activateCustomer
+      description: Admin only; Staff phải 403.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Customer account ACTIVE; reason + audit required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-23
+      - FR-43A
+      - PC-51
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - identity-account-service
+      - customer-service
+  /admin/trips/{id}/redispatch:
+    post:
+      tags:
+      - Admin
+      - Trip
+      - Booking
+      summary: Staff/Admin kích hoạt redispatch
+      operationId: adminRedispatchTrip
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Redispatch triggered without manual Driver assignment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-27
+      - FR-40
+      - PC-41
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - booking-service
+      - driver-service
+      - trip-service
+  /admin/trips/{id}/force-close:
+    post:
+      tags:
+      - Admin
+      - Trip
+      summary: Admin force-close Trip
+      operationId: adminForceCloseTrip
+      description: Admin only; Staff must receive 403.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReasonRequest'
+      responses:
+        '200':
+          description: Trip force-closed; before/after + audit persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-27
+      - FR-43B
+      - PC-42
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/trips/{id}/fare-adjustments:
+    post:
+      tags:
+      - Admin
+      - Trip
+      summary: Admin điều chỉnh fare
+      operationId: adminAdjustTripFare
+      description: Admin only.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FareAdjustmentRequest'
+      responses:
+        '200':
+          description: Fare adjustment recorded with before/after/reason/audit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-27
+      - FR-43C
+      - PC-42
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: trip-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - trip-service
+      - booking-service
+  /admin/payments/{id}/adjustments:
+    post:
+      tags:
+      - Admin
+      - Payment
+      summary: Admin điều chỉnh transaction/payment amount
+      operationId: adminAdjustPayment
+      description: Admin only; không chứa card data.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentAdjustmentRequest'
+      responses:
+        '200':
+          description: Payment adjustment recorded with before/after/reason/audit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-27
+      - FR-43C
+      - PC-42
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: payment-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/accounts:
+    get:
+      tags:
+      - Admin
+      - Account
+      summary: Admin list Staff/Admin accounts
+      operationId: adminListAccounts
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: role
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - STAFF
+          - ADMIN
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - DISABLED
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Staff/Admin account list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAccountPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-29
+      - FR-42
+      - PC-44
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+    post:
+      tags:
+      - Admin
+      - Account
+      summary: Admin tạo Staff/Admin account
+      operationId: adminCreateAccount
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminAccountCreateRequest'
+      responses:
+        '201':
+          description: Staff/Admin account created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAccountResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-29
+      - FR-42
+      - PC-44
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/accounts/{id}:
+    put:
+      tags:
+      - Admin
+      - Account
+      summary: Admin cập nhật/vô hiệu/kích hoạt Staff/Admin account
+      operationId: adminUpdateAccount
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminAccountUpdateRequest'
+      responses:
+        '200':
+          description: Account updated; permission-affecting change revokes sessions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAccountResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-29
+      - FR-42
+      - PC-44
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/accounts/{id}/role:
+    put:
+      tags:
+      - Admin
+      - Account
+      summary: Admin thay đổi role Staff/Admin
+      operationId: adminUpdateAccountRole
+      description: Không cho gỡ quyền Admin cuối cùng → 409.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminRoleUpdateRequest'
+      responses:
+        '200':
+          description: Role changed; sessions revoked; RoleChanged audit written.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAccountResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-29
+      - FR-42
+      - PC-44
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/policies/{policyKey}:
+    get:
+      tags:
+      - Admin
+      - Policy
+      summary: Admin xem policy version hiện hành
+      operationId: adminGetPolicy
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: policyKey
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - service-type
+          - fare
+          - matching
+          - cancellation
+          - operations
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Current policy version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyVersionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - UC-30
+      - FR-44
+      - PC-45
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+  /admin/policies/{policyKey}/versions:
+    post:
+      tags:
+      - Admin
+      - Policy
+      summary: Admin tạo policy version mới
+      operationId: adminCreatePolicyVersion
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: policyKey
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - service-type
+          - fare
+          - matching
+          - cancellation
+          - operations
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyVersionRequest'
+      responses:
+        '201':
+          description: New policy version created; applies only to new booking/trip/offer according to snapshot rules.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyVersionResponse'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-cab-trace:
+      - UC-30
+      - FR-44
+      - PC-23
+      - PC-45
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: booking-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+      x-cab-orchestrates:
+      - booking-service
+      - trip-service
+  /admin/audit-logs:
+    get:
+      tags:
+      - Admin
+      - Audit
+      summary: Admin tra cứu audit log append-only
+      operationId: adminQueryAuditLogs
+      description: Read-only; không expose update/delete audit API.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/Limit'
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: actorId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: action
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: resourceType
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: resourceId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: correlationId
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: result
+        in: query
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Audit records; query itself is audited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogPage'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-cab-trace:
+      - UC-32
+      - FR-34
+      - FR-46
+      - PC-46
+      x-contract-confidence: DESIGN_LOCKED
+      x-cab-owner-service: identity-account-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: RS256 JWT; header có kid; access token TTL 30 phút.
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Trang bắt đầu từ 0.
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+      description: Bắt buộc cho command replay-sensitive. Dedup window P1 = 24 giờ theo actor + endpoint + key + request hash;
+        cùng key khác payload → 409 IDEMPOTENCY_KEY_REUSED.
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Optional request correlation ID. Nếu thiếu, Gateway tự sinh; response trả lại X-Correlation-Id.
+    PaymentWebhookSignature:
+      name: X-CAB-Signature
+      in: header
+      required: true
+      schema:
+        type: string
+        pattern: ^[0-9a-f]{64}$
+        description: Lowercase hex HMAC-SHA256 digest (64 hex chars).
+      description: Lowercase-hex HMAC-SHA256 của canonical UTF-8 string `${timestamp}.${providerReference}.${amount}.${status}`
+        bằng webhook secret của provider.
+    PaymentWebhookTimestamp:
+      name: X-CAB-Timestamp
+      in: header
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unix epoch seconds. P1 replay window = ±300 giây so với server time.
+  responses:
+    BadRequest:
+      description: Dữ liệu không hợp lệ.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    Unauthorized:
+      description: Chưa xác thực / JWT không hợp lệ / chữ ký webhook sai khi áp dụng.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    Forbidden:
+      description: Không đủ quyền.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    NotFound:
+      description: Không tìm thấy tài nguyên.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    Conflict:
+      description: Xung đột trạng thái hoặc idempotency.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    TooManyRequests:
+      description: Vượt rate limit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        Retry-After:
+          description: Thời gian client nên chờ trước khi retry.
+          schema:
+            type: string
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+    ServiceUnavailable:
+      description: Dependency nội bộ bắt buộc chưa sẵn sàng.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      headers:
+        X-Correlation-Id:
+          $ref: '#/components/headers/CorrelationId'
+  headers:
+    CorrelationId:
+      description: Correlation ID của request. Gateway dùng giá trị hợp lệ từ client hoặc tự sinh UUID và truyền xuyên gRPC/Kafka.
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    AdminCustomerUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+      additionalProperties: true
+    ReasonRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+      required:
+      - reason
+      additionalProperties: true
+    DriverDecisionRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reject bắt buộc lý do; Approve có thể không cần reason nhưng payload cho phép để audit.
+      additionalProperties: true
+    AdminTripItem:
+      type: object
+      properties:
+        trip:
+          $ref: '#/components/schemas/TripSummary'
+        timeInCurrentStateSeconds:
+          type: integer
+          minimum: 0
+        stuckFlag:
+          type: boolean
+      required:
+      - trip
+      additionalProperties: true
+    AdminTripPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminTripItem'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    AdminDriverOnlinePage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DriverProfile'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    AdminCustomerPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProfile'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    VehicleAdminRequest:
+      type: object
+      properties:
+        driverId:
+          type: string
+        licensePlate:
+          type: string
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        active:
+          type: boolean
+        make:
+          type: string
+        model:
+          type: string
+        color:
+          type: string
+        seatCount:
+          type: integer
+          minimum: 1
+      required:
+      - driverId
+      - licensePlate
+      - serviceType
+      additionalProperties: true
+    VehiclePage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VehicleSummary'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    AdminDriverPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DriverProfile'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    AdminActionResponse:
+      type: object
+      properties:
+        resourceId:
+          type: string
+        action:
+          type: string
+        status:
+          type: string
+        auditId:
+          type: string
+      required:
+      - resourceId
+      - action
+      - status
+      - auditId
+      additionalProperties: false
+    FareAdjustmentRequest:
+      type: object
+      properties:
+        newFareVnd:
+          type: integer
+          minimum: 0
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - newFareVnd
+      - reason
+      additionalProperties: false
+    PaymentAdjustmentRequest:
+      type: object
+      properties:
+        newAmountVnd:
+          type: integer
+          minimum: 0
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - newAmountVnd
+      - reason
+      additionalProperties: false
+    AdminAccountCreateRequest:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+        fullName:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum:
+          - STAFF
+          - ADMIN
+      required:
+      - phoneNumber
+      - fullName
+      - password
+      - role
+      additionalProperties: false
+    AdminAccountUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - DISABLED
+      minProperties: 1
+      additionalProperties: false
+    AdminRoleUpdateRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+          - STAFF
+          - ADMIN
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - role
+      - reason
+      additionalProperties: false
+    AdminAccountResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+        phoneNumber:
+          type: string
+          description: 'Mask rule: self thấy full; Staff thấy ****** + 4 số cuối; Admin full only when authorized and access
+            is audited.'
+        fullName:
+          type: string
+        role:
+          type: string
+          enum:
+          - STAFF
+          - ADMIN
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - DISABLED
+      required:
+      - accountId
+      - phoneNumber
+      - fullName
+      - role
+      - status
+      additionalProperties: false
+    AdminAccountPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminAccountResponse'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    PolicyVersionRequest:
+      type: object
+      properties:
+        effectiveAt:
+          type: string
+          format: date-time
+        config:
+          type: object
+          additionalProperties: true
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - config
+      - reason
+      additionalProperties: false
+    PolicyVersionResponse:
+      type: object
+      properties:
+        policyKey:
+          type: string
+        version:
+          type: integer
+          minimum: 1
+        effectiveAt:
+          type: string
+          format: date-time
+        config:
+          type: object
+          additionalProperties: true
+        auditId:
+          type: string
+      required:
+      - policyKey
+      - version
+      - effectiveAt
+      - config
+      - auditId
+      additionalProperties: false
+    AuditLogRecord:
+      type: object
+      properties:
+        auditId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+        actorId:
+          type: string
+        action:
+          type: string
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+        correlationId:
+          type: string
+          format: uuid
+        result:
+          type: string
+        reason:
+          type: string
+        before:
+          type: object
+          additionalProperties: true
+        after:
+          type: object
+          additionalProperties: true
+      required:
+      - auditId
+      - occurredAt
+      - actorId
+      - action
+      - resourceType
+      - resourceId
+      - correlationId
+      - result
+      additionalProperties: false
+    AuditLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLogRecord'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    CustomerRegisterRequest:
+      type: object
+      description: Customer registration payload. Tạo tài khoản trực tiếp, không cần OTP.
+      properties:
+        fullName:
+          type: string
+          description: Tên đầy đủ. Tên wire được chuẩn hóa từ “họ tên” trong SRS.
+        phoneNumber:
+          type: string
+          description: Số điện thoại liên hệ của Customer.
+        password:
+          type: string
+          description: Mật khẩu; server lưu dạng băm.
+        email:
+          type: string
+          format: email
+          description: Email dùng để đăng ký và đăng nhập Customer.
+      required:
+      - fullName
+      - phoneNumber
+      - email
+      - password
+      additionalProperties: false
+    AccountCreatedResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+        role:
+          type: string
+          enum:
+          - CUSTOMER
+          - DRIVER
+          - STAFF
+          - ADMIN
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - PENDING
+          - REJECTED
+          - SUSPENDED
+          - DISABLED
+      required:
+      - accountId
+      - role
+      - status
+      additionalProperties: false
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Bắt buộc khi đăng nhập Customer.
+        phoneNumber:
+          type: string
+          description: Dùng khi đăng nhập Driver, Staff hoặc Admin.
+        password:
+          type: string
+      required:
+      - password
+      oneOf:
+      - required: [email]
+      - required: [phoneNumber]
+      additionalProperties: false
+    LoginResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+        role:
+          type: string
+          enum:
+          - CUSTOMER
+          - DRIVER
+          - STAFF
+          - ADMIN
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+        accessTokenTtlSeconds:
+          type: integer
+          example: 900
+        refreshTokenTtlSeconds:
+          type: integer
+          example: 604800
+      required:
+      - accountId
+      - role
+      - accessToken
+      - refreshToken
+      - tokenType
+      - accessTokenTtlSeconds
+      - refreshTokenTtlSeconds
+      additionalProperties: false
+    LogoutRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+      - refreshToken
+      additionalProperties: false
+    OtpRequest:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+      required:
+      - phoneNumber
+      additionalProperties: false
+    OtpVerifyRequest:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+        otp:
+          type: string
+      required:
+      - phoneNumber
+      - otp
+      additionalProperties: false
+    OtpVerifyResponse:
+      type: object
+      properties:
+        verified:
+          type: boolean
+        registrationContext:
+          type: string
+          description: Opaque short-lived registration context issued only after OTP verification; required by subsequent
+            register call.
+      required:
+      - verified
+      - registrationContext
+      additionalProperties: false
+    DriverRegisterRequest:
+      type: object
+      properties:
+        registrationContext:
+          type: string
+          description: Verified registration context sau OTP; cách truyền chính xác chưa được tài liệu chốt.
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        identityDocument:
+          type: string
+          description: CCCD/giấy tờ định danh; phải mã hóa at-rest.
+        driverLicense:
+          type: string
+          description: GPLX; phải bảo vệ theo yêu cầu dữ liệu nhạy cảm.
+        vehicle:
+          type: object
+          properties:
+            licensePlate:
+              type: string
+            make:
+              type: string
+              description: Hãng xe
+            model:
+              type: string
+              description: Mẫu xe
+            color:
+              type: string
+            serviceType:
+              type: string
+              enum:
+              - MOTORBIKE
+              - CAR_4_SEATS
+            seatCount:
+              type: integer
+              minimum: 1
+          required:
+          - licensePlate
+          - serviceType
+          additionalProperties: true
+        documents:
+          type: array
+          items:
+            type: object
+            description: Metadata tài liệu upload. Cơ chế multipart/presigned URL chưa được chốt.
+            additionalProperties: true
+      required:
+      - fullName
+      - phoneNumber
+      - identityDocument
+      - driverLicense
+      - vehicle
+      additionalProperties: true
+    DriverRegistrationResponse:
+      type: object
+      properties:
+        driverId:
+          type: string
+        status:
+          type: string
+          enum:
+          - PENDING
+      required:
+      - driverId
+      - status
+      additionalProperties: false
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+      required:
+      - refreshToken
+      additionalProperties: false
+    DriverRegistrationProfile:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        phoneNumber:
+          type: string
+          minLength: 6
+        identityDocument:
+          type: string
+          minLength: 1
+          description: CCCD/identity number; encrypted at rest.
+        driverLicense:
+          type: string
+          minLength: 1
+          description: Driver license identifier; protected at rest.
+        vehicle:
+          type: object
+          properties:
+            licensePlate:
+              type: string
+            make:
+              type: string
+              description: Hãng xe
+            model:
+              type: string
+              description: Mẫu xe
+            color:
+              type: string
+            serviceType:
+              type: string
+              enum:
+              - MOTORBIKE
+              - CAR_4_SEATS
+            seatCount:
+              type: integer
+              minimum: 1
+          required:
+          - licensePlate
+          - serviceType
+          additionalProperties: true
+      required:
+      - fullName
+      - phoneNumber
+      - identityDocument
+      - driverLicense
+      - vehicle
+      additionalProperties: false
+    DriverRegistrationMultipart:
+      type: object
+      properties:
+        registrationContext:
+          type: string
+          minLength: 1
+        profile:
+          $ref: '#/components/schemas/DriverRegistrationProfile'
+        documents:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: binary
+          description: Required driver document files.
+      required:
+      - registrationContext
+      - profile
+      - documents
+      additionalProperties: false
+    ServiceType:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        active:
+          type: boolean
+      required:
+      - code
+      additionalProperties: true
+    ServiceTypeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceType'
+    FareEstimateRequest:
+      type: object
+      description: Nguồn cũng cho phép nhập địa chỉ/chọn bản đồ/current location; exact wire representation cho address/geocode
+        chưa chốt.
+      properties:
+        pickup:
+          $ref: '#/components/schemas/GeoPoint'
+        destination:
+          $ref: '#/components/schemas/GeoPoint'
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+      required:
+      - pickup
+      - destination
+      - serviceType
+      additionalProperties: true
+    FareBreakdown:
+      type: object
+      properties:
+        currency:
+          type: string
+          enum:
+          - VND
+        baseFare:
+          type: number
+          minimum: 0
+        distanceKm:
+          type: number
+          minimum: 0
+        pricePerKm:
+          type: number
+          minimum: 0
+        surcharge:
+          type: number
+          minimum: 0
+        finalFare:
+          type: number
+          minimum: 0
+        ruleVersion:
+          type: string
+        estimated:
+          type: boolean
+      required:
+      - currency
+      - finalFare
+      additionalProperties: true
+    FareEstimateResponse:
+      type: object
+      properties:
+        fare:
+          $ref: '#/components/schemas/FareBreakdown'
+        etaMinutes:
+          type: number
+          minimum: 0
+      required:
+      - fare
+      additionalProperties: true
+    BookingCreateRequest:
+      type: object
+      properties:
+        pickup:
+          $ref: '#/components/schemas/GeoPoint'
+        destination:
+          $ref: '#/components/schemas/GeoPoint'
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        paymentMethod:
+          type: string
+          description: Giữ tên domain theo SRS; casing wire chưa được chốt.
+          enum:
+          - Cash
+          - Electronic
+        fareEstimate:
+          $ref: '#/components/schemas/FareBreakdown'
+      required:
+      - pickup
+      - destination
+      - serviceType
+      - paymentMethod
+      additionalProperties: true
+    BookingSummary:
+      type: object
+      properties:
+        bookingId:
+          type: string
+        customerId:
+          type: string
+        tripId:
+          type: string
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        state:
+          type: string
+          description: POST /bookings phải trả public state SEARCHING.
+          enum:
+          - SEARCHING
+        paymentMethod:
+          type: string
+          enum:
+          - CASH
+          - ELECTRONIC
+        fareEstimate:
+          $ref: '#/components/schemas/FareBreakdown'
+      required:
+      - bookingId
+      - customerId
+      - tripId
+      - serviceType
+      - state
+      - paymentMethod
+      - fareEstimate
+      additionalProperties: false
+    BookingPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingSummary'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    DriverOfferActionResponse:
+      type: object
+      properties:
+        offerId:
+          type: string
+        tripId:
+          type: string
+        offerStatus:
+          type: string
+          enum:
+          - ACCEPTED
+          - REJECTED
+        tripState:
+          type: string
+          enum:
+          - DRIVER_ASSIGNED
+          - SEARCHING
+      required:
+      - offerId
+      - tripId
+      - offerStatus
+      - tripState
+      additionalProperties: false
+    OfferRejectRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Mã lỗi máy đọc được.
+        message:
+          type: string
+          description: Thông điệp lỗi an toàn cho client.
+        correlationId:
+          type: string
+          description: ID tương quan xuyên Gateway → gRPC → Kafka.
+          format: uuid
+        details:
+          type: object
+          description: Chi tiết lỗi chỉ trả khi an toàn; không chứa secret/PII nhạy cảm/stack trace.
+          additionalProperties: true
+      required:
+      - code
+      - message
+      - correlationId
+      additionalProperties: false
+    GeoPoint:
+      type: object
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lng:
+          type: number
+          minimum: -180
+          maximum: 180
+      required:
+      - lat
+      - lng
+      additionalProperties: false
+    PageMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+      required:
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      additionalProperties: false
+    CustomerProfile:
+      type: object
+      properties:
+        customerId:
+          type: string
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+          description: 'Mask rule: self thấy full; Staff thấy ****** + 4 số cuối; Admin full only when authorized and access
+            is audited.'
+        email:
+          type: string
+        avatar:
+          type: string
+      required:
+      - customerId
+      - fullName
+      additionalProperties: false
+    CustomerUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+      additionalProperties: true
+    VehicleSummary:
+      type: object
+      properties:
+        vehicleId:
+          type: string
+        licensePlate:
+          type: string
+        serviceType:
+          type: string
+          enum:
+          - MOTORBIKE
+          - CAR_4_SEATS
+        make:
+          type: string
+        model:
+          type: string
+        color:
+          type: string
+        active:
+          type: boolean
+      additionalProperties: true
+    DriverProfile:
+      type: object
+      properties:
+        driverId:
+          type: string
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+          description: 'Mask rule: self thấy full; Staff thấy ****** + 4 số cuối; Admin full only when authorized and access
+            is audited.'
+        approvalStatus:
+          type: string
+          enum:
+          - PENDING
+          - ACTIVE
+          - REJECTED
+          - SUSPENDED
+        availability:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          - BUSY
+          description: ONLINE maps domain Available; OFFLINE maps Offline; BUSY is system-controlled.
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        vehicle:
+          $ref: '#/components/schemas/VehicleSummary'
+        currentLocation:
+          $ref: '#/components/schemas/GeoPoint'
+      required:
+      - driverId
+      - fullName
+      - approvalStatus
+      - availability
+      additionalProperties: false
+    AvailabilityUpdateRequest:
+      type: object
+      properties:
+        availability:
+          type: string
+          description: ONLINE map domain Available; OFFLINE map domain Offline.
+          enum:
+          - ONLINE
+          - OFFLINE
+      required:
+      - availability
+      additionalProperties: false
+    NearbyDriverItem:
+      type: object
+      properties:
+        driver:
+          $ref: '#/components/schemas/DriverProfile'
+        distanceKm:
+          type: number
+          minimum: 0
+      required:
+      - driver
+      additionalProperties: true
+    NearbyDriverPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NearbyDriverItem'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    DriverSelfUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        vehicle:
+          type: object
+          properties:
+            licensePlate:
+              type: string
+            make:
+              type: string
+              description: Hãng xe
+            model:
+              type: string
+              description: Mẫu xe
+            color:
+              type: string
+            serviceType:
+              type: string
+              enum:
+              - MOTORBIKE
+              - CAR_4_SEATS
+            seatCount:
+              type: integer
+              minimum: 1
+          required:
+          - licensePlate
+          - serviceType
+          additionalProperties: true
+      additionalProperties: false
+      minProperties: 1
+    DriverLocationUpdateRequest:
+      type: object
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lng:
+          type: number
+          minimum: -180
+          maximum: 180
+        heading:
+          type: number
+          minimum: 0
+          exclusiveMaximum: 360
+        speed:
+          type: number
+          minimum: 0
+        accuracy:
+          type: number
+          minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - lat
+      - lng
+      - timestamp
+      additionalProperties: false
+    DriverLocationUpdateResponse:
+      type: object
+      properties:
+        driverId:
+          type: string
+        acceptedAt:
+          type: string
+          format: date-time
+        availability:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          - BUSY
+      required:
+      - driverId
+      - acceptedAt
+      - availability
+      additionalProperties: false
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - HEALTHY
+      required:
+      - status
+      additionalProperties: true
+    ReadyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - READY
+        dependencies:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+      - status
+      additionalProperties: true
+    ServiceHealth:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        ready:
+          type: boolean
+      required:
+      - name
+      - status
+      - ready
+      additionalProperties: true
+    ServicesHealthResponse:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceHealth'
+      required:
+      - services
+      additionalProperties: true
+    PaymentSummary:
+      type: object
+      properties:
+        paymentId:
+          type: string
+        tripId:
+          type: string
+        amount:
+          type: integer
+          minimum: 0
+          description: VND integer amount.
+        currency:
+          type: string
+          enum:
+          - VND
+        method:
+          type: string
+          enum:
+          - CASH
+          - ELECTRONIC
+        status:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETED
+          - FAILED
+        providerReference:
+          type: string
+      required:
+      - paymentId
+      - tripId
+      - amount
+      - currency
+      - method
+      - status
+      additionalProperties: false
+    CashConfirmResponse:
+      $ref: '#/components/schemas/PaymentSummary'
+    PaymentWebhookRequest:
+      type: object
+      properties:
+        providerReference:
+          type: string
+          minLength: 1
+        amount:
+          type: integer
+          minimum: 0
+          description: VND integer amount.
+        status:
+          type: string
+          enum:
+          - COMPLETED
+          - FAILED
+      required:
+      - providerReference
+      - amount
+      - status
+      additionalProperties: false
+    PaymentWebhookResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+        status:
+          type: string
+          enum:
+          - COMPLETED
+      required:
+      - paymentId
+      - status
+      additionalProperties: false
+    PaymentPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentSummary'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    PaymentInitiationResponse:
+      type: object
+      properties:
+        payment:
+          $ref: '#/components/schemas/PaymentSummary'
+        provider:
+          type: string
+          enum:
+          - mock
+        checkoutUrl:
+          type: string
+        checkoutToken:
+          type: string
+        attemptNo:
+          type: integer
+          minimum: 1
+          maximum: 3
+      required:
+      - payment
+      - provider
+      - attemptNo
+      additionalProperties: false
+    TripSummary:
+      type: object
+      properties:
+        tripId:
+          type: string
+        bookingId:
+          type: string
+        customerId:
+          type: string
+        driverId:
+          type: string
+        state:
+          type: string
+          enum:
+          - SEARCHING
+          - DRIVER_ASSIGNED
+          - ARRIVED
+          - PICKED_UP
+          - IN_PROGRESS
+          - COMPLETED
+          - CANCELED
+          - FAILED
+        serviceType:
+          type: string
+        pickup:
+          $ref: '#/components/schemas/GeoPoint'
+        destination:
+          $ref: '#/components/schemas/GeoPoint'
+        driver:
+          $ref: '#/components/schemas/DriverProfile'
+        etaMinutes:
+          type: number
+          minimum: 0
+        fare:
+          $ref: '#/components/schemas/FareBreakdown'
+        paymentStatus:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETED
+          - FAILED
+      required:
+      - tripId
+      - bookingId
+      - customerId
+      - state
+      - serviceType
+      additionalProperties: false
+    TripPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TripSummary'
+        page:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        total:
+          type: integer
+          minimum: 0
+          description: Compatibility alias; MUST equal totalItems.
+      required:
+      - items
+      - page
+      - limit
+      - totalItems
+      - totalPages
+      - total
+      additionalProperties: false
+    TripActionResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+        state:
+          type: string
+          enum:
+          - ARRIVED
+          - PICKED_UP
+          - IN_PROGRESS
+          - COMPLETED
+        fare:
+          $ref: '#/components/schemas/FareBreakdown'
+      required:
+      - tripId
+      - state
+      additionalProperties: false
+    TripCancelRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Lý do hủy.
+      additionalProperties: false
+      required:
+      - reason
+    TripCancelResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+        state:
+          type: string
+          enum:
+          - CANCELED
+        cancellationFeeVnd:
+          type: integer
+          minimum: 0
+      required:
+      - tripId
+      - state
+      - cancellationFeeVnd
+      additionalProperties: false
+    RatingRequest:
+      type: object
+      properties:
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+      required:
+      - stars
+      additionalProperties: false
+    RatingResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+        ratingId:
+          type: string
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+      required:
+      - tripId
+      - ratingId
+      - stars
+      additionalProperties: false

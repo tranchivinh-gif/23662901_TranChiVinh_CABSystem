@@ -1,0 +1,67 @@
+BadRequest:
+  description: Dữ liệu không hợp lệ.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+Unauthorized:
+  description: Chưa xác thực / JWT không hợp lệ / chữ ký webhook sai khi áp dụng.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+Forbidden:
+  description: Không đủ quyền.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+NotFound:
+  description: Không tìm thấy tài nguyên.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+Conflict:
+  description: Xung đột trạng thái hoặc idempotency.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+TooManyRequests:
+  description: Vượt rate limit.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    Retry-After:
+      description: Thời gian client nên chờ trước khi retry.
+      schema:
+        type: string
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId
+ServiceUnavailable:
+  description: Dependency nội bộ bắt buộc chưa sẵn sàng.
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/common.yaml#/ErrorResponse
+  headers:
+    X-Correlation-Id:
+      $ref: ./headers.yaml#/CorrelationId

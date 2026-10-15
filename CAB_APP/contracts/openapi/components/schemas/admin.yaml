@@ -1,0 +1,485 @@
+AdminCustomerUpdateRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+    email:
+      type: string
+  additionalProperties: true
+ReasonRequest:
+  type: object
+  properties:
+    reason:
+      type: string
+  required:
+  - reason
+  additionalProperties: true
+DriverDecisionRequest:
+  type: object
+  properties:
+    reason:
+      type: string
+      description: Reject bắt buộc lý do; Approve có thể không cần reason nhưng payload cho phép để audit.
+  additionalProperties: true
+AdminTripItem:
+  type: object
+  properties:
+    trip:
+      $ref: ./trip.yaml#/TripSummary
+    timeInCurrentStateSeconds:
+      type: integer
+      minimum: 0
+    stuckFlag:
+      type: boolean
+  required:
+  - trip
+  additionalProperties: true
+AdminTripPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./admin.yaml#/AdminTripItem
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+AdminDriverOnlinePage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./driver.yaml#/DriverProfile
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+AdminCustomerPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./customer.yaml#/CustomerProfile
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+VehicleAdminRequest:
+  type: object
+  properties:
+    driverId:
+      type: string
+    licensePlate:
+      type: string
+    serviceType:
+      type: string
+      enum:
+      - MOTORBIKE
+      - CAR_4_SEATS
+    active:
+      type: boolean
+    make:
+      type: string
+    model:
+      type: string
+    color:
+      type: string
+    seatCount:
+      type: integer
+      minimum: 1
+  required:
+  - driverId
+  - licensePlate
+  - serviceType
+  additionalProperties: true
+VehiclePage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./driver.yaml#/VehicleSummary
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+AdminDriverPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./driver.yaml#/DriverProfile
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+AdminActionResponse:
+  type: object
+  properties:
+    resourceId:
+      type: string
+    action:
+      type: string
+    status:
+      type: string
+    auditId:
+      type: string
+  required:
+  - resourceId
+  - action
+  - status
+  - auditId
+  additionalProperties: false
+FareAdjustmentRequest:
+  type: object
+  properties:
+    newFareVnd:
+      type: integer
+      minimum: 0
+    reason:
+      type: string
+      minLength: 1
+  required:
+  - newFareVnd
+  - reason
+  additionalProperties: false
+PaymentAdjustmentRequest:
+  type: object
+  properties:
+    newAmountVnd:
+      type: integer
+      minimum: 0
+    reason:
+      type: string
+      minLength: 1
+  required:
+  - newAmountVnd
+  - reason
+  additionalProperties: false
+AdminAccountCreateRequest:
+  type: object
+  properties:
+    phoneNumber:
+      type: string
+    fullName:
+      type: string
+    password:
+      type: string
+      minLength: 8
+    role:
+      type: string
+      enum:
+      - STAFF
+      - ADMIN
+  required:
+  - phoneNumber
+  - fullName
+  - password
+  - role
+  additionalProperties: false
+AdminAccountUpdateRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+    status:
+      type: string
+      enum:
+      - ACTIVE
+      - DISABLED
+  minProperties: 1
+  additionalProperties: false
+AdminRoleUpdateRequest:
+  type: object
+  properties:
+    role:
+      type: string
+      enum:
+      - STAFF
+      - ADMIN
+    reason:
+      type: string
+      minLength: 1
+  required:
+  - role
+  - reason
+  additionalProperties: false
+AdminAccountResponse:
+  type: object
+  properties:
+    accountId:
+      type: string
+    phoneNumber:
+      type: string
+      description: 'Mask rule: self thấy full; Staff thấy ****** + 4 số cuối; Admin full only when authorized and access is
+        audited.'
+    fullName:
+      type: string
+    role:
+      type: string
+      enum:
+      - STAFF
+      - ADMIN
+    status:
+      type: string
+      enum:
+      - ACTIVE
+      - DISABLED
+  required:
+  - accountId
+  - phoneNumber
+  - fullName
+  - role
+  - status
+  additionalProperties: false
+AdminAccountPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./admin.yaml#/AdminAccountResponse
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+PolicyVersionRequest:
+  type: object
+  properties:
+    effectiveAt:
+      type: string
+      format: date-time
+    config:
+      type: object
+      additionalProperties: true
+    reason:
+      type: string
+      minLength: 1
+  required:
+  - config
+  - reason
+  additionalProperties: false
+PolicyVersionResponse:
+  type: object
+  properties:
+    policyKey:
+      type: string
+    version:
+      type: integer
+      minimum: 1
+    effectiveAt:
+      type: string
+      format: date-time
+    config:
+      type: object
+      additionalProperties: true
+    auditId:
+      type: string
+  required:
+  - policyKey
+  - version
+  - effectiveAt
+  - config
+  - auditId
+  additionalProperties: false
+AuditLogRecord:
+  type: object
+  properties:
+    auditId:
+      type: string
+    occurredAt:
+      type: string
+      format: date-time
+    actorId:
+      type: string
+    action:
+      type: string
+    resourceType:
+      type: string
+    resourceId:
+      type: string
+    correlationId:
+      type: string
+      format: uuid
+    result:
+      type: string
+    reason:
+      type: string
+    before:
+      type: object
+      additionalProperties: true
+    after:
+      type: object
+      additionalProperties: true
+  required:
+  - auditId
+  - occurredAt
+  - actorId
+  - action
+  - resourceType
+  - resourceId
+  - correlationId
+  - result
+  additionalProperties: false
+AuditLogPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./admin.yaml#/AuditLogRecord
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false

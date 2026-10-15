@@ -1,0 +1,5 @@
+bearerAuth:
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: RS256 JWT; header có kid; access token TTL 15 phút theo ADR-13.

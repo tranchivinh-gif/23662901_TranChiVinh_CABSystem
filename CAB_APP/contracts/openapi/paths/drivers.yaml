@@ -1,0 +1,259 @@
+driversDriverId:
+  get:
+    tags:
+    - Driver
+    summary: Lấy Driver theo ID
+    operationId: getDriverById
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: driverId
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Driver theo quyền; Customer chỉ dữ liệu tối thiểu của Driver gán cho active Trip.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - GA-05
+    - PC-57
+    - §16.2.6
+    x-contract-confidence: EXACT
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+driversNearby:
+  get:
+    tags:
+    - Driver
+    - Admin
+    summary: Tìm Driver quanh tọa độ cho Staff/Admin grading query
+    operationId: getNearbyDrivers
+    description: Endpoint grading riêng. radiusKm=1 không thay thế matching business radius 5 km.
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: lat
+      in: query
+      required: true
+      schema:
+        type: number
+        minimum: -90
+        maximum: 90
+    - name: lng
+      in: query
+      required: true
+      schema:
+        type: number
+        minimum: -180
+        maximum: 180
+    - name: radiusKm
+      in: query
+      required: false
+      schema:
+        type: number
+        minimum: 0
+        default: 1
+      description: Baseline grading dùng 1 km.
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - ONLINE
+        - OFFLINE
+        - BUSY
+      description: Public availability wire values.
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Drivers trong bán kính theo paging.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/NearbyDriverPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - GA-06
+    - PC-58
+    - ADR-21
+    - §16.2.6
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+driversMeAvailability:
+  put:
+    tags:
+    - Driver
+    summary: Cập nhật availability Driver
+    operationId: updateMyDriverAvailability
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/driver.yaml#/AvailabilityUpdateRequest
+    responses:
+      '200':
+        description: Availability cập nhật.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-13
+    - FR-17
+    - PC-35
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+driversMe:
+  get:
+    tags:
+    - Driver
+    summary: Lấy hồ sơ Driver của chính mình từ access token
+    operationId: getMyDriverProfile
+    security:
+    - bearerAuth: []
+    responses:
+      '200':
+        description: Hồ sơ Driver của tài khoản đang đăng nhập.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+  put:
+    tags:
+    - Driver
+    summary: Cập nhật hồ sơ/phương tiện Driver của chính mình
+    operationId: updateMyDriverProfile
+    description: Không tự đưa hồ sơ về PENDING sau update; license plate duplicate → 409.
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/driver.yaml#/DriverSelfUpdateRequest
+    responses:
+      '200':
+        description: Driver profile/vehicle updated.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-12
+    - FR-16
+    - PC-36
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+driversMeLocation:
+  put:
+    tags:
+    - Driver
+    summary: Heartbeat/cập nhật current location Driver
+    operationId: updateMyDriverLocation
+    description: Gọi khoảng mỗi 10s khi ONLINE/BUSY; timestamp stale/coordinate invalid → 400; >30s không heartbeat được xử
+      lý thành OFFLINE theo domain rule.
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/driver.yaml#/DriverLocationUpdateRequest
+    responses:
+      '200':
+        description: Current location accepted.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/driver.yaml#/DriverLocationUpdateResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-14
+    - FR-18
+    - PC-37
+    - PC-38
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: driver-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

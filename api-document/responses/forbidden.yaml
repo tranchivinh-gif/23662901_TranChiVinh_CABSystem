@@ -1,5 +1,0 @@
-description: Không có quyền truy cập.
-content:
-  application/json:
-    schema:
-      $ref: ../schemas/common/ErrorResponse.yaml

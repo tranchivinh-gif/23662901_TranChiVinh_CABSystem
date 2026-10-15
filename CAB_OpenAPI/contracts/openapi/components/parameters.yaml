@@ -1,0 +1,53 @@
+Page:
+  name: page
+  in: query
+  required: false
+  schema:
+    type: integer
+    minimum: 0
+    default: 0
+  description: Trang bắt đầu từ 0.
+Limit:
+  name: limit
+  in: query
+  required: false
+  schema:
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 10
+IdempotencyKey:
+  name: Idempotency-Key
+  in: header
+  required: true
+  schema:
+    type: string
+    minLength: 1
+  description: Bắt buộc cho command replay-sensitive. Dedup window P1 = 24 giờ theo actor + endpoint + key + request hash;
+    cùng key khác payload → 409 IDEMPOTENCY_KEY_REUSED.
+CorrelationId:
+  name: X-Correlation-Id
+  in: header
+  required: false
+  schema:
+    type: string
+    format: uuid
+  description: Optional request correlation ID. Nếu thiếu, Gateway tự sinh; response trả lại X-Correlation-Id.
+PaymentWebhookSignature:
+  name: X-CAB-Signature
+  in: header
+  required: true
+  schema:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+    description: Lowercase hex HMAC-SHA256 digest (64 hex chars).
+  description: Lowercase-hex HMAC-SHA256 của canonical UTF-8 string `${timestamp}.${providerReference}.${amount}.${status}`
+    bằng webhook secret của provider.
+PaymentWebhookTimestamp:
+  name: X-CAB-Timestamp
+  in: header
+  required: true
+  schema:
+    type: integer
+    format: int64
+  description: Unix epoch seconds. P1 replay window = ±300 giây so với server time.

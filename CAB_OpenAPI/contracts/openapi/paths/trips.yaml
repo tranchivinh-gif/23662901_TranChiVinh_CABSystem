@@ -1,0 +1,366 @@
+trips:
+  get:
+    tags:
+    - Trip
+    summary: Lịch sử Trip của Customer
+    operationId: listTrips
+    security:
+    - bearerAuth: []
+    parameters:
+    - $ref: ../components/parameters.yaml#/Page
+    - $ref: ../components/parameters.yaml#/Limit
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - SEARCHING
+        - DRIVER_ASSIGNED
+        - ARRIVED
+        - PICKED_UP
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELED
+        - FAILED
+    - name: from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - name: to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Trip history mới nhất trước, có phân trang.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripPage
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+    x-cab-trace:
+    - UC-07
+    - FR-11
+    - PC-32
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsId:
+  get:
+    tags:
+    - Trip
+    summary: Lấy chi tiết Trip
+    operationId: getTripById
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Chi tiết Trip theo quyền.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripSummary
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - UC-05
+    - UC-07
+    - FR-09
+    - FR-11
+    - PC-19
+    - PC-32
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdArrive:
+  post:
+    tags:
+    - Trip
+    summary: Đánh dấu Driver đã đến điểm đón
+    operationId: markTripArrived
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Trip chuyển trạng thái hợp lệ tới DriverArrived.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-16
+    - FR-20
+    - PC-20
+    - PC-21
+    x-contract-confidence: EXACT
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdPickup:
+  post:
+    tags:
+    - Trip
+    summary: Đánh dấu đã đón Customer
+    operationId: markTripPickedUp
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Trip chuyển trạng thái hợp lệ tới PickedUp.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-16
+    - FR-20
+    - PC-20
+    - PC-21
+    x-contract-confidence: EXACT
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdStart:
+  post:
+    tags:
+    - Trip
+    summary: Bắt đầu Trip
+    operationId: startTrip
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Trip chuyển trạng thái hợp lệ tới InProgress.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-16
+    - FR-20
+    - PC-20
+    - PC-21
+    x-contract-confidence: EXACT
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdComplete:
+  post:
+    tags:
+    - Trip
+    summary: Hoàn thành Trip
+    operationId: completeTrip
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/IdempotencyKey
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Trip chuyển trạng thái hợp lệ tới Completed.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripActionResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-16
+    - FR-20
+    - PC-20
+    - PC-21
+    x-contract-confidence: EXACT
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - trip-service
+    - driver-service
+    - payment-service
+tripsIdCancel:
+  post:
+    tags:
+    - Trip
+    summary: Hủy Trip theo policy
+    operationId: cancelTrip
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/trip.yaml#/TripCancelRequest
+    responses:
+      '200':
+        description: Trip hủy hợp lệ; public state CANCELED.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/TripCancelResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-06
+    - FR-10
+    - PC-24
+    - PC-25
+    - §16.2.6
+    x-contract-confidence: EXACT
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+tripsIdRating:
+  post:
+    tags:
+    - Trip
+    summary: Customer đánh giá Driver
+    operationId: rateTripDriver
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/trip.yaml#/RatingRequest
+    responses:
+      '201':
+        description: Rating được tạo.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/trip.yaml#/RatingResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - UC-08
+    - FR-12
+    - PC-33
+    x-contract-confidence: DESIGN_LOCKED
+    x-cab-owner-service: trip-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

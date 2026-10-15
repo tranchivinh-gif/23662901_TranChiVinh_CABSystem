@@ -1,0 +1,361 @@
+authRegisterCustomer:
+  post:
+    tags:
+    - Auth
+    summary: Đăng ký Customer
+    operationId: registerCustomer
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/CustomerRegisterRequest
+    responses:
+      '201':
+        description: Tạo Customer Active trực tiếp.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/AccountCreatedResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+    x-cab-trace:
+    - UC-01
+    - FR-04
+    - PC-01
+    - PC-02
+    x-contract-confidence: DESIGN_LOCKED
+    description: Đăng ký Customer trực tiếp bằng họ tên, số điện thoại, email và mật khẩu; OTP không bắt buộc. Customer đăng nhập bằng email.
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - customer-service
+authLogin:
+  post:
+    tags:
+    - Auth
+    summary: Đăng nhập
+    operationId: login
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/LoginRequest
+    responses:
+      '200':
+        description: Cấp access/refresh token.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/LoginResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - UC-02
+    - FR-01
+    - PC-03
+    - PC-04
+    - ADR-13
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authLogout:
+  post:
+    tags:
+    - Auth
+    summary: Đăng xuất và revoke refresh session
+    operationId: logout
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/LogoutRequest
+    responses:
+      '200':
+        description: Refresh session hiện tại đã bị revoke.
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+    x-cab-trace:
+    - UC-02
+    - FR-02
+    - PC-05
+    - ADR-13
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authRegisterDriverRequestOtp:
+  post:
+    tags:
+    - Auth
+    - Driver
+    summary: Gửi OTP cho Driver self-registration
+    operationId: requestDriverRegistrationOtp
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/OtpRequest
+    responses:
+      '200':
+        description: OTP đã được gửi/khởi tạo. OTP không được trả trong response.
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - GA-07
+    - UC-11
+    - PC-34
+    - PC-60
+    - ADR-18
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authRegisterDriverVerifyOtp:
+  post:
+    tags:
+    - Auth
+    - Driver
+    summary: Xác minh OTP Driver self-registration
+    operationId: verifyDriverRegistrationOtp
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/OtpVerifyRequest
+    responses:
+      '200':
+        description: OTP hợp lệ; phát verified registration context.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/OtpVerifyResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - GA-07
+    - UC-11
+    - PC-34
+    - PC-60
+    - ADR-18
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authRegisterDriver:
+  post:
+    tags:
+    - Auth
+    - Driver
+    summary: Tạo hồ sơ Driver Pending
+    operationId: registerDriver
+    security: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/DriverRegistrationMultipart
+          encoding:
+            profile:
+              contentType: application/json
+    responses:
+      '201':
+        description: Driver profile Pending.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/DriverRegistrationResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '409':
+        $ref: ../components/responses.yaml#/Conflict
+    x-cab-trace:
+    - GA-07
+    - UC-11
+    - FR-15
+    - PC-34
+    - PC-60
+    x-contract-confidence: DESIGN_LOCKED
+    description: Self-registration dùng multipart/form-data để gửi profile + required documents. Missing registrationContext
+      → 400; invalid/expired → 401. Valid request tạo Driver PENDING.
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+    x-cab-orchestrates:
+    - identity-account-service
+    - driver-service
+authRegisterCustomerRequestOtp:
+  post:
+    tags:
+    - Auth
+    - Customer
+    summary: Gửi OTP cho Customer registration
+    operationId: requestCustomerRegistrationOtp
+    description: Rate-limited public endpoint. Demo-test provider có thể dùng fixed OTP theo Design ADR-18 nhưng API không
+      trả OTP.
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/OtpRequest
+    responses:
+      '200':
+        description: OTP request accepted; OTP không trả trong response.
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - UC-01
+    - FR-04
+    - PC-01
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authRegisterCustomerVerifyOtp:
+  post:
+    tags:
+    - Auth
+    - Customer
+    summary: Verify OTP Customer registration
+    operationId: verifyCustomerRegistrationOtp
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/OtpVerifyRequest
+    responses:
+      '200':
+        description: OTP hợp lệ; phát registrationContext.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/OtpVerifyResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - UC-01
+    - FR-04
+    - PC-01
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+authRefresh:
+  post:
+    tags:
+    - Auth
+    summary: Rotate refresh token và cấp token mới
+    operationId: refreshToken
+    description: POST được khóa cho P1. Refresh token rotate mỗi lần theo ADR-13.
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/auth.yaml#/RefreshTokenRequest
+    responses:
+      '200':
+        description: Refresh rotation thành công. Token cũ bị revoke.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/auth.yaml#/LoginResponse
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '429':
+        $ref: ../components/responses.yaml#/TooManyRequests
+    x-cab-trace:
+    - UC-02
+    - FR-02
+    - PC-05
+    - ADR-13
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: identity-account-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

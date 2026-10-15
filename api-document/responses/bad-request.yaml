@@ -1,5 +1,0 @@
-description: Dữ liệu đầu vào không hợp lệ.
-content:
-  application/json:
-    schema:
-      $ref: ../schemas/common/ErrorResponse.yaml

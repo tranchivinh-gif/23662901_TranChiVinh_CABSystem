@@ -1,0 +1,38 @@
+syntax = "proto3";
+package cab.common.v1;
+
+import "google/protobuf/struct.proto";
+
+// Internal liveness plus owning DB/schema readiness. Called with a 500ms deadline.
+service InternalHealth {
+  rpc EventMetrics(Empty) returns (EventMetricsResponse);
+  rpc Check(Empty) returns (HealthResponse);
+}
+message Empty {}
+message HealthResponse {
+  string name = 1;
+  string status = 2;
+  bool ready = 3;
+  string correlation_id = 4;
+}
+message IdRequest { string id = 1; }
+message PageRequest {
+  optional int32 page = 1; // default 0; presence distinguishes omitted values
+  optional int32 limit = 2; // default 10; valid range 1..100
+}
+message PageMeta {
+  int32 page = 1;
+  int32 limit = 2;
+  int64 total_items = 3; // loaded as a decimal string in Node.js
+  int64 total_pages = 4;
+}
+message GeoPoint { double lat = 1; double lng = 2; }
+message Money { string amount = 1; string currency = 2; } // decimal, never float
+message ErrorEnvelope {
+  string code = 1;
+  string message = 2;
+  string correlation_id = 3;
+  google.protobuf.Struct details = 4;
+}
+
+message EventMetricsResponse { string json = 1; }

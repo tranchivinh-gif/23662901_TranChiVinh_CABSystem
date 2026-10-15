@@ -1,0 +1,381 @@
+openapi: 3.1.0
+info:
+  title: CAB System Public API — Final Modular Contract
+  version: 1.0.4
+  description: 'CAB System Public API Contract P1 — FINAL/LOCKED baseline 1.0.4. Public REST contract is exposed only through
+    API Gateway. This release changes file organization only: one root OpenAPI document with modular paths/components. The
+    62 paths and 64 operations from baseline 1.0.3 are preserved.'
+  x-source-documents:
+  - srs_baseline_1.0.1(4).md
+  - mcroservice_design_final(3).md
+  x-refactor:
+    fromBaseline: 1.0.3
+    type: non-breaking structural modularization
+    status: FINAL_LOCKED
+    principle: one public Gateway OpenAPI; split paths/components only; no per-microservice public REST specs
+servers:
+- url: /
+  description: P1 public API Gateway root. Không dùng version prefix trong P1 để giữ exact grading paths như /health, /auth/login,
+    /bookings.
+tags:
+- name: Health
+- name: Auth
+- name: Customer
+- name: Driver
+- name: Booking
+- name: Trip
+- name: Payment
+- name: Admin
+- name: Offer
+- name: Audit
+- name: Policy
+- name: Account
+security:
+- bearerAuth: []
+x-cab-baseline:
+  phase: P1
+  srsBaseline: 1.0.1
+  apiContractBaseline: 1.0.4
+  decisionDate: '2026-10-03'
+  architecture: API Gateway + 7 Spring Boot business services + gRPC + Kafka + PostgreSQL + Redis
+  publicEntryPoint: API Gateway only
+  basePath: /
+  jsonNaming: camelCase
+  queryNaming: camelCase
+  publicStatusCasing: UPPER_SNAKE_CASE
+  correlationHeader: X-Correlation-Id
+  idempotencyRetentionHours: 24
+  paymentWebhook:
+    providerP1: mock
+    signatureHeader: X-CAB-Signature
+    timestampHeader: X-CAB-Timestamp
+    algorithm: HMAC-SHA256
+    replayWindowSeconds: 300
+    signatureEncoding: lowercase-hex-64
+  masking:
+    staffPhone: '****** + last4'
+    adminSensitiveAccess: full only when authorized + audited
+  serviceArea: TP. Hồ Chí Minh
+  serviceTypes:
+  - MOTORBIKE
+  - CAR_4_SEATS
+  apiStatus: FINAL_LOCKED
+x-cab-routing:
+  publicEntryPoint: api-gateway
+  publicProtocol: REST/HTTPS/JSON
+  internalSynchronousProtocol: gRPC
+  internalAsynchronousProtocol: Kafka
+  businessServicePortsPublic: false
+paths:
+  /health:
+    $ref: ./paths/health.yaml#/health
+  /ready:
+    $ref: ./paths/health.yaml#/ready
+  /health/services:
+    $ref: ./paths/health.yaml#/healthServices
+  /auth/register/customer:
+    $ref: ./paths/auth.yaml#/authRegisterCustomer
+  /auth/login:
+    $ref: ./paths/auth.yaml#/authLogin
+  /auth/logout:
+    $ref: ./paths/auth.yaml#/authLogout
+  /auth/register/driver/request-otp:
+    $ref: ./paths/auth.yaml#/authRegisterDriverRequestOtp
+  /auth/register/driver/verify-otp:
+    $ref: ./paths/auth.yaml#/authRegisterDriverVerifyOtp
+  /auth/register/driver:
+    $ref: ./paths/auth.yaml#/authRegisterDriver
+  /customers/me:
+    $ref: ./paths/customers.yaml#/customersMe
+  /customers/{customerId}:
+    $ref: ./paths/customers.yaml#/customersCustomerId
+  /customers/{customerId}/bookings:
+    $ref: ./paths/bookings.yaml#/customersCustomerIdBookings
+  /customers/me/bookings:
+    $ref: ./paths/bookings.yaml#/customersMeBookings
+  /drivers/{driverId}:
+    $ref: ./paths/drivers.yaml#/driversDriverId
+  /drivers/nearby:
+    $ref: ./paths/drivers.yaml#/driversNearby
+  /drivers/me/availability:
+    $ref: ./paths/drivers.yaml#/driversMeAvailability
+  /service-types:
+    $ref: ./paths/bookings.yaml#/serviceTypes
+  /fares/estimate:
+    $ref: ./paths/bookings.yaml#/faresEstimate
+  /bookings:
+    $ref: ./paths/bookings.yaml#/bookings
+  /trips:
+    $ref: ./paths/trips.yaml#/trips
+  /trips/{id}:
+    $ref: ./paths/trips.yaml#/tripsId
+  /trips/{id}/arrive:
+    $ref: ./paths/trips.yaml#/tripsIdArrive
+  /trips/{id}/pickup:
+    $ref: ./paths/trips.yaml#/tripsIdPickup
+  /trips/{id}/start:
+    $ref: ./paths/trips.yaml#/tripsIdStart
+  /trips/{id}/complete:
+    $ref: ./paths/trips.yaml#/tripsIdComplete
+  /trips/{id}/cancel:
+    $ref: ./paths/trips.yaml#/tripsIdCancel
+  /trips/{id}/rating:
+    $ref: ./paths/trips.yaml#/tripsIdRating
+  /trips/{id}/payment:
+    $ref: ./paths/payments.yaml#/tripsIdPayment
+  /payments/{id}/cash-confirm:
+    $ref: ./paths/payments.yaml#/paymentsIdCashConfirm
+  /webhooks/payment/{provider}:
+    $ref: ./paths/payments.yaml#/webhooksPaymentProvider
+  /admin/drivers/{id}/approve:
+    $ref: ./paths/admin.yaml#/adminDriversIdApprove
+  /admin/drivers/{id}/reject:
+    $ref: ./paths/admin.yaml#/adminDriversIdReject
+  /admin/trips:
+    $ref: ./paths/admin.yaml#/adminTrips
+  /admin/drivers/online:
+    $ref: ./paths/admin.yaml#/adminDriversOnline
+  /admin/payments:
+    $ref: ./paths/admin.yaml#/adminPayments
+  /admin/customers:
+    $ref: ./paths/admin.yaml#/adminCustomers
+  /admin/customers/{id}:
+    $ref: ./paths/admin.yaml#/adminCustomersId
+  /admin/customers/{id}/suspend:
+    $ref: ./paths/admin.yaml#/adminCustomersIdSuspend
+  /admin/vehicles:
+    $ref: ./paths/admin.yaml#/adminVehicles
+  /admin/vehicles/{id}:
+    $ref: ./paths/admin.yaml#/adminVehiclesId
+  /auth/register/customer/request-otp:
+    $ref: ./paths/auth.yaml#/authRegisterCustomerRequestOtp
+  /auth/register/customer/verify-otp:
+    $ref: ./paths/auth.yaml#/authRegisterCustomerVerifyOtp
+  /auth/refresh:
+    $ref: ./paths/auth.yaml#/authRefresh
+  /drivers/me:
+    $ref: ./paths/drivers.yaml#/driversMe
+  /drivers/me/location:
+    $ref: ./paths/drivers.yaml#/driversMeLocation
+  /driver-offers/{offerId}/accept:
+    $ref: ./paths/driver-offers.yaml#/driverOffersOfferIdAccept
+  /driver-offers/{offerId}/reject:
+    $ref: ./paths/driver-offers.yaml#/driverOffersOfferIdReject
+  /trips/{id}/payment/electronic:
+    $ref: ./paths/payments.yaml#/tripsIdPaymentElectronic
+  /payments/{id}/retry:
+    $ref: ./paths/payments.yaml#/paymentsIdRetry
+  /admin/drivers:
+    $ref: ./paths/admin.yaml#/adminDrivers
+  /admin/drivers/{id}/suspend:
+    $ref: ./paths/admin.yaml#/adminDriversIdSuspend
+  /admin/drivers/{id}/activate:
+    $ref: ./paths/admin.yaml#/adminDriversIdActivate
+  /admin/customers/{id}/activate:
+    $ref: ./paths/admin.yaml#/adminCustomersIdActivate
+  /admin/trips/{id}/redispatch:
+    $ref: ./paths/admin.yaml#/adminTripsIdRedispatch
+  /admin/trips/{id}/force-close:
+    $ref: ./paths/admin.yaml#/adminTripsIdForceClose
+  /admin/trips/{id}/fare-adjustments:
+    $ref: ./paths/admin.yaml#/adminTripsIdFareAdjustments
+  /admin/payments/{id}/adjustments:
+    $ref: ./paths/admin.yaml#/adminPaymentsIdAdjustments
+  /admin/accounts:
+    $ref: ./paths/admin.yaml#/adminAccounts
+  /admin/accounts/{id}:
+    $ref: ./paths/admin.yaml#/adminAccountsId
+  /admin/accounts/{id}/role:
+    $ref: ./paths/admin.yaml#/adminAccountsIdRole
+  /admin/policies/{policyKey}:
+    $ref: ./paths/admin.yaml#/adminPoliciesPolicyKey
+  /admin/policies/{policyKey}/versions:
+    $ref: ./paths/admin.yaml#/adminPoliciesPolicyKeyVersions
+  /admin/audit-logs:
+    $ref: ./paths/admin.yaml#/adminAuditLogs
+components:
+  securitySchemes:
+    bearerAuth:
+      $ref: ./components/security.yaml#/bearerAuth
+  parameters:
+    Page:
+      $ref: ./components/parameters.yaml#/Page
+    Limit:
+      $ref: ./components/parameters.yaml#/Limit
+    IdempotencyKey:
+      $ref: ./components/parameters.yaml#/IdempotencyKey
+    CorrelationId:
+      $ref: ./components/parameters.yaml#/CorrelationId
+    PaymentWebhookSignature:
+      $ref: ./components/parameters.yaml#/PaymentWebhookSignature
+    PaymentWebhookTimestamp:
+      $ref: ./components/parameters.yaml#/PaymentWebhookTimestamp
+  responses:
+    BadRequest:
+      $ref: ./components/responses.yaml#/BadRequest
+    Unauthorized:
+      $ref: ./components/responses.yaml#/Unauthorized
+    Forbidden:
+      $ref: ./components/responses.yaml#/Forbidden
+    NotFound:
+      $ref: ./components/responses.yaml#/NotFound
+    Conflict:
+      $ref: ./components/responses.yaml#/Conflict
+    TooManyRequests:
+      $ref: ./components/responses.yaml#/TooManyRequests
+    ServiceUnavailable:
+      $ref: ./components/responses.yaml#/ServiceUnavailable
+  schemas:
+    ErrorResponse:
+      $ref: ./components/schemas/common.yaml#/ErrorResponse
+    HealthResponse:
+      $ref: ./components/schemas/health.yaml#/HealthResponse
+    ReadyResponse:
+      $ref: ./components/schemas/health.yaml#/ReadyResponse
+    ServiceHealth:
+      $ref: ./components/schemas/health.yaml#/ServiceHealth
+    ServicesHealthResponse:
+      $ref: ./components/schemas/health.yaml#/ServicesHealthResponse
+    CustomerRegisterRequest:
+      $ref: ./components/schemas/auth.yaml#/CustomerRegisterRequest
+    AccountCreatedResponse:
+      $ref: ./components/schemas/auth.yaml#/AccountCreatedResponse
+    LoginRequest:
+      $ref: ./components/schemas/auth.yaml#/LoginRequest
+    LoginResponse:
+      $ref: ./components/schemas/auth.yaml#/LoginResponse
+    LogoutRequest:
+      $ref: ./components/schemas/auth.yaml#/LogoutRequest
+    OtpRequest:
+      $ref: ./components/schemas/auth.yaml#/OtpRequest
+    OtpVerifyRequest:
+      $ref: ./components/schemas/auth.yaml#/OtpVerifyRequest
+    OtpVerifyResponse:
+      $ref: ./components/schemas/auth.yaml#/OtpVerifyResponse
+    DriverRegisterRequest:
+      $ref: ./components/schemas/auth.yaml#/DriverRegisterRequest
+    DriverRegistrationResponse:
+      $ref: ./components/schemas/auth.yaml#/DriverRegistrationResponse
+    CustomerProfile:
+      $ref: ./components/schemas/customer.yaml#/CustomerProfile
+    CustomerUpdateRequest:
+      $ref: ./components/schemas/customer.yaml#/CustomerUpdateRequest
+    VehicleSummary:
+      $ref: ./components/schemas/driver.yaml#/VehicleSummary
+    GeoPoint:
+      $ref: ./components/schemas/common.yaml#/GeoPoint
+    DriverProfile:
+      $ref: ./components/schemas/driver.yaml#/DriverProfile
+    AvailabilityUpdateRequest:
+      $ref: ./components/schemas/driver.yaml#/AvailabilityUpdateRequest
+    NearbyDriverItem:
+      $ref: ./components/schemas/driver.yaml#/NearbyDriverItem
+    PageMeta:
+      $ref: ./components/schemas/common.yaml#/PageMeta
+    NearbyDriverPage:
+      $ref: ./components/schemas/driver.yaml#/NearbyDriverPage
+    ServiceType:
+      $ref: ./components/schemas/booking.yaml#/ServiceType
+    ServiceTypeList:
+      $ref: ./components/schemas/booking.yaml#/ServiceTypeList
+    FareEstimateRequest:
+      $ref: ./components/schemas/booking.yaml#/FareEstimateRequest
+    FareBreakdown:
+      $ref: ./components/schemas/booking.yaml#/FareBreakdown
+    FareEstimateResponse:
+      $ref: ./components/schemas/booking.yaml#/FareEstimateResponse
+    BookingCreateRequest:
+      $ref: ./components/schemas/booking.yaml#/BookingCreateRequest
+    BookingSummary:
+      $ref: ./components/schemas/booking.yaml#/BookingSummary
+    BookingPage:
+      $ref: ./components/schemas/booking.yaml#/BookingPage
+    TripSummary:
+      $ref: ./components/schemas/trip.yaml#/TripSummary
+    TripPage:
+      $ref: ./components/schemas/trip.yaml#/TripPage
+    TripActionResponse:
+      $ref: ./components/schemas/trip.yaml#/TripActionResponse
+    TripCancelRequest:
+      $ref: ./components/schemas/trip.yaml#/TripCancelRequest
+    TripCancelResponse:
+      $ref: ./components/schemas/trip.yaml#/TripCancelResponse
+    RatingRequest:
+      $ref: ./components/schemas/trip.yaml#/RatingRequest
+    RatingResponse:
+      $ref: ./components/schemas/trip.yaml#/RatingResponse
+    PaymentSummary:
+      $ref: ./components/schemas/payment.yaml#/PaymentSummary
+    CashConfirmResponse:
+      $ref: ./components/schemas/payment.yaml#/CashConfirmResponse
+    PaymentWebhookRequest:
+      $ref: ./components/schemas/payment.yaml#/PaymentWebhookRequest
+    PaymentWebhookResponse:
+      $ref: ./components/schemas/payment.yaml#/PaymentWebhookResponse
+    PaymentPage:
+      $ref: ./components/schemas/payment.yaml#/PaymentPage
+    AdminCustomerUpdateRequest:
+      $ref: ./components/schemas/admin.yaml#/AdminCustomerUpdateRequest
+    ReasonRequest:
+      $ref: ./components/schemas/admin.yaml#/ReasonRequest
+    DriverDecisionRequest:
+      $ref: ./components/schemas/admin.yaml#/DriverDecisionRequest
+    AdminTripItem:
+      $ref: ./components/schemas/admin.yaml#/AdminTripItem
+    AdminTripPage:
+      $ref: ./components/schemas/admin.yaml#/AdminTripPage
+    AdminDriverOnlinePage:
+      $ref: ./components/schemas/admin.yaml#/AdminDriverOnlinePage
+    AdminCustomerPage:
+      $ref: ./components/schemas/admin.yaml#/AdminCustomerPage
+    VehicleAdminRequest:
+      $ref: ./components/schemas/admin.yaml#/VehicleAdminRequest
+    VehiclePage:
+      $ref: ./components/schemas/admin.yaml#/VehiclePage
+    RefreshTokenRequest:
+      $ref: ./components/schemas/auth.yaml#/RefreshTokenRequest
+    DriverRegistrationProfile:
+      $ref: ./components/schemas/auth.yaml#/DriverRegistrationProfile
+    DriverRegistrationMultipart:
+      $ref: ./components/schemas/auth.yaml#/DriverRegistrationMultipart
+    DriverSelfUpdateRequest:
+      $ref: ./components/schemas/driver.yaml#/DriverSelfUpdateRequest
+    DriverLocationUpdateRequest:
+      $ref: ./components/schemas/driver.yaml#/DriverLocationUpdateRequest
+    DriverLocationUpdateResponse:
+      $ref: ./components/schemas/driver.yaml#/DriverLocationUpdateResponse
+    DriverOfferActionResponse:
+      $ref: ./components/schemas/booking.yaml#/DriverOfferActionResponse
+    OfferRejectRequest:
+      $ref: ./components/schemas/booking.yaml#/OfferRejectRequest
+    PaymentInitiationResponse:
+      $ref: ./components/schemas/payment.yaml#/PaymentInitiationResponse
+    AdminDriverPage:
+      $ref: ./components/schemas/admin.yaml#/AdminDriverPage
+    AdminActionResponse:
+      $ref: ./components/schemas/admin.yaml#/AdminActionResponse
+    FareAdjustmentRequest:
+      $ref: ./components/schemas/admin.yaml#/FareAdjustmentRequest
+    PaymentAdjustmentRequest:
+      $ref: ./components/schemas/admin.yaml#/PaymentAdjustmentRequest
+    AdminAccountCreateRequest:
+      $ref: ./components/schemas/admin.yaml#/AdminAccountCreateRequest
+    AdminAccountUpdateRequest:
+      $ref: ./components/schemas/admin.yaml#/AdminAccountUpdateRequest
+    AdminRoleUpdateRequest:
+      $ref: ./components/schemas/admin.yaml#/AdminRoleUpdateRequest
+    AdminAccountResponse:
+      $ref: ./components/schemas/admin.yaml#/AdminAccountResponse
+    AdminAccountPage:
+      $ref: ./components/schemas/admin.yaml#/AdminAccountPage
+    PolicyVersionRequest:
+      $ref: ./components/schemas/admin.yaml#/PolicyVersionRequest
+    PolicyVersionResponse:
+      $ref: ./components/schemas/admin.yaml#/PolicyVersionResponse
+    AuditLogRecord:
+      $ref: ./components/schemas/admin.yaml#/AuditLogRecord
+    AuditLogPage:
+      $ref: ./components/schemas/admin.yaml#/AuditLogPage
+  headers:
+    CorrelationId:
+      $ref: ./components/headers.yaml#/CorrelationId

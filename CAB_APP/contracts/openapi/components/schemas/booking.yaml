@@ -1,0 +1,200 @@
+ServiceType:
+  type: object
+  properties:
+    code:
+      type: string
+      enum:
+      - MOTORBIKE
+      - CAR_4_SEATS
+    active:
+      type: boolean
+  required:
+  - code
+  additionalProperties: true
+ServiceTypeList:
+  type: array
+  items:
+    $ref: ./booking.yaml#/ServiceType
+FareEstimateRequest:
+  type: object
+  description: Nguồn cũng cho phép nhập địa chỉ/chọn bản đồ/current location; exact wire representation cho address/geocode
+    chưa chốt.
+  properties:
+    pickup:
+      $ref: ./common.yaml#/GeoPoint
+    destination:
+      $ref: ./common.yaml#/GeoPoint
+    serviceType:
+      type: string
+      enum:
+      - MOTORBIKE
+      - CAR_4_SEATS
+  required:
+  - pickup
+  - destination
+  - serviceType
+  additionalProperties: true
+FareBreakdown:
+  type: object
+  properties:
+    currency:
+      type: string
+      enum:
+      - VND
+    baseFare:
+      type: number
+      minimum: 0
+    distanceKm:
+      type: number
+      minimum: 0
+    pricePerKm:
+      type: number
+      minimum: 0
+    surcharge:
+      type: number
+      minimum: 0
+    finalFare:
+      type: number
+      minimum: 0
+    ruleVersion:
+      type: string
+    estimated:
+      type: boolean
+  required:
+  - currency
+  - finalFare
+  additionalProperties: true
+FareEstimateResponse:
+  type: object
+  properties:
+    fare:
+      $ref: ./booking.yaml#/FareBreakdown
+    etaMinutes:
+      type: number
+      minimum: 0
+  required:
+  - fare
+  additionalProperties: true
+BookingCreateRequest:
+  type: object
+  properties:
+    pickup:
+      $ref: ./common.yaml#/GeoPoint
+    destination:
+      $ref: ./common.yaml#/GeoPoint
+    serviceType:
+      type: string
+      enum:
+      - MOTORBIKE
+      - CAR_4_SEATS
+    paymentMethod:
+      type: string
+      description: Giữ tên domain theo SRS; casing wire chưa được chốt.
+      enum:
+      - Cash
+      - Electronic
+    fareEstimate:
+      $ref: ./booking.yaml#/FareBreakdown
+  required:
+  - pickup
+  - destination
+  - serviceType
+  - paymentMethod
+  additionalProperties: true
+BookingSummary:
+  type: object
+  properties:
+    bookingId:
+      type: string
+    customerId:
+      type: string
+    tripId:
+      type: string
+    serviceType:
+      type: string
+      enum:
+      - MOTORBIKE
+      - CAR_4_SEATS
+    state:
+      type: string
+      description: POST /bookings phải trả public state SEARCHING.
+      enum:
+      - SEARCHING
+    paymentMethod:
+      type: string
+      enum:
+      - CASH
+      - ELECTRONIC
+    fareEstimate:
+      $ref: ./booking.yaml#/FareBreakdown
+  required:
+  - bookingId
+  - customerId
+  - tripId
+  - serviceType
+  - state
+  - paymentMethod
+  - fareEstimate
+  additionalProperties: false
+BookingPage:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: ./booking.yaml#/BookingSummary
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+      description: Compatibility alias; MUST equal totalItems.
+  required:
+  - items
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  - total
+  additionalProperties: false
+DriverOfferActionResponse:
+  type: object
+  properties:
+    offerId:
+      type: string
+    tripId:
+      type: string
+    offerStatus:
+      type: string
+      enum:
+      - ACCEPTED
+      - REJECTED
+    tripState:
+      type: string
+      enum:
+      - DRIVER_ASSIGNED
+      - SEARCHING
+  required:
+  - offerId
+  - tripId
+  - offerStatus
+  - tripState
+  additionalProperties: false
+OfferRejectRequest:
+  type: object
+  properties:
+    reason:
+      type: string
+      maxLength: 500
+  additionalProperties: false

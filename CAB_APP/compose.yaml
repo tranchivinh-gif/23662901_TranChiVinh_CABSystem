@@ -1,0 +1,952 @@
+name: cab-demo
+services:
+  identity-account-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: identity_account_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: IDENTITY_ACCOUNT
+      CAB_RUNTIME_USER: cab_identity
+      CAB_MIGRATION_USER: cab_identity_migrator
+    volumes:
+      - identity-account-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  customer-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: customer_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: CUSTOMER
+      CAB_RUNTIME_USER: cab_customer
+      CAB_MIGRATION_USER: cab_customer_migrator
+    volumes:
+      - customer-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  driver-db:
+    image: postgis/postgis:17-3.5@sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: driver_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: DRIVER
+      CAB_RUNTIME_USER: cab_driver
+      CAB_MIGRATION_USER: cab_driver_migrator
+    volumes:
+      - driver-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  booking-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: BOOKING
+      CAB_RUNTIME_USER: cab_booking
+      CAB_MIGRATION_USER: cab_booking_migrator
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  trip-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: trip_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: TRIP
+      CAB_RUNTIME_USER: cab_trip
+      CAB_MIGRATION_USER: cab_trip_migrator
+    volumes:
+      - trip-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  payment-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: PAYMENT
+      CAB_RUNTIME_USER: cab_payment
+      CAB_MIGRATION_USER: cab_payment_migrator
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  notification-db:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+      CAB_DB_PREFIX: NOTIFICATION
+      CAB_RUNTIME_USER: cab_notification
+      CAB_MIGRATION_USER: cab_notification_migrator
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+      - ./infra/db-init/20-create-service-roles.sh:/docker-entrypoint-initdb.d/20-create-service-roles.sh:ro
+      - ./infra/db-env.sh:/usr/local/bin/cab-db-env.sh:ro
+      - ./infra/db-start.sh:/usr/local/bin/cab-db-start.sh:ro
+      - ./infra/db-health.sh:/usr/local/bin/cab-db-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-db-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 30s
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-db-start.sh
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  redis:
+    image: redis:7.4.5-bookworm@sha256:90e7a336d044f1abc9e9dbc05d65566850896d11453bbd1dd0fb7e5059f0e8fb
+    platform: linux/amd64
+    restart: unless-stopped
+    environment: {}
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/cab-redis-start.sh
+    volumes:
+      - redis-data:/data
+      - ./infra/redis/start.sh:/usr/local/bin/cab-redis-start.sh:ro
+      - ./infra/redis/health.sh:/usr/local/bin/cab-redis-health.sh:ro
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /usr/local/bin/cab-redis-health.sh
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      secret-bootstrap:
+        condition: service_completed_successfully
+  kafka:
+    image: apache/kafka:3.9.1@sha256:4ceccc577f03f51f6af8dbfda55194d0d892f4fa7913ffbded567ce3895622ed
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_NODE_ID: '1'
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      KAFKA_NUM_PARTITIONS: '3'
+      KAFKA_DEFAULT_REPLICATION_FACTOR: '1'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_LOG_RETENTION_HOURS: '168'
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: '0'
+      KAFKA_HEAP_OPTS: '-Xms256m -Xmx512m'
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list >/dev/null 2>&1
+      interval: 10s
+      timeout: 8s
+      retries: 18
+      start_period: 40s
+    stop_grace_period: 30s
+  identity-account-service:
+    image: cab-demo-identity-account-service:local
+    build:
+      context: .
+      dockerfile: services/identity-account-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/identity-account-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      IDENTITY_ACCOUNT_DB_HOST: identity-account-db
+      IDENTITY_ACCOUNT_DB_PORT: '5432'
+      IDENTITY_ACCOUNT_DB_NAME: identity_account_db
+      IDENTITY_ACCOUNT_DB_USER: cab_identity
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      CAB_JWT_PRIVATE_KEY_PATH: /run/cab-private/jwt-private.pem
+      DRIVER_GRPC_HOST: driver-service
+      DRIVER_GRPC_PORT: '9093'
+      CUSTOMER_GRPC_HOST: customer-service
+      CUSTOMER_GRPC_PORT: '9092'
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: identity-account-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      identity-account-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - identity-account-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+      - cab-private:/run/cab-private:ro
+  customer-service:
+    image: cab-demo-customer-service:local
+    build:
+      context: .
+      dockerfile: services/customer-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/customer-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      CUSTOMER_GRPC_PORT: '9092'
+      CUSTOMER_DB_HOST: customer-db
+      CUSTOMER_DB_PORT: '5432'
+      CUSTOMER_DB_NAME: customer_db
+      CUSTOMER_DB_USER: cab_customer
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: customer-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      customer-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - customer-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+  driver-service:
+    image: cab-demo-driver-service:local
+    build:
+      context: .
+      dockerfile: services/driver-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/driver-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      DRIVER_GRPC_PORT: '9093'
+      DRIVER_DB_HOST: driver-db
+      DRIVER_DB_PORT: '5432'
+      DRIVER_DB_NAME: driver_db
+      DRIVER_DB_USER: cab_driver
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: driver-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+      CAB_DEMO_PRESENCE: 'true'
+    networks:
+      - backend
+    depends_on:
+      driver-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - driver-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+  booking-service:
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+    image: cab-demo-booking-service:local
+    build:
+      context: .
+      dockerfile: services/booking-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/booking-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      BOOKING_GRPC_PORT: '9094'
+      BOOKING_DB_HOST: booking-db
+      BOOKING_DB_PORT: '5432'
+      BOOKING_DB_NAME: booking_db
+      BOOKING_DB_USER: cab_booking
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CUSTOMER_GRPC_HOST: customer-service
+      CUSTOMER_GRPC_PORT: '9092'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      DRIVER_GRPC_HOST: driver-service
+      DRIVER_GRPC_PORT: '9093'
+      TRIP_GRPC_HOST: trip-service
+      TRIP_GRPC_PORT: '9095'
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: booking-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      booking-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - booking-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+  trip-service:
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+    image: cab-demo-trip-service:local
+    build:
+      context: .
+      dockerfile: services/trip-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/trip-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      TRIP_GRPC_PORT: '9095'
+      TRIP_DB_HOST: trip-db
+      TRIP_DB_PORT: '5432'
+      TRIP_DB_NAME: trip_db
+      TRIP_DB_USER: cab_trip
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CUSTOMER_GRPC_HOST: customer-service
+      CUSTOMER_GRPC_PORT: '9092'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      BOOKING_GRPC_HOST: booking-service
+      BOOKING_GRPC_PORT: '9094'
+      DRIVER_GRPC_HOST: driver-service
+      DRIVER_GRPC_PORT: '9093'
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: trip-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      trip-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - trip-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+  payment-service:
+    image: cab-demo-payment-service:local
+    build:
+      context: .
+      dockerfile: services/payment-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/payment-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      PAYMENT_GRPC_PORT: '9096'
+      PAYMENT_DB_HOST: payment-db
+      PAYMENT_DB_PORT: '5432'
+      PAYMENT_DB_NAME: payment_db
+      PAYMENT_DB_USER: cab_payment
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      TRIP_GRPC_HOST: trip-service
+      TRIP_GRPC_PORT: '9095'
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      CAB_APP_NAME: payment-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      payment-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - payment-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+  notification-service:
+    image: cab-demo-notification-service:local
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - services/notification-service/src/index.js
+    environment:
+      GRPC_BIND_HOST: 0.0.0.0
+      NOTIFICATION_GRPC_PORT: '9097'
+      NOTIFICATION_DB_HOST: notification-db
+      NOTIFICATION_DB_PORT: '5432'
+      NOTIFICATION_DB_NAME: notification_db
+      NOTIFICATION_DB_USER: cab_notification
+      CAB_EVENTS_ENABLED: 'true'
+      KAFKA_BROKERS: kafka:9092
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      CUSTOMER_GRPC_HOST: customer-service
+      CUSTOMER_GRPC_PORT: '9092'
+      DRIVER_GRPC_HOST: driver-service
+      DRIVER_GRPC_PORT: '9093'
+      CAB_APP_NAME: notification-service
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    networks:
+      - backend
+    depends_on:
+      notification-db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - notification-service
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+  api-gateway:
+    image: cab-demo-api-gateway:local
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command:
+      - api-gateway/src/index.js
+    environment:
+      GATEWAY_HOST: 0.0.0.0
+      GATEWAY_PORT: '8080'
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+      IDENTITY_ACCOUNT_GRPC_HOST: identity-account-service
+      IDENTITY_ACCOUNT_GRPC_PORT: '9091'
+      CUSTOMER_GRPC_HOST: customer-service
+      CUSTOMER_GRPC_PORT: '9092'
+      DRIVER_GRPC_HOST: driver-service
+      DRIVER_GRPC_PORT: '9093'
+      BOOKING_GRPC_HOST: booking-service
+      BOOKING_GRPC_PORT: '9094'
+      TRIP_GRPC_HOST: trip-service
+      TRIP_GRPC_PORT: '9095'
+      PAYMENT_GRPC_HOST: payment-service
+      PAYMENT_GRPC_PORT: '9096'
+      NOTIFICATION_GRPC_HOST: notification-service
+      NOTIFICATION_GRPC_PORT: '9097'
+      CAB_JWT_PUBLIC_KEY_PATH: /run/cab-secrets/jwt-public.pem
+      CAB_APP_NAME: api-gateway
+      CAB_PROFILE: demo-test
+      NODE_ENV: development
+      CAB_JWT_ACTIVE_KEY_ID: v1
+      CAB_PII_ACTIVE_KEY_ID: v1
+      CAB_JWT_ISSUER: cab-system
+      CAB_JWT_AUDIENCE: cab-public-api
+    ports:
+      - 127.0.0.1:8080:8080
+    networks:
+      - backend
+      - public
+    depends_on:
+      redis:
+        condition: service_healthy
+      identity-account-service:
+        condition: service_started
+      customer-service:
+        condition: service_started
+      driver-service:
+        condition: service_started
+      booking-service:
+        condition: service_started
+      trip-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+      topic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /app/infra/app-start.sh
+        - scripts/runtime-health.js
+        - api-gateway
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+  pgadmin:
+    image: dpage/pgadmin4:9.10
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cab.local
+      PGADMIN_DEFAULT_PASSWORD: '123'
+      PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: "['local']"
+      PGADMIN_CONFIG_PASSWORD_LENGTH: '3'
+    ports:
+      - 127.0.0.1:5050:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
+      - public
+    depends_on:
+      identity-account-db:
+        condition: service_healthy
+      customer-db:
+        condition: service_healthy
+      driver-db:
+        condition: service_healthy
+      booking-db:
+        condition: service_healthy
+      trip-db:
+        condition: service_healthy
+      payment-db:
+        condition: service_healthy
+      notification-db:
+        condition: service_healthy
+  secret-bootstrap:
+    build:
+      context: .
+      dockerfile: infra/bootstrap.Dockerfile
+    image: cab-demo-bootstrap:local
+    restart: 'no'
+    volumes:
+      - cab-secrets:/run/cab-secrets
+      - cab-private:/run/cab-private
+    networks:
+      - backend
+  migrate:
+    build:
+      context: .
+      dockerfile: infra/operator.Dockerfile
+    image: cab-demo-operator:local
+    entrypoint:
+      - /bin/sh
+      - /app/infra/app-start.sh
+    command:
+      - scripts/standalone-migrate.js
+    restart: 'no'
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    depends_on:
+      identity-account-db:
+        condition: service_healthy
+      customer-db:
+        condition: service_healthy
+      driver-db:
+        condition: service_healthy
+      booking-db:
+        condition: service_healthy
+      trip-db:
+        condition: service_healthy
+      payment-db:
+        condition: service_healthy
+      notification-db:
+        condition: service_healthy
+  topic-init:
+    image: cab-demo-notification-service:local
+    entrypoint:
+      - /bin/sh
+      - /app/infra/app-start.sh
+    command:
+      - scripts/kafka-topics.js
+    restart: 'no'
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    depends_on:
+      kafka:
+        condition: service_healthy
+      secret-bootstrap:
+        condition: service_completed_successfully
+  demo-seed:
+    image: cab-demo-operator:local
+    entrypoint:
+      - /bin/sh
+      - /app/infra/app-start.sh
+    command:
+      - scripts/demo-seed.js
+    restart: 'no'
+    volumes:
+      - cab-secrets:/run/cab-secrets:ro
+    networks:
+      - backend
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+networks:
+  backend:
+    driver: bridge
+    internal: true
+  public:
+    driver: bridge
+volumes:
+  identity-account-db-data: {}
+  customer-db-data: {}
+  driver-db-data: {}
+  booking-db-data: {}
+  trip-db-data: {}
+  payment-db-data: {}
+  notification-db-data: {}
+  redis-data: {}
+  kafka-data: {}
+  cab-secrets: {}
+  cab-private: {}
+  pgadmin-data: {}

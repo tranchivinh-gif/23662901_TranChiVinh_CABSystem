@@ -1,0 +1,59 @@
+ErrorResponse:
+  type: object
+  properties:
+    code:
+      type: string
+      description: Mã lỗi máy đọc được.
+    message:
+      type: string
+      description: Thông điệp lỗi an toàn cho client.
+    correlationId:
+      type: string
+      description: ID tương quan xuyên Gateway → gRPC → Kafka.
+      format: uuid
+    details:
+      type: object
+      description: Chi tiết lỗi chỉ trả khi an toàn; không chứa secret/PII nhạy cảm/stack trace.
+      additionalProperties: true
+  required:
+  - code
+  - message
+  - correlationId
+  additionalProperties: false
+GeoPoint:
+  type: object
+  properties:
+    lat:
+      type: number
+      minimum: -90
+      maximum: 90
+    lng:
+      type: number
+      minimum: -180
+      maximum: 180
+  required:
+  - lat
+  - lng
+  additionalProperties: false
+PageMeta:
+  type: object
+  properties:
+    page:
+      type: integer
+      minimum: 0
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+  required:
+  - page
+  - limit
+  - totalItems
+  - totalPages
+  additionalProperties: false

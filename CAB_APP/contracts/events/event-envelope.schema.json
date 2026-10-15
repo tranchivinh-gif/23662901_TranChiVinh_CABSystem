@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:cab:events:envelope:1.0",
+  "title": "CAB Kafka event envelope v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventType", "eventVersion", "occurredAt", "producer", "correlationId", "aggregateId", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$" },
+    "eventType": { "type": "string", "minLength": 1 },
+    "eventVersion": { "const": "1.0" },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "producer": { "enum": ["identity-account-service", "customer-service", "driver-service", "booking-service", "trip-service", "payment-service", "notification-service"] },
+    "correlationId": { "type": "string", "format": "uuid" },
+    "aggregateId": { "type": "string", "format": "uuid" },
+    "payload": { "type": "object" }
+  }
+}

@@ -1,0 +1,79 @@
+customersMe:
+  put:
+    tags:
+    - Customer
+    summary: Cập nhật hồ sơ Customer của chính mình
+    operationId: updateMyCustomerProfile
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/customer.yaml#/CustomerUpdateRequest
+    responses:
+      '200':
+        description: Hồ sơ đã cập nhật.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/customer.yaml#/CustomerProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+    x-cab-trace:
+    - UC-03
+    - FR-05
+    - PC-06
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: customer-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
+customersCustomerId:
+  get:
+    tags:
+    - Customer
+    summary: Lấy Customer theo ID
+    operationId: getCustomerById
+    security:
+    - bearerAuth: []
+    parameters:
+    - name: customerId
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    responses:
+      '200':
+        description: Customer theo quyền.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/customer.yaml#/CustomerProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - GA-05
+    - PC-56
+    - §16.2.6
+    x-contract-confidence: EXACT
+    x-cab-owner-service: customer-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC

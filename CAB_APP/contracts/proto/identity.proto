@@ -1,0 +1,51 @@
+syntax = "proto3";
+package cab.identity.v1;
+import "common.proto";
+
+service IdentityAccountService {
+  rpc RequestOtp(OtpRequest) returns (OtpChallenge);
+  rpc VerifyOtp(VerifyOtpRequest) returns (OtpVerification);
+  rpc RegisterCustomer(RegisterRequest) returns (Account);
+  rpc RegisterDriver(RegisterRequest) returns (Account);
+  rpc Login(LoginRequest) returns (TokenPair);
+  rpc Refresh(RefreshRequest) returns (TokenPair);
+  rpc Logout(RefreshRequest) returns (cab.common.v1.Empty);
+  rpc GetAccount(cab.common.v1.IdRequest) returns (Account);
+  rpc AuthorizeAccess(AuthorizeAccessRequest) returns (AccessDecision);
+  rpc UpdateDriverAccountStatus(DriverAccountDecision) returns (Account);
+  rpc IssueMatchingToken(cab.common.v1.Empty) returns (ServiceCredential);
+  rpc InspectDriverAccounts(AccountIdList) returns (AccountIdList);
+  rpc IssueNotificationToken(cab.common.v1.Empty) returns (ServiceCredential);
+  rpc ListNotificationOperators(RoleList) returns (AccountIdList);
+  rpc IssueTripToken(cab.common.v1.Empty) returns (ServiceCredential);
+}
+message OtpRequest { string phone = 1; string purpose = 2; }
+message OtpChallenge { string verification_id = 1; string expires_at = 2; }
+message VerifyOtpRequest { string verification_id = 1; string otp = 2; string phone = 3; string purpose = 4; }
+message OtpVerification { string verification_token = 1; }
+message RegisterRequest {
+  string phone = 1;
+  string password = 2;
+  string full_name = 3;
+  string verification_token = 4;
+  string email = 5;
+  string driver_profile_json = 6;
+  repeated RegistrationDocument documents = 7;
+}
+message LoginRequest { string phone = 1; string password = 2; string email = 3; }
+message RefreshRequest { string refresh_token = 1; }
+message TokenPair {
+  string access_token = 1; string refresh_token = 2; int32 expires_in = 3;
+  string account_id = 4; string role = 5; int32 refresh_expires_in = 6;
+}
+message Account { string account_id = 1; string role = 2; string status = 3; string driver_id = 4; }
+// Identity verifies the forwarded access JWT and reads live account/permission state.
+// resource_id is supplied by the owning lookup service for sensitive access auditing.
+message AuthorizeAccessRequest { string permission = 1; string resource_id = 2; }
+message AccessDecision { string account_id = 1; string role = 2; bool sensitive = 3; string status = 4; string trip_create_token = 5; }
+message RegistrationDocument { string filename = 1; string media_type = 2; bytes content = 3; }
+message DriverAccountDecision { string account_id = 1; string driver_id = 2; string status = 3; string reason = 4; }
+message ServiceCredential { string access_token = 1; int32 expires_in = 2; }
+message AccountIdList { repeated string account_ids = 1; }
+
+message RoleList { repeated string roles = 1; }
