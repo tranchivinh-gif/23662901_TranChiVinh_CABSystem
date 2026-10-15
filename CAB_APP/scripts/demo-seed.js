@@ -34,7 +34,8 @@ async function seedIdentity() {
       await db.query(`INSERT INTO accounts(account_id,role_code,phone_hash,phone_ciphertext,phone_key_id,phone_iv,phone_tag,email_hash,email_ciphertext,email_key_id,email_iv,email_tag,password_hash,status)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) ON CONFLICT(account_id) DO UPDATE SET
         email_hash=COALESCE(EXCLUDED.email_hash,accounts.email_hash),email_ciphertext=COALESCE(EXCLUDED.email_ciphertext,accounts.email_ciphertext),
-        email_key_id=COALESCE(EXCLUDED.email_key_id,accounts.email_key_id),email_iv=COALESCE(EXCLUDED.email_iv,accounts.email_iv),email_tag=COALESCE(EXCLUDED.email_tag,accounts.email_tag)`,
+        email_key_id=COALESCE(EXCLUDED.email_key_id,accounts.email_key_id),email_iv=COALESCE(EXCLUDED.email_iv,accounts.email_iv),email_tag=COALESCE(EXCLUDED.email_tag,accounts.email_tag),
+        password_hash=EXCLUDED.password_hash`,
       [item.accountId,item.role,pii.hmac(item.phone),encrypted.ciphertext,encrypted.keyId,encrypted.iv,encrypted.tag,
         item.role==='CUSTOMER'?pii.hmac(item.email):null,emailEncrypted?.ciphertext || null,emailEncrypted?.keyId || null,emailEncrypted?.iv || null,emailEncrypted?.tag || null,await hash(password),status]);
     }
@@ -54,7 +55,9 @@ async function seedCustomers() {
       const profile={fullName:item.fullName,phone:item.phone,email:item.email,address:'CAB demo address'};
       const encrypted=pii.encrypt(JSON.stringify(profile),'customers:'+item.profileId+':profile');
       await db.query(`INSERT INTO customers(customer_id,account_id,phone_hash,profile_ciphertext,profile_key_id,profile_iv,profile_tag)
-        VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(customer_id) DO NOTHING`,
+        VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(customer_id) DO UPDATE SET
+        profile_ciphertext=EXCLUDED.profile_ciphertext,profile_key_id=EXCLUDED.profile_key_id,
+        profile_iv=EXCLUDED.profile_iv,profile_tag=EXCLUDED.profile_tag`,
       [item.profileId,item.accountId,pii.hmac(item.phone),encrypted.ciphertext,encrypted.keyId,encrypted.iv,encrypted.tag]);
     }
   });
@@ -146,7 +149,7 @@ async function main() {
   await seedIdentity(); await seedCustomers(); await seedDrivers();
   await seedBookings(); await seedTrips(); await seedPayment();
   console.log('CAB demo data ready: 1 Customer, 10 Drivers, 1 Staff, 1 Admin, 10 Bookings/Trips, 1 Pending electronic Payment.');
-  console.log('Login: Customer customer1@example.test; Staff 0900000011; Admin 0900000010; Drivers 0900000101..0900000110.');
+  console.log('Login: Customer khach1@gmail.com; Staff 0900000011; Admin 0900000010; Drivers 0900000101..0900000110.');
   console.log('Demo password: ' + password + ' (local demo only). Nearby center: ' + center.lat + ',' + center.lng);
 }
 main().catch(error => { console.error('Demo seed failed: ' + (error.code || error.message)); process.exitCode = 1; });

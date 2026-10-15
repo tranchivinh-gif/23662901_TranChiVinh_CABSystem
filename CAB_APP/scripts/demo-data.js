@@ -1,6 +1,6 @@
 'use strict';
 const crypto = require('node:crypto');
-const password = 'CabDemo!2026';
+const password = '123';
 const center = { lat: 10.8231, lng: 106.6297 };
 function id(label) {
   const chars = crypto.createHash('sha256').update('cab-standalone-demo-v1:' + label).digest('hex').slice(0, 32).split('');
@@ -10,7 +10,7 @@ function id(label) {
 }
 function person(name, role, number) {
   const localPhone = '0900000' + String(number).padStart(3, '0');
-  return { name, role, localPhone, phone: '+84' + localPhone.slice(1), email:name+'@example.test',
+  return { name, role, localPhone, phone: '+84' + localPhone.slice(1), email:(role==='CUSTOMER'?'khach'+number+'@gmail.com':name+'@example.test'),
     accountId: id(name + ':account'), profileId: id(name + ':profile'), fullName: 'CAB Demo ' + name };
 }
 const customers = [person('customer1','CUSTOMER',1)];
