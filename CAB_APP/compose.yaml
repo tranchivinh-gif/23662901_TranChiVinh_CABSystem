@@ -319,8 +319,8 @@ services:
   identity-account-service:
     image: cab-demo-identity-account-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/identity-account-service/Dockerfile
+      context: .
+      dockerfile: services/identity-account-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -381,8 +381,8 @@ services:
   customer-service:
     image: cab-demo-customer-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/customer-service/Dockerfile
+      context: .
+      dockerfile: services/customer-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -439,8 +439,8 @@ services:
   driver-service:
     image: cab-demo-driver-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/driver-service/Dockerfile
+      context: .
+      dockerfile: services/driver-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -500,8 +500,8 @@ services:
       - cab-secrets:/run/cab-secrets:ro
     image: cab-demo-booking-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/booking-service/Dockerfile
+      context: .
+      dockerfile: services/booking-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -564,8 +564,8 @@ services:
       - cab-secrets:/run/cab-secrets:ro
     image: cab-demo-trip-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/trip-service/Dockerfile
+      context: .
+      dockerfile: services/trip-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -626,8 +626,8 @@ services:
   payment-service:
     image: cab-demo-payment-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/payment-service/Dockerfile
+      context: .
+      dockerfile: services/payment-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -685,8 +685,8 @@ services:
   notification-service:
     image: cab-demo-notification-service:local
     build:
-      context: ..
-      dockerfile: CAB_APP/services/notification-service/Dockerfile
+      context: .
+      dockerfile: services/notification-service/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -747,8 +747,8 @@ services:
   api-gateway:
     image: cab-demo-api-gateway:local
     build:
-      context: ..
-      dockerfile: CAB_APP/api-gateway/Dockerfile
+      context: .
+      dockerfile: api-gateway/Dockerfile
     platform: linux/amd64
     restart: unless-stopped
     command:
@@ -860,8 +860,8 @@ services:
         condition: service_healthy
   secret-bootstrap:
     build:
-      context: ..
-      dockerfile: CAB_APP/infra/bootstrap.Dockerfile
+      context: .
+      dockerfile: infra/bootstrap.Dockerfile
     image: cab-demo-bootstrap:local
     restart: 'no'
     volumes:
@@ -871,8 +871,8 @@ services:
       - backend
   migrate:
     build:
-      context: ..
-      dockerfile: CAB_APP/infra/operator.Dockerfile
+      context: .
+      dockerfile: infra/operator.Dockerfile
     image: cab-demo-operator:local
     entrypoint:
       - /bin/sh
