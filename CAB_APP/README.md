@@ -1,11 +1,11 @@
 # CAB — bản ứng dụng chạy độc lập bằng Docker Compose
 
-Thư mục này là gói ứng dụng để **trình diễn thủ công**. Có API Gateway, bảy microservice, mã nguồn, hợp đồng OpenAPI/gRPC, migration và dữ liệu mẫu. Không cần sao chép thư mục khác của repository, không cần cài Node.js hoặc chạy `npm` trên máy chủ. Không có bộ kiểm thử tự động hay thư mục bằng chứng trong gói này.
+Thư mục này chứa ứng dụng để **trình diễn thủ công**. Có API Gateway, bảy microservice, mã nguồn, hợp đồng OpenAPI/gRPC, migration và dữ liệu mẫu. Khi sao chép dự án sang máy khác, giữ nguyên cả thư mục gốc repository: Docker build dùng `.dockerignore` và `.npmrc` ở thư mục gốc. Không cần cài Node.js hoặc chạy `npm` trên máy chủ. Không có bộ kiểm thử tự động hay thư mục bằng chứng trong gói này.
 
 ## Khởi động từ thư mục này
 
 1. Cài Docker Desktop, bật Linux containers và chờ Docker Engine chạy. Máy cần có mạng ở lần đầu để tải image/dependency, khoảng 8 GB RAM trống và cổng `8080` chưa bị chiếm.
-2. Mở PowerShell hoặc terminal **tại thư mục `CAB_APP`**. Nếu chỉ chép riêng thư mục này sang máy khác, cũng đứng tại thư mục gốc của bản chép.
+2. Mở PowerShell hoặc terminal **tại thư mục `CAB_APP`** bên trong bản sao đầy đủ của repository.
 3. Chạy:
 
    ```powershell
