@@ -61,11 +61,11 @@ pgAdmin chỉ bind vào `127.0.0.1`, không mở giao diện ra mạng bên ngo�
 
 ## Tài khoản và dữ liệu trình diễn
 
-Tất cả tài khoản mẫu dùng mật khẩu `CabDemo!2026`. Customer đăng nhập bằng email; Driver, Staff và Admin đăng nhập bằng số điện thoại dạng `090...` hoặc `+84...`.
+Tất cả tài khoản mẫu dùng mật khẩu `123`. Customer đăng nhập bằng email; Driver, Staff và Admin đăng nhập bằng số điện thoại dạng `090...` hoặc `+84...`.
 
 | Vai trò | Số điện thoại | Ghi chú |
 |---|---|---|
-| Customer 1 | `customer1@example.test` | Có 9 booking lịch sử, 1 chuyến Completed để đánh giá/thanh toán |
+| Customer 1 | `khach1@gmail.com` | Có 9 booking lịch sử, 1 chuyến Completed để đánh giá/thanh toán |
 | Admin | `0900000010` | Duyệt tài xế, xem dashboard |
 | Staff | `0900000011` | Xem danh sách, duyệt tài xế |
 | Driver 1–7 | `0900000101` đến `0900000107` | Active, Available, ở gần `10.8231,106.6297` |
@@ -75,12 +75,12 @@ Tất cả tài khoản mẫu dùng mật khẩu `CabDemo!2026`. Customer đăng
 
 Mười tài xế đều ở gần `10.8231,106.6297`: bảy tài xế Active/Available, một Active/Busy, một Pending/Offline và một Suspended/Offline. Định vị mẫu được làm mới trong container Driver để bảy tài xế Available luôn hiện trong truy vấn gần đó. Trạng thái do bạn đổi thủ công vẫn được tôn trọng. Mã OTP của nhà cung cấp **giả lập** trong bản demo là `123456`. Cổng thanh toán là provider **giả lập**, không giao dịch tiền thật. Không dùng mật khẩu mẫu này cho hệ thống thực.
 
-Driver **mới tự đăng ký** qua API được cấp mật khẩu demo `123`. Đây là quy ước của profile demo, khác mật khẩu của 13 tài khoản mẫu ở bảng trên.
+Driver **mới tự đăng ký** qua API cũng được cấp mật khẩu demo `123`.
 
 ## Bắt đầu thao tác bằng Postman
 
 - Base URL: `http://localhost:8080`.
-- Customer đăng nhập `POST /auth/login` với JSON `{"email":"customer1@example.test","password":"CabDemo!2026"}`. Customer mới đăng ký bằng `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; số điện thoại dùng làm thông tin liên hệ, còn đăng nhập dùng email. Driver/Admin/Staff vẫn đăng nhập bằng `phoneNumber`. Lưu `accessToken` vào biến Postman phù hợp; API cần xác thực gửi header `Authorization: Bearer <token>`.
+- Customer đăng nhập `POST /auth/login` với JSON `{"email":"khach1@gmail.com","password":"123"}`. Customer mới đăng ký bằng `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; số điện thoại dùng làm thông tin liên hệ, còn đăng nhập dùng email. Driver/Admin/Staff vẫn đăng nhập bằng `phoneNumber`. Lưu `accessToken` vào biến Postman phù hợp; API cần xác thực gửi header `Authorization: Bearer <token>`.
 - Customer gọi `GET /customers/me` với `customerToken` để xem hồ sơ của chính mình, không cần nhập `customerId`. `GET /customers/{customerId}` vẫn dùng để lấy theo mã số và kiểm tra phân quyền.
 - Driver gọi `GET /drivers/me` với token Driver để xem hồ sơ của chính mình, không cần nhập `driverId`. `GET /drivers/{driverId}` vẫn dùng để lấy theo mã số.
 - Toàn bộ đường dẫn, trường dữ liệu và response nằm trong [`contracts/openapi/openapi-all.yaml`](contracts/openapi/openapi-all.yaml). Đọc file này trực tiếp hoặc import vào Postman để tạo request **thủ công**; gói không kèm collection hay script test. Đường dẫn hiện dùng `/bookings`; `/api/v1/bookings` chưa được cấu hình.
