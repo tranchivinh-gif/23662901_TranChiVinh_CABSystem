@@ -49,22 +49,21 @@ function createAuthService({ pool, pii, passwords, tokens, otpProvider, profiles
     }));
   }
   async function registerCustomer(request, context) {
-    const value = domain.registration(request), emailHash=pii.hmac(value.email),phoneHash=pii.hmac(value.phone);
-    const fingerprint = pii.hmac(JSON.stringify([value.phone,value.fullName,value.email,value.password]));
+    const value = domain.registration(request), emailHash=pii.hmac(value.email);
+    const fingerprint = pii.hmac(JSON.stringify([value.email,value.password]));
     const passwordHash = await passwords.hash(value.password);
     context.assertActive();
     const pending = unwrap(await transaction(pool,async db => {
       await lockPhone(db,emailHash);
-      await lockPhone(db,phoneHash);
-      const account = (await db.query('SELECT * FROM accounts WHERE email_hash=$1 OR phone_hash=$2 FOR UPDATE',[emailHash,phoneHash])).rows[0];
+      const account = (await db.query('SELECT * FROM accounts WHERE email_hash=$1 FOR UPDATE',[emailHash])).rows[0];
       const progress = account && (await db.query('SELECT * FROM customer_registrations WHERE account_id=$1',[account.account_id])).rows[0];
       if (progress?.status==='Completed' && progress.request_fingerprint.equals(fingerprint)) return { account,complete:true };
       if (account && (!progress || account.status!=='Pending' || !progress.request_fingerprint.equals(fingerprint)))
-        return new AuthError(account.email_hash?.equals(emailHash)?'EMAIL_ALREADY_EXISTS':'PHONE_NUMBER_ALREADY_EXISTS',grpc.status.ALREADY_EXISTS);
+        return new AuthError('EMAIL_ALREADY_EXISTS',grpc.status.ALREADY_EXISTS);
       if (account) return { account };
-      const id = crypto.randomUUID(),emailEncrypted=pii.encrypt(value.email,'accounts:'+id+':email'),phoneEncrypted=pii.encrypt(value.phone,'accounts:'+id+':phone');
-      const created = (await db.query("INSERT INTO accounts (account_id,role_code,phone_hash,phone_ciphertext,phone_key_id,phone_iv,phone_tag,email_hash,email_ciphertext,email_key_id,email_iv,email_tag,password_hash,status) VALUES ($1,'CUSTOMER',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'Pending') RETURNING *",
-        [id,phoneHash,phoneEncrypted.ciphertext,phoneEncrypted.keyId,phoneEncrypted.iv,phoneEncrypted.tag,emailHash,emailEncrypted.ciphertext,emailEncrypted.keyId,emailEncrypted.iv,emailEncrypted.tag,passwordHash])).rows[0];
+      const id = crypto.randomUUID(),emailEncrypted=pii.encrypt(value.email,'accounts:'+id+':email');
+      const created = (await db.query("INSERT INTO accounts (account_id,role_code,email_hash,email_ciphertext,email_key_id,email_iv,email_tag,password_hash,status) VALUES ($1,'CUSTOMER',$2,$3,$4,$5,$6,$7,'Pending') RETURNING *",
+        [id,emailHash,emailEncrypted.ciphertext,emailEncrypted.keyId,emailEncrypted.iv,emailEncrypted.tag,passwordHash])).rows[0];
       await db.query("INSERT INTO customer_registrations (account_id,request_fingerprint,status) VALUES ($1,$2,'PendingProfile')",[id,fingerprint]);
       await audit(db,'RegistrationPending',context,id);
       return { account:created };
@@ -76,7 +75,6 @@ function createAuthService({ pool, pii, passwords, tokens, otpProvider, profiles
     context.assertActive();
     return unwrap(await transaction(pool,async db => {
       await lockPhone(db,emailHash);
-      await lockPhone(db,phoneHash);
       const progress = (await db.query('SELECT * FROM customer_registrations WHERE account_id=$1 FOR UPDATE',[pending.account.account_id])).rows[0];
       if (progress.status==='Completed') return result({ ...pending.account,status:'Active' });
       context.assertActive();

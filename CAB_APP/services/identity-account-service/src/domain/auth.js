@@ -26,8 +26,8 @@ function purpose(value) {
   return value;
 }
 function registration(request) {
-  const fullName = text(request.fullName).trim();
   const password = text(request.password);
-  return { phone:phone(request.phone), fullName, password, email:email(request.email) };
+  const normalizedEmail = email(request.email);
+  return { phone:null, fullName:normalizedEmail.split('@')[0], password, email:normalizedEmail };
 }
 module.exports = { AuthError, fail, text, phone, email, purpose, registration };

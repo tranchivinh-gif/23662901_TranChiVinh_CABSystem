@@ -6,8 +6,8 @@ const operations=[
   ['verifyCustomerRegistrationOtp','/auth/register/customer/verify-otp','verifyOtp',['phoneNumber','otp'],[],200],
   ['requestDriverRegistrationOtp','/auth/register/driver/request-otp','requestOtp',['phoneNumber'],[],200],
   ['verifyDriverRegistrationOtp','/auth/register/driver/verify-otp','verifyOtp',['phoneNumber','otp'],[],200],
-  ['registerCustomer','/auth/register/customer','registerCustomer',['fullName','phoneNumber','email','password'],[],201],
-  ['login','/auth/login','login',['password'],['email','phoneNumber'],200],
+  ['registerCustomer','/auth/register/customer','registerCustomer',['email','pass'],[],201],
+  ['login','/auth/login','login',['pass'],['email','phone'],200],
   ['refreshToken','/auth/refresh','refresh',['refreshToken'],[],200],
   ['logout','/auth/logout','logout',['refreshToken'],[],200],
 ];
@@ -40,8 +40,8 @@ function registerAuthRoutes(app,dependencies) {
     if (required.some(key=>typeof normalized[key]!=='string' || !normalized[key].trim()) || Object.keys(normalized).some(key=>![...required,...optional].includes(key)) || optional.some(key=>normalized[key]!==undefined && typeof normalized[key]!=='string')) {
       return sendError(res,req.correlationId,400,'INVALID_ARGUMENT','Invalid request');
     }
-    if(operation==='login' && Number(Boolean(normalized.email))+Number(Boolean(normalized.phoneNumber))!==1)
-      return sendError(res,req.correlationId,400,'INVALID_ARGUMENT','Provide exactly one of email or phoneNumber');
+    if(operation==='login' && Number(Boolean(normalized.email))+Number(Boolean(normalized.phone))!==1)
+      return sendError(res,req.correlationId,400,'INVALID_ARGUMENT','Provide exactly one of email or phone');
     const valueToUse = normalized;
     try {
       const limit=await dependencies.auth.rateLimit(req,operation);
@@ -52,8 +52,8 @@ function registerAuthRoutes(app,dependencies) {
     let payload;
     if(rpc==='requestOtp') payload={phone:valueToUse.phoneNumber,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
     else if(rpc==='verifyOtp') payload={phone:valueToUse.phoneNumber,otp:valueToUse.otp,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
-    else if(rpc==='registerCustomer') payload={phone:valueToUse.phoneNumber,password:valueToUse.password,fullName:valueToUse.fullName,email:valueToUse.email};
-    else if(rpc==='login') payload={phone:valueToUse.phoneNumber || '',email:valueToUse.email || '',password:valueToUse.password};
+    else if(rpc==='registerCustomer') payload={password:valueToUse.pass,email:valueToUse.email};
+    else if(rpc==='login') payload={email:valueToUse.email || '',phone:valueToUse.phone || '',password:valueToUse.pass};
     else payload={refreshToken:valueToUse.refreshToken};
     try {
       const result=await dependencies.invoke('identity-account-service',rpc,payload,req.correlationId,Math.min(1500,Math.max(1,deadline-Date.now())),actor?.token);
