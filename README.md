@@ -21,7 +21,7 @@ Thư mục này là gói ứng dụng để **trình diễn thủ công**. Có A
 
    Nếu muốn trả lại prompt sau khi khởi động, dùng `docker compose up -d`. Các lệnh này không cần `npm` trên máy.
 
-4. Mở `http://localhost:8080/health`, `http://localhost:8080/ready`, `http://localhost:8080/health/services`. Chờ `/ready` trả ready và `demo-seed` hoàn thành trước khi thử dữ liệu mẫu.
+4. Mở `http://localhost:8080/api/v1/health`, `http://localhost:8080/api/v1/ready`, `http://localhost:8080/api/v1/health/services`. Chờ `/api/v1/ready` trả ready và `demo-seed` hoàn thành trước khi thử dữ liệu mẫu.
 
 `docker compose` tự khởi tạo khóa trong Docker volume, bảy database và role riêng, migration, Kafka topics, dữ liệu mẫu. Các job `secret-bootstrap`, `migrate`, `topic-init`, `demo-seed` kết thúc với mã 0 là bình thường. Có **18 container chạy liên tục**: 8 ứng dụng, 7 PostgreSQL/PostGIS, Redis, Kafka và pgAdmin. Gateway (`127.0.0.1:8080`) và pgAdmin (`127.0.0.1:5050`) được mở trên máy; các cổng database không được mở trực tiếp. Mỗi ứng dụng có Dockerfile riêng trong `api-gateway/` hoặc `services/<tên-service>/`.
 
@@ -79,17 +79,17 @@ Driver **mới tự đăng ký** qua API cũng được cấp mật khẩu demo 
 
 ## Bắt đầu thao tác bằng Postman
 
-- Base URL: `http://localhost:8080`.
+- Base URL: `http://localhost:8080/api/v1`.
 - Customer đăng nhập `POST /auth/login` với JSON `{"email":"khach1@gmail.com","password":"123"}`. Customer mới đăng ký bằng `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; số điện thoại dùng làm thông tin liên hệ, còn đăng nhập dùng email. Driver/Admin/Staff vẫn đăng nhập bằng `phoneNumber`. Lưu `accessToken` vào biến Postman phù hợp; API cần xác thực gửi header `Authorization: Bearer <token>`.
 - Customer gọi `GET /customers/me` với `customerToken` để xem hồ sơ của chính mình, không cần nhập `customerId`. `GET /customers/{customerId}` vẫn dùng để lấy theo mã số và kiểm tra phân quyền.
 - Driver gọi `GET /drivers/me` với token Driver để xem hồ sơ của chính mình, không cần nhập `driverId`. `GET /drivers/{driverId}` vẫn dùng để lấy theo mã số.
-- Toàn bộ đường dẫn, trường dữ liệu và response nằm trong [`contracts/openapi/openapi-all.yaml`](contracts/openapi/openapi-all.yaml). Đọc file này trực tiếp hoặc import vào Postman để tạo request **thủ công**; gói không kèm collection hay script test. Đường dẫn hiện dùng `/bookings`; `/api/v1/bookings` chưa được cấu hình.
+- Toàn bộ đường dẫn, trường dữ liệu và response nằm trong [`contracts/openapi/openapi-all.yaml`](contracts/openapi/openapi-all.yaml). Đọc file này trực tiếp hoặc import vào Postman để tạo request **thủ công**; gói không kèm collection hay script test. Mọi đường dẫn API đều có tiền tố `/api/v1`, ví dụ `/api/v1/bookings`.
 - Với `POST /bookings` và các thao tác chuyển trạng thái/thanh toán, gửi header `Idempotency-Key` là chuỗi mới, ví dụ `demo-booking-001`. Gửi lại **cùng khóa và cùng nội dung** để trình diễn chống xử lý trùng.
 
 Ví dụ tạo booking từ tài khoản Customer 1:
 
 ```http
-POST http://localhost:8080/bookings
+POST http://localhost:8080/api/v1/bookings
 Authorization: Bearer <customerToken>
 Content-Type: application/json
 Idempotency-Key: demo-booking-001
@@ -116,7 +116,7 @@ docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_i
 | Mục | Cách trình diễn thủ công |
 |---|---|
 | 1–4 | Cho xem cây `api-gateway/`, `services/`, `contracts/proto/`; Gateway nhận HTTP, service nói gRPC; sự kiện đi Kafka. Cho xem `.gitignore` và việc khóa nằm trong Docker volume. |
-| 5–8 | `docker compose ps`; gọi `/health`, `/ready`, `/health/services`; xem `docker compose logs kafka topic-init notification-service`; cho xem `compose.yaml` chỉ map cổng Gateway. |
+| 5–8 | `docker compose ps`; gọi `/api/v1/health`, `/api/v1/ready`, `/api/v1/health/services`; xem `docker compose logs kafka topic-init notification-service`; cho xem `compose.yaml` chỉ map cổng Gateway. |
 | 9–10 | `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; Customer đăng nhập qua `/auth/login` bằng `email` và `password`. Không cần OTP. |
 | 11–12 | Lấy `customerId`, `driverId` từ các response/danh sách; gọi `GET /customers/{customerId}` và `GET /drivers/{driverId}` bằng token phù hợp. |
 | 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10.8231&lng=106.6297&radiusKm=1&page=0&limit=5`, đổi `page`. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
