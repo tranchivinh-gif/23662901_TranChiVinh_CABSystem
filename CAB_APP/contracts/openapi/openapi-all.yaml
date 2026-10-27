@@ -14,9 +14,8 @@ info:
     status: FINAL_LOCKED
     principle: one public Gateway OpenAPI; split paths/components only; no per-microservice public REST specs
 servers:
-- url: /
-  description: P1 public API Gateway root. Không dùng version prefix trong P1 để giữ exact grading paths như /health, /auth/login,
-    /bookings.
+- url: /api/v1
+  description: P1 public API Gateway base path /api/v1; paths below are relative to this prefix.
 tags:
 - name: Health
 - name: Auth
@@ -39,7 +38,7 @@ x-cab-baseline:
   decisionDate: '2026-10-03'
   architecture: API Gateway + 7 Spring Boot business services + gRPC + Kafka + PostgreSQL + Redis
   publicEntryPoint: API Gateway only
-  basePath: /
+  basePath: /api/v1
   jsonNaming: camelCase
   queryNaming: camelCase
   publicStatusCasing: UPPER_SNAKE_CASE

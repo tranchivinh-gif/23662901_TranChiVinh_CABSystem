@@ -6,7 +6,7 @@ const protoLoader = require('@grpc/proto-loader');
 async function main() {
   const name = process.argv[2];
   if (name === 'api-gateway') {
-    const response = await fetch('http://127.0.0.1:' + (process.env.GATEWAY_PORT || 8080) + '/ready', { signal: AbortSignal.timeout(1800) });
+    const response = await fetch('http://127.0.0.1:' + (process.env.GATEWAY_PORT || 8080) + '/api/v1/ready', { signal: AbortSignal.timeout(1800) });
     if (!response.ok || (await response.json()).status !== 'READY') throw new Error('Gateway not ready');
     return;
   }

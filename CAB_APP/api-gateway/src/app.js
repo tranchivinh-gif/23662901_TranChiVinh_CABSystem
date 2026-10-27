@@ -17,6 +17,7 @@ const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function createApp(dependencies) {
   const app = express();
+  const api = express.Router();
   app.disable("x-powered-by");
   app.use((req, res, next) => {
     const supplied = req.get("X-Correlation-Id");
@@ -25,7 +26,7 @@ function createApp(dependencies) {
     res.set("X-Correlation-Id", req.correlationId);
     next();
   });
-  app.get("/health", (_req, res) => res.json({ status: "HEALTHY" }));
+  api.get("/health", (_req, res) => res.json({ status: "HEALTHY" }));
   const unavailable = async () => ({
     ready: false,
     dependencies: [
@@ -41,7 +42,7 @@ function createApp(dependencies) {
     snapshot: unavailable,
     serviceHealth: async () => ({ ready: false }),
   };
-  app.get("/ready", async (req, res) => {
+  api.get("/ready", async (req, res) => {
     const snapshot = await runtime.snapshot(req.correlationId);
     if (snapshot.ready)
       return res.json({ status: "READY", dependencies: snapshot.dependencies });
@@ -54,7 +55,7 @@ function createApp(dependencies) {
       { dependencies: snapshot.dependencies },
     );
   });
-  app.get("/health/services", async (req, res) => {
+  api.get("/health/services", async (req, res) => {
     const snapshot = await runtime.snapshot(req.correlationId);
     res.json({
       services: [
@@ -65,17 +66,18 @@ function createApp(dependencies) {
       ],
     });
   });
-  app.use(express.json({ limit: "1mb" }));
-  registerAuthRoutes(app, runtime);
-  registerDriverRegistration(app, runtime);
-  registerDriverRoutes(app, runtime);
-  registerBookingRoutes(app, runtime);
-  registerOfferRoutes(app, runtime);
-  registerTripRoutes(app, runtime);
-  registerPaymentRoutes(app, runtime);
-  registerDemoInboxRoutes(app, runtime);
-  registerRoutes(app, runtime);
-  registerLookupRoutes(app, runtime);
+  api.use(express.json({ limit: "1mb" }));
+  registerAuthRoutes(api, runtime);
+  registerDriverRegistration(api, runtime);
+  registerDriverRoutes(api, runtime);
+  registerBookingRoutes(api, runtime);
+  registerOfferRoutes(api, runtime);
+  registerTripRoutes(api, runtime);
+  registerPaymentRoutes(api, runtime);
+  registerDemoInboxRoutes(api, runtime);
+  registerRoutes(api, runtime);
+  registerLookupRoutes(api, runtime);
+  app.use("/api/v1", api);
   app.use((_req, res) =>
     res.status(404).json({
       code: "NOT_FOUND",

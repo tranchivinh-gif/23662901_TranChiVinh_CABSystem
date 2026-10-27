@@ -8,7 +8,7 @@ if (!/^mock_[0-9a-f-]{36}$/.test(reference || '') || !Number.isSafeInteger(amoun
 }
 const timestamp = Math.floor(Date.now() / 1000);
 console.log(JSON.stringify({
-  url: 'http://localhost:8080/webhooks/payment/mock',
+  url: 'http://localhost:8080/api/v1/webhooks/payment/mock',
   headers: { 'Content-Type': 'application/json', 'X-CAB-Timestamp': String(timestamp),
     'X-CAB-Signature': signature(process.env.CAB_PAYMENT_WEBHOOK_SECRET, timestamp, reference, amount, status) },
   body: { providerReference: reference, amount, status },
