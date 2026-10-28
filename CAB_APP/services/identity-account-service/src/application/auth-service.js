@@ -99,7 +99,7 @@ function createAuthService({ pool, pii, passwords, tokens, otpProvider, profiles
     const password=domain.text(request.password),byEmail=Boolean(request.email);
     if(byEmail && request.phone || !byEmail && !request.phone) throw new AuthError('INVALID_ARGUMENT');
     const identity=byEmail?domain.email(request.email):domain.phone(request.phone),identityHash=pii.hmac(identity);
-    const account=(await pool.query(byEmail?'SELECT * FROM accounts WHERE email_hash=$1 AND role_code=\'CUSTOMER\'':'SELECT * FROM accounts WHERE phone_hash=$1 AND role_code<>\'CUSTOMER\'',[identityHash])).rows[0];
+    const account=(await pool.query(byEmail?"SELECT * FROM accounts WHERE email_hash=$1 AND role_code IN ('CUSTOMER','ADMIN')":"SELECT * FROM accounts WHERE phone_hash=$1 AND role_code<>'CUSTOMER'",[identityHash])).rows[0];
     const correct=await passwords.verify(account?.password_hash || await dummyPassword,password);
     if (!correct || !account) { await audit(pool,'LoginFailed',context,null,{reason:'INVALID_CREDENTIALS'}); throw new AuthError('INVALID_CREDENTIALS',grpc.status.UNAUTHENTICATED); }
     context.assertActive();

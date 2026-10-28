@@ -29,7 +29,7 @@ async function seedIdentity() {
   await transaction('identity',async db=>{
     for(const item of people){
       const encrypted=pii.encrypt(item.phone,'accounts:'+item.accountId+':phone');
-      const emailEncrypted=item.role==='CUSTOMER'?pii.encrypt(item.email,'accounts:'+item.accountId+':email'):null;
+      const emailEncrypted=['CUSTOMER','ADMIN'].includes(item.role)?pii.encrypt(item.email,'accounts:'+item.accountId+':email'):null;
       const status=item.name==='driver9'?'Pending':item.name==='driver10'?'Suspended':'Active';
       await db.query(`INSERT INTO accounts(account_id,role_code,phone_hash,phone_ciphertext,phone_key_id,phone_iv,phone_tag,email_hash,email_ciphertext,email_key_id,email_iv,email_tag,password_hash,status)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) ON CONFLICT(account_id) DO UPDATE SET
@@ -37,7 +37,7 @@ async function seedIdentity() {
         email_key_id=COALESCE(EXCLUDED.email_key_id,accounts.email_key_id),email_iv=COALESCE(EXCLUDED.email_iv,accounts.email_iv),email_tag=COALESCE(EXCLUDED.email_tag,accounts.email_tag),
         password_hash=EXCLUDED.password_hash`,
       [item.accountId,item.role,pii.hmac(item.phone),encrypted.ciphertext,encrypted.keyId,encrypted.iv,encrypted.tag,
-        item.role==='CUSTOMER'?pii.hmac(item.email):null,emailEncrypted?.ciphertext || null,emailEncrypted?.keyId || null,emailEncrypted?.iv || null,emailEncrypted?.tag || null,await hash(password),status]);
+        emailEncrypted?pii.hmac(item.email):null,emailEncrypted?.ciphertext || null,emailEncrypted?.keyId || null,emailEncrypted?.iv || null,emailEncrypted?.tag || null,await hash(password),status]);
     }
     // The pending demo driver has completed OTP/profile registration and can be approved by Staff/Admin.
     const pending=drivers[8], verificationId=id('driver9:verification');
@@ -81,7 +81,8 @@ async function seedDrivers() {
         VALUES($1,$2,$3,$4) ON CONFLICT(driver_id) DO NOTHING`,
       [item.profileId,availability,availability==='Available'?new Date(Date.now()-60000):null,index<8?new Date():null]);
       await db.query(`INSERT INTO driver_current_location(driver_id,current_location,observed_at)
-        VALUES($1,ST_SetSRID(ST_MakePoint($2,$3),4326)::geography,now()) ON CONFLICT(driver_id) DO NOTHING`,
+        VALUES($1,ST_SetSRID(ST_MakePoint($2,$3),4326)::geography,now())
+        ON CONFLICT(driver_id) DO UPDATE SET current_location=EXCLUDED.current_location,observed_at=now(),received_at=now()`,
       [item.profileId,center.lng+(index+1)*0.00035,center.lat]);
       for(const documentType of ['IDENTITY','LICENSE','VEHICLE_REGISTRATION']) {
         const docId=id(item.name+':document:'+documentType);
