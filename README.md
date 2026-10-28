@@ -61,26 +61,26 @@ pgAdmin chỉ bind vào `127.0.0.1`, không mở giao diện ra mạng bên ngo�
 
 ## Tài khoản và dữ liệu trình diễn
 
-Tất cả tài khoản mẫu dùng mật khẩu `123`. Customer đăng nhập bằng email; Driver, Staff và Admin đăng nhập bằng số điện thoại dạng `090...` hoặc `+84...`.
+Tất cả tài khoản mẫu dùng mật khẩu `123`. Customer và Admin đăng nhập bằng email; Driver và Staff đăng nhập bằng số điện thoại dạng `090...` hoặc `+84...`.
 
 | Vai trò | Số điện thoại | Ghi chú |
 |---|---|---|
 | Customer 1 | `khach1@gmail.com` | Có 9 booking lịch sử, 1 chuyến Completed để đánh giá/thanh toán |
-| Admin | `0900000010` | Duyệt tài xế, xem dashboard |
+| Admin | `admin@gmail.com` | Duyệt tài xế, xem dashboard |
 | Staff | `0900000011` | Xem danh sách, duyệt tài xế |
-| Driver 1–7 | `0900000101` đến `0900000107` | Active, Available, ở gần `10.8231,106.6297` |
+| Driver 1–7 | `0900000101` đến `0900000107` | Active, Available, ở gần `10,10` |
 | Driver 8 | `0900000108` | Active, Busy, gắn với chuyến Completed mẫu |
 | Driver 9 | `0900000109` | Pending, có đủ hồ sơ để Admin duyệt |
 | Driver 10 | `0900000110` | Suspended |
 
-Mười tài xế đều ở gần `10.8231,106.6297`: bảy tài xế Active/Available, một Active/Busy, một Pending/Offline và một Suspended/Offline. Định vị mẫu được làm mới trong container Driver để bảy tài xế Available luôn hiện trong truy vấn gần đó. Trạng thái do bạn đổi thủ công vẫn được tôn trọng. Mã OTP của nhà cung cấp **giả lập** trong bản demo là `123456`. Cổng thanh toán là provider **giả lập**, không giao dịch tiền thật. Không dùng mật khẩu mẫu này cho hệ thống thực.
+Mười tài xế đều ở gần `10,10`: bảy tài xế Active/Available, một Active/Busy, một Pending/Offline và một Suspended/Offline. Định vị mẫu được làm mới trong container Driver để bảy tài xế Available luôn hiện trong truy vấn gần đó. Trạng thái do bạn đổi thủ công vẫn được tôn trọng. Mã OTP của nhà cung cấp **giả lập** trong bản demo là `123456`. Cổng thanh toán là provider **giả lập**, không giao dịch tiền thật. Không dùng mật khẩu mẫu này cho hệ thống thực.
 
 Driver **mới tự đăng ký** qua API cũng được cấp mật khẩu demo `123`.
 
 ## Bắt đầu thao tác bằng Postman
 
 - Base URL: `http://localhost:8080/api/v1`.
-- Customer đăng nhập `POST /auth/login` với JSON `{"email":"khach1@gmail.com","password":"123"}`. Customer mới đăng ký bằng `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; số điện thoại dùng làm thông tin liên hệ, còn đăng nhập dùng email. Driver/Admin/Staff vẫn đăng nhập bằng `phoneNumber`. Lưu `accessToken` vào biến Postman phù hợp; API cần xác thực gửi header `Authorization: Bearer <token>`.
+- Customer đăng nhập `POST /auth/login` với JSON `{"email":"khach1@gmail.com","password":"123"}`; Admin dùng `{"email":"admin@gmail.com","password":"123"}`. Customer mới đăng ký bằng `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; số điện thoại dùng làm thông tin liên hệ, còn đăng nhập dùng email. Driver/Staff đăng nhập bằng `phoneNumber`. Lưu `accessToken` vào biến Postman phù hợp; API cần xác thực gửi header `Authorization: Bearer <token>`.
 - Customer gọi `GET /customers/me` với `customerToken` để xem hồ sơ của chính mình, không cần nhập `customerId`. `GET /customers/{customerId}` vẫn dùng để lấy theo mã số và kiểm tra phân quyền.
 - Driver gọi `GET /drivers/me` với token Driver để xem hồ sơ của chính mình, không cần nhập `driverId`. `GET /drivers/{driverId}` vẫn dùng để lấy theo mã số.
 - Toàn bộ đường dẫn, trường dữ liệu và response nằm trong [`contracts/openapi/openapi-all.yaml`](contracts/openapi/openapi-all.yaml). Đọc file này trực tiếp hoặc import vào Postman để tạo request **thủ công**; gói không kèm collection hay script test. Mọi đường dẫn API đều có tiền tố `/api/v1`, ví dụ `/api/v1/bookings`.
@@ -94,7 +94,7 @@ Authorization: Bearer <customerToken>
 Content-Type: application/json
 Idempotency-Key: demo-booking-001
 
-{"pickup":{"lat":10.8231,"lng":106.6297},"destination":{"lat":10.8340,"lng":106.6400},"serviceType":"MOTORBIKE","paymentMethod":"Electronic"}
+{"pickup":{"lat":10,"lng":10},"destination":{"lat":10.01,"lng":10.01},"serviceType":"MOTORBIKE","paymentMethod":"Electronic"}
 ```
 
 Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 2 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 20 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
@@ -119,7 +119,7 @@ docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_i
 | 5–8 | `docker compose ps`; gọi `/api/v1/health`, `/api/v1/ready`, `/api/v1/health/services`; xem `docker compose logs kafka topic-init notification-service`; cho xem `compose.yaml` chỉ map cổng Gateway. |
 | 9–10 | `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; Customer đăng nhập qua `/auth/login` bằng `email` và `password`. Không cần OTP. |
 | 11–12 | Lấy `customerId`, `driverId` từ các response/danh sách; gọi `GET /customers/{customerId}` và `GET /drivers/{driverId}` bằng token phù hợp. |
-| 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10.8231&lng=106.6297&radiusKm=1&page=0&limit=5`, đổi `page`. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
+| 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10&lng=10&radiusKm=1&page=0&limit=10`, đổi `page` nếu cần. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
 | 14 | Customer 1 gọi `GET /customers/me/bookings?page=0&limit=2`, đổi `page`; có mười booking mẫu. |
 | 15–16 | Customer tạo `POST /bookings`; Driver được mời xem `GET /notifications` và `GET /driver-offers`, sau đó nhận `POST /driver-offers/{offerId}/accept`; kiểm tra `GET /trips/{tripId}`. |
 | 17–18 | Driver gọi lần lượt `POST /trips/{id}/arrive`, `/pickup`, `/start`, `/complete`; gửi `Idempotency-Key` riêng cho mỗi bước. Giữa các bước có thể gửi `PUT /drivers/me/location` với `lat`, `lng`, `timestamp` ISO 8601 để cập nhật vị trí. Với chuyến mới khác, Customer gọi `POST /trips/{id}/cancel` với `{"reason":"Đổi kế hoạch"}`. |
