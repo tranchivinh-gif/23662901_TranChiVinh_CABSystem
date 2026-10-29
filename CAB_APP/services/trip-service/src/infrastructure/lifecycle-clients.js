@@ -18,7 +18,7 @@ function createLifecycleClients(config,env=process.env){
   }
   return {authorize:(permission,id,ctx)=>invoke('identity','authorizeAccess',{permission,resourceId:id},ctx),
     customer:(accountId,ctx)=>invoke('customer','getByAccount',{id:accountId},ctx),driver:(accountId,ctx)=>invoke('driver','getByAccount',{id:accountId},ctx),
-    systemContext,finalize:(value,ctx)=>invoke('booking','finalizeTrip',value,ctx,1400),fare:(value,ctx)=>invoke('booking','calculateFinalFare',value,ctx,1200),
+    systemContext,finalize:(value,ctx)=>invoke('booking','finalizeTrip',value,ctx,1400),fare:(value,ctx)=>invoke('booking','calculateFinalFare',value,ctx,1200),route:(value,ctx)=>invoke('booking','getTripRoute',value,ctx,700),
     close(){for(const client of Object.values(clients))client.close();}};
 }
 module.exports={createLifecycleClients};

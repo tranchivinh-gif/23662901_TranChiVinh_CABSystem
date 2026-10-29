@@ -38,7 +38,13 @@ function createLifecycle({pool,clients}){
     try{const context=await clients.systemContext(row.correlation_id,deadline);await clients.finalize({tripId:id,bookingId:row.booking_id,state:row.state},context);await pool.query('UPDATE trip_terminal_jobs SET done=true,safe_error_code=NULL WHERE trip_id=$1',[id]);}
     catch(error){await pool.query("UPDATE trip_terminal_jobs SET attempts=attempts+1,next_attempt_at=now()+interval '1 second',safe_error_code='DEPENDENCY_UNAVAILABLE' WHERE trip_id=$1 AND NOT done",[id]).catch(()=>{});throw error;}
   }
-  async function getTrip(request,context){const {id,actor}=await access(request,'trip:read',context);return view(pool,await load(pool,id,actor));}
+  async function withLocation(value,context){
+    if(!['ARRIVED','COMPLETED'].includes(value.status))return value;
+    const system=await clients.systemContext(context.correlationId,context.deadline);
+    const route=await clients.route({tripId:value.tripId,bookingId:value.bookingId},system);
+    return {...value,locationJson:JSON.stringify(value.status==='ARRIVED'?route.pickup:route.destination)};
+  }
+  async function getTrip(request,context){const {id,actor}=await access(request,'trip:read',context);return withLocation(await view(pool,await load(pool,id,actor)),context);}
   async function transition(request,context){
     const {id,actor}=await access(request,'trip:transition',context);if(actor.role!=='DRIVER')domain.fail(7);
     const target=request.targetStatus,key=request.idempotencyKey;
@@ -56,13 +62,13 @@ function createLifecycle({pool,clients}){
           await db.query('UPDATE trip_fare_snapshot SET distance_km=$2,final_fare=$3,estimated=$4 WHERE trip_id=$1',[id,fare.distanceKm,fare.total.amount,fare.estimated]);
         }
         row=(await db.query("UPDATE trips SET state=$2::varchar,arrived_at=CASE WHEN $2::varchar='DriverArrived' THEN now() ELSE arrived_at END,started_at=CASE WHEN $2::varchar='InProgress' THEN now() ELSE started_at END,completed_at=CASE WHEN $2::varchar='Completed' THEN now() ELSE completed_at END,version=version+1,updated_at=now() WHERE trip_id=$1 RETURNING *",[id,target])).rows[0];
-        await record(db,row,previous,actor,context,{DriverArrived:'DriverArrived',PickedUp:'TripPickedUp',InProgress:'TripInProgress',Completed:'TripCompleted'}[target]);
+        await record(db,row,previous,actor,context,{DriverArrived:'DriverArrived',InProgress:'TripInProgress',Completed:'TripCompleted'}[target]);
       }
       const value=await view(db,row);
       await db.query("INSERT INTO trip_commands(actor_id,trip_id,command,idempotency_key,request_hash,response,expires_at) VALUES($1,$2,'transition',$3,$4,$5,now()+interval '24 hours') ON CONFLICT(actor_id,trip_id,command,idempotency_key) DO UPDATE SET request_hash=EXCLUDED.request_hash,response=EXCLUDED.response,expires_at=EXCLUDED.expires_at",[actor.accountId,id,key,hash,value]);
       context.assertActive();return value;
     });
-    if(target==='Completed')await reconcile(id,context.deadline-30);return result;
+    if(target==='Completed')await reconcile(id,context.deadline-30);return withLocation(result,context);
   }
   async function cancelTrip(request,context){
     const {id,actor}=await access(request,'trip:cancel',context),why=domain.reason(request.reason);

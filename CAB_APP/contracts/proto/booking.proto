@@ -13,6 +13,7 @@ service BookingService {
   rpc GetDriverOffers(cab.common.v1.Empty) returns (OfferList);
   rpc FinalizeTrip(TripTerminalRequest) returns (cab.common.v1.Empty);
   rpc CalculateFinalFare(TripFareRequest) returns (FareEstimate);
+  rpc GetTripRoute(TripTerminalRequest) returns (TripRoute);
 }
 message FareRequest {
   cab.common.v1.GeoPoint pickup = 1;
@@ -38,3 +39,4 @@ message DriverOffer { string offer_id = 1; string booking_id = 2; string trip_id
 message OfferList { repeated DriverOffer items = 1; }
 message TripTerminalRequest { string trip_id = 1; string booking_id = 2; string state = 3; }
 message TripFareRequest { string booking_id = 1; string driver_id = 2; string started_at = 3; string ended_at = 4; }
+message TripRoute { cab.common.v1.GeoPoint pickup = 1; cab.common.v1.GeoPoint destination = 2; }

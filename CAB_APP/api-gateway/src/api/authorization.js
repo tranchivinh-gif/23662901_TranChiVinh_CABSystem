@@ -8,7 +8,7 @@ allow('updateMyCustomerProfile getMyBookings estimateFare createBooking rateTrip
 allow('getCustomerById getCustomerBookings', ['CUSTOMER', ...operators]);
 allow('cancelTrip',all);
 allow('getDriverById', ['DRIVER', ...operators]);
-allow('updateMyDriverProfile updateMyDriverAvailability updateMyDriverLocation markTripArrived markTripPickedUp startTrip completeTrip confirmCashPayment acceptDriverOffer rejectDriverOffer', ['DRIVER']);
+allow('updateMyDriverProfile updateMyDriverAvailability updateMyDriverLocation markTripArrived startTrip completeTrip confirmCashPayment acceptDriverOffer rejectDriverOffer', ['DRIVER']);
 allow('getNearbyDrivers adminListTrips adminListOnlineDrivers adminListPayments adminListCustomers adminListVehicles adminCreateVehicle adminListDrivers approveDriver rejectDriver adminUpdateCustomer adminUpdateVehicle adminRedispatchTrip', operators);
 allow('adminListAccounts adminCreateAccount adminQueryAuditLogs suspendCustomer suspendDriver activateDriver activateCustomer adminForceCloseTrip adminAdjustTripFare adminAdjustPayment adminUpdateAccount adminUpdateAccountRole adminGetPolicy adminCreatePolicyVersion', ['ADMIN']);
 function routeAllowed(operation, role) { return policies[operation]?.includes(role) === true; }

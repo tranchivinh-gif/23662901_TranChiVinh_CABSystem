@@ -980,47 +980,6 @@ paths:
       x-cab-owner-service: trip-service
       x-cab-public-via: api-gateway
       x-cab-internal-transport: gRPC
-  /trips/{id}/pickup:
-    post:
-      tags:
-      - Trip
-      summary: Đánh dấu đã đón Customer
-      operationId: markTripPickedUp
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - $ref: '#/components/parameters/IdempotencyKey'
-      - $ref: '#/components/parameters/CorrelationId'
-      responses:
-        '200':
-          description: Trip chuyển trạng thái hợp lệ tới PickedUp.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TripActionResponse'
-          headers:
-            X-Correlation-Id:
-              $ref: '#/components/headers/CorrelationId'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-      x-cab-trace:
-      - UC-16
-      - FR-20
-      - PC-20
-      - PC-21
-      x-contract-confidence: EXACT
-      x-cab-owner-service: trip-service
-      x-cab-public-via: api-gateway
-      x-cab-internal-transport: gRPC
   /trips/{id}/start:
     post:
       tags:

@@ -2,13 +2,13 @@
 const crypto=require('node:crypto');
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const states={Searching:'SEARCHING',DriverAssigned:'DRIVER_ASSIGNED',DriverArrived:'ARRIVED',PickedUp:'PICKED_UP',InProgress:'IN_PROGRESS',Completed:'COMPLETED',Cancelled:'CANCELED',Failed:'FAILED',NoDriverFound:'FAILED'};
-const previous={DriverArrived:'DriverAssigned',PickedUp:'DriverArrived',InProgress:'PickedUp',Completed:'InProgress'};
+const previous={DriverArrived:'DriverAssigned',InProgress:'DriverArrived',Completed:'InProgress'};
 function fail(code=3){throw {code};}
 function policy(value){
   if(!value || value.freeCancelSeconds!==30 || value.cancellationFeeVnd!==20000 || value.noShowWaitSeconds!==300 || value.ratingWindowDays!==7)fail(9);
   return value;
 }
-function transition(state,target){if(!previous[target])fail();if(state!==target && previous[target]!==state)fail(9);return state!==target;}
+function transition(state,target){if(!previous[target])fail();if(state!==target && previous[target]!==state && !(target==='InProgress' && state==='PickedUp'))fail(9);return state!==target;}
 function reason(value){if(typeof value!=='string' || !value.trim() || value.length>500)fail();return value.trim();}
 function cancellation(trip,actor,why,settings,now){
   if(actor.role==='DRIVER'){

@@ -30,6 +30,13 @@ function createTripOperations({pool,clients,matching,verify}){
     const distance=await clients.distance({driverId:request.driverId,startedAt:request.startedAt,endedAt:request.endedAt},system);
     const fare=calculate({...row,version:row.rule_version},distance.complete?Number(distance.distanceKm):Number(row.distance_km),0);fare.estimated=!distance.complete;return fare;
   }
-  return {finalizeTrip,calculateFinalFare};
+  async function getTripRoute(request,context){
+    verify(context.token);
+    if(!uuid.test(request.bookingId || '') || !uuid.test(request.tripId || ''))throw {code:3};
+    const row=(await pool.query('SELECT pickup_lat,pickup_lng,destination_lat,destination_lng FROM bookings WHERE booking_id=$1 AND trip_id=$2',[request.bookingId,request.tripId])).rows[0];
+    if(!row)throw {code:5};
+    return {pickup:{lat:Number(row.pickup_lat),lng:Number(row.pickup_lng)},destination:{lat:Number(row.destination_lat),lng:Number(row.destination_lng)}};
+  }
+  return {finalizeTrip,calculateFinalFare,getTripRoute};
 }
 module.exports={createTripOperations};

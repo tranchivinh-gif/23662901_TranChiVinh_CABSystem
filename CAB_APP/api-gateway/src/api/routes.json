@@ -273,14 +273,6 @@
   },
   {
     "method": "post",
-    "path": "/trips/:id/pickup",
-    "operationId": "markTripPickedUp",
-    "owner": "trip-service",
-    "rpc": "transition",
-    "public": false
-  },
-  {
-    "method": "post",
     "path": "/trips/:id/start",
     "operationId": "startTrip",
     "owner": "trip-service",

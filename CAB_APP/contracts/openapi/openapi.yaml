@@ -110,8 +110,6 @@ paths:
     $ref: ./paths/trips.yaml#/tripsId
   /trips/{id}/arrive:
     $ref: ./paths/trips.yaml#/tripsIdArrive
-  /trips/{id}/pickup:
-    $ref: ./paths/trips.yaml#/tripsIdPickup
   /trips/{id}/start:
     $ref: ./paths/trips.yaml#/tripsIdStart
   /trips/{id}/complete:
