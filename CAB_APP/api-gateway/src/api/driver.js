@@ -33,10 +33,10 @@ function registerDriverRoutes(app,runtime) {
         payload={pagination:{page,limit},driverId:req.query.driverId || '',phone:req.query.phone || '',name:req.query.name || '',
           approvalStatus:req.query.approvalStatus || '',availability:req.query.availability || '',serviceType:req.query.serviceType || ''};
       } else if(rpc==='getNearbyDrivers') {
-        const allowed=['lat','lng','radiusKm','page','limit','status'];
+        const allowed=['lat','lng','rad','page','limit','status'];
         if(Object.keys(req.query).some(key=>!allowed.includes(key)) || ['lat','lng'].some(key=>typeof req.query[key]!=='string' || !req.query[key].trim()) ||
           allowed.some(key=>req.query[key]!==undefined && (typeof req.query[key]!=='string' || !req.query[key].trim()))) throw {code:3};
-        payload={location:{lat:Number(req.query.lat),lng:Number(req.query.lng)},radiusKm:req.query.radiusKm===undefined?1:Number(req.query.radiusKm),
+        payload={location:{lat:Number(req.query.lat),lng:Number(req.query.lng)},radiusKm:req.query.rad===undefined?1:Number(req.query.rad),
           pagination:{page:req.query.page===undefined?0:Number(req.query.page),limit:req.query.limit===undefined?10:Number(req.query.limit)},status:req.query.status || ''};
         if(!Number.isInteger(payload.pagination.page) || !Number.isInteger(payload.pagination.limit) || payload.pagination.page<0 || payload.pagination.page>2147483647 ||
           payload.pagination.limit<1 || payload.pagination.limit>100 || !Number.isFinite(payload.radiusKm) || payload.radiusKm<0 || payload.radiusKm>1 ||

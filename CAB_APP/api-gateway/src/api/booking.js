@@ -27,7 +27,11 @@ function registerBookingRoutes(app,runtime) {
       const deadline=Date.now()+1800;
       let payload={};
       if(method==='post') {
-        const value=req.body;
+        const input=req.body;
+        const value=input && typeof input==='object' && !Array.isArray(input)
+          ? {...input,pickup:input.pickup??input.p,destination:input.destination??input.des,
+            serviceType:input.serviceType??input.svc,paymentMethod:input.paymentMethod??input.pay}
+          : input;
         if(!value || Array.isArray(value) || typeof value!=='object')throw {code:3};
         for(const point of [value.pickup,value.destination])if(!point || typeof point.lat!=='number' || typeof point.lng!=='number' || Object.keys(point).some(key=>!['lat','lng'].includes(key)))throw {code:3};
         if(typeof value.serviceType!=='string')throw {code:3};
