@@ -4,7 +4,7 @@ Thư mục này là gói ứng dụng để **trình diễn thủ công**. Có A
 
 ## Khởi động từ thư mục này
 
-1. Cài Docker Desktop, bật Linux containers và chờ Docker Engine chạy. Máy cần có mạng ở lần đầu để tải image/dependency, khoảng 8 GB RAM trống và cổng `8080` chưa bị chiếm.
+1. Cài Docker Desktop, bật Linux containers và chờ Docker Engine chạy. Máy cần có mạng ở lần đầu để tải image/dependency, khoảng 8 GB RAM trống và các cổng `8080`, `8081`, `5050` chưa bị chiếm.
 2. Mở PowerShell hoặc terminal **tại thư mục `CAB_APP`**. Nếu chỉ chép riêng thư mục này sang máy khác, cũng đứng tại thư mục gốc của bản chép.
 3. Chạy:
 
@@ -23,7 +23,11 @@ Thư mục này là gói ứng dụng để **trình diễn thủ công**. Có A
 
 4. Mở `http://localhost:8080/api/v1/health`, `http://localhost:8080/api/v1/ready`, `http://localhost:8080/api/v1/health/services`. Chờ `/api/v1/ready` trả ready và `demo-seed` hoàn thành trước khi thử dữ liệu mẫu.
 
-`docker compose` tự khởi tạo khóa trong Docker volume, bảy database và role riêng, migration, Kafka topics, dữ liệu mẫu. Các job `secret-bootstrap`, `migrate`, `topic-init`, `demo-seed` kết thúc với mã 0 là bình thường. Có **18 container chạy liên tục**: 8 ứng dụng, 7 PostgreSQL/PostGIS, Redis, Kafka và pgAdmin. Gateway (`127.0.0.1:8080`) và pgAdmin (`127.0.0.1:5050`) được mở trên máy; các cổng database không được mở trực tiếp. Mỗi ứng dụng có Dockerfile riêng trong `api-gateway/` hoặc `services/<tên-service>/`.
+`docker compose` tự khởi tạo khóa trong Docker volume, bảy database và role riêng, migration, Kafka topics, dữ liệu mẫu. Các job `secret-bootstrap`, `migrate`, `topic-init`, `demo-seed` kết thúc với mã 0 là bình thường. Có **19 container chạy liên tục**: 8 ứng dụng, 7 PostgreSQL/PostGIS, Redis, Kafka, pgAdmin và Kafka UI. Gateway (`127.0.0.1:8080`), Kafka UI (`127.0.0.1:8081`) và pgAdmin (`127.0.0.1:5050`) được mở trên máy; các cổng database và broker Kafka không được mở trực tiếp. Mỗi ứng dụng có Dockerfile riêng trong `api-gateway/` hoặc `services/<tên-service>/`.
+
+## Xem Kafka bằng giao diện web
+
+Mở `http://localhost:8081` rồi chọn cluster `cab-demo` để xem topics, messages và consumer groups. Kafka UI chỉ mở trên máy local và kết nối broker qua mạng Docker nội bộ tại `kafka:9092`.
 
 ## Xem database bằng giao diện pgAdmin
 
@@ -94,10 +98,12 @@ Authorization: Bearer <customerToken>
 Content-Type: application/json
 Idempotency-Key: demo-booking-001
 
-{"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"MOTORBIKE","pay":"Electronic"}
+{"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"bike","pay":"elec"}
 ```
 
-Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 2 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 20 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
+Gateway chấp nhận `svc: "bike"` và `pay: "elec"`, rồi chuyển thành `MOTORBIKE` và `Electronic` trước khi gửi sang Booking service. Header `Authorization` và `Idempotency-Key` vẫn bắt buộc.
+
+Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 5 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 50 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
 
 ```powershell
 docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_id,driver_id,status,expires_at FROM driver_offers ORDER BY created_at DESC LIMIT 10;"

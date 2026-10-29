@@ -35,12 +35,13 @@ function registerBookingRoutes(app,runtime) {
         if(!value || Array.isArray(value) || typeof value!=='object')throw {code:3};
         for(const point of [value.pickup,value.destination])if(!point || typeof point.lat!=='number' || typeof point.lng!=='number' || Object.keys(point).some(key=>!['lat','lng'].includes(key)))throw {code:3};
         if(typeof value.serviceType!=='string')throw {code:3};
-        const serviceType=normalizeServiceType(value.serviceType);
+        const serviceType=normalizeServiceType(value.serviceType==='bike'?'MOTORBIKE':value.serviceType);
         payload={pickup:value.pickup,destination:value.destination,serviceType};
         if(rpc==='createBooking') {
           const rawKey=req.get('Idempotency-Key');
           const key=rawKey?normalizeString(rawKey,{field:'Idempotency-Key',maxLength:128}):'';
-          if(!key || !['Cash','Electronic'].includes(value.paymentMethod))throw {code:3};
+          const paymentMethod=value.paymentMethod==='elec'?'Electronic':value.paymentMethod;
+          if(!key || !['Cash','Electronic'].includes(paymentMethod))throw {code:3};
           if(value.fareEstimate!==undefined) {
             const estimate=value.fareEstimate;
             if(!estimate || Array.isArray(estimate) || estimate.currency!=='VND' || typeof estimate.finalFare!=='number' || estimate.finalFare<0 ||
@@ -49,7 +50,7 @@ function registerBookingRoutes(app,runtime) {
           }
           const rate=await runtime.auth.rateLimit(req,'createBooking');
           if(!rate.allowed){res.set('Retry-After',String(rate.retryAfter || 1));return sendError(res,req.correlationId,429,'RATE_LIMIT_EXCEEDED','Too many requests');}
-          payload={route:payload,paymentMethod:value.paymentMethod,idempotencyKey:key,payloadJson:JSON.stringify(value)};
+          payload={route:payload,paymentMethod,idempotencyKey:key,payloadJson:JSON.stringify({...value,serviceType,paymentMethod})};
         }
       } else if(rpc==='listCustomerBookings') {
         const integer=(name,defaultValue)=>{const raw=req.query[name];if(raw===undefined)return defaultValue;if(typeof raw!=='string' || !/^\d+$/.test(raw) || !Number.isSafeInteger(Number(raw)))throw {code:3};return Number(raw);};
