@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const { createPii } = require('../services/identity-account-service/src/infrastructure/security/pii');
 const { hash } = require('../services/identity-account-service/src/infrastructure/security/password');
 const { password, center, id, customers, operators, drivers } = require('./demo-data');
+const {addresses}=require('./demo-addresses');
 const pii = createPii();
 const owners = {
   identity: ['IDENTITY_ACCOUNT','identity-account-db','identity_account_db','cab_identity'],
@@ -107,7 +108,7 @@ async function seedBookings() {
       const booking=id('historical:booking:'+index),trip=id('historical:trip:'+index);
       await db.query(`INSERT INTO bookings(booking_id,customer_id,service_type,status,payment_method,pickup_lat,pickup_lng,destination_lat,destination_lng,search_started_at,search_deadline_at,trip_id,provisioning_status)
         VALUES($1,$2,'MOTORBIKE','NoDriverFound','Cash',$3,$4,$5,$6,now()-interval '1 day',now()-interval '1 day'+interval '120 seconds',$7,'Completed')
-        ON CONFLICT(booking_id) DO NOTHING`,[booking,customers[0].profileId,center.lat,center.lng,center.lat+0.01,center.lng+0.01,trip]);
+      ON CONFLICT(booking_id) DO NOTHING`,[booking,customers[0].profileId,addresses.diachia.lat,addresses.diachia.lng,addresses.diachib.lat,addresses.diachib.lng,trip]);
       await db.query(`INSERT INTO fare_calculations(fare_calculation_id,booking_id,fare_rule_id,rule_version,distance_km,base_fare,price_per_km,surcharge,final_fare,estimated)
         VALUES($1,$2,$3,1,4,12000,5000,0,32000,true) ON CONFLICT(fare_calculation_id) DO NOTHING`,
       [id('historical:fare:'+index),booking,rule]);
@@ -115,7 +116,7 @@ async function seedBookings() {
     const booking=id('completed:booking'),trip=id('completed:trip');
     await db.query(`INSERT INTO bookings(booking_id,customer_id,driver_id,service_type,status,payment_method,pickup_lat,pickup_lng,destination_lat,destination_lng,search_started_at,search_deadline_at,trip_id,provisioning_status)
       VALUES($1,$2,$3,'MOTORBIKE','Assigned','Electronic',$4,$5,$6,$7,now()-interval '1 day',now()-interval '1 day'+interval '120 seconds',$8,'Completed')
-      ON CONFLICT(booking_id) DO NOTHING`,[booking,customers[0].profileId,drivers[7].profileId,center.lat,center.lng,center.lat+0.01,center.lng+0.01,trip]);
+      ON CONFLICT(booking_id) DO NOTHING`,[booking,customers[0].profileId,drivers[7].profileId,addresses.diachia.lat,addresses.diachia.lng,addresses.diachib.lat,addresses.diachib.lng,trip]);
     await db.query(`INSERT INTO fare_calculations(fare_calculation_id,booking_id,fare_rule_id,rule_version,distance_km,base_fare,price_per_km,surcharge,final_fare,estimated)
       VALUES($1,$2,$3,1,4,12000,5000,0,32000,true) ON CONFLICT(fare_calculation_id) DO NOTHING`,
     [id('completed:fare'),booking,rule]);

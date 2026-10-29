@@ -14,6 +14,6 @@ COPY contracts/proto ./contracts/proto
 COPY lib ./lib
 COPY services ./services
 COPY infra/app-start.sh ./infra/app-start.sh
-COPY scripts/standalone-migrate.js scripts/demo-seed.js scripts/demo-data.js ./scripts/
+COPY scripts/standalone-migrate.js scripts/demo-seed.js scripts/demo-data.js scripts/demo-addresses.js ./scripts/
 USER node
 ENTRYPOINT ["/bin/sh", "/app/infra/app-start.sh"]

@@ -2,6 +2,7 @@
 const {sendError,rpcError}=require('./errors');
 const {routeAllowed}=require('./authorization');
 const { normalizeServiceType, normalizeString } = require('../infrastructure/input-validation');
+const {resolveDemoAddress}=require('../../../scripts/demo-addresses');
 function fareBody(fare) {
   return {currency:'VND',baseFare:Number(fare.baseFare),distanceKm:Number(fare.distanceKm),pricePerKm:Number(fare.pricePerKm),
     surcharge:Number(fare.surcharge),finalFare:Number(fare.total.amount),ruleVersion:fare.fareRuleVersion,estimated:fare.estimated};
@@ -29,18 +30,18 @@ function registerBookingRoutes(app,runtime) {
       if(method==='post') {
         const input=req.body;
         const value=input && typeof input==='object' && !Array.isArray(input)
-          ? {...input,pickup:input.pickup??input.p,destination:input.destination??input.des,
+          ? {...input,pickup:resolveDemoAddress(input.pickup??input.p,'pickup'),destination:resolveDemoAddress(input.destination??input.des,'destination'),
             serviceType:input.serviceType??input.svc,paymentMethod:input.paymentMethod??input.pay}
           : input;
         if(!value || Array.isArray(value) || typeof value!=='object')throw {code:3};
         for(const point of [value.pickup,value.destination])if(!point || typeof point.lat!=='number' || typeof point.lng!=='number' || Object.keys(point).some(key=>!['lat','lng'].includes(key)))throw {code:3};
         if(typeof value.serviceType!=='string')throw {code:3};
-        const serviceType=normalizeServiceType(value.serviceType==='bike'?'MOTORBIKE':value.serviceType);
+        const serviceType=normalizeServiceType(['b','bike'].includes(value.serviceType)?'MOTORBIKE':value.serviceType);
         payload={pickup:value.pickup,destination:value.destination,serviceType};
         if(rpc==='createBooking') {
           const rawKey=req.get('Idempotency-Key');
           const key=rawKey?normalizeString(rawKey,{field:'Idempotency-Key',maxLength:128}):'';
-          const paymentMethod=value.paymentMethod==='elec'?'Electronic':value.paymentMethod;
+          const paymentMethod=['e','elec'].includes(value.paymentMethod)?'Electronic':value.paymentMethod;
           if(!key || !['Cash','Electronic'].includes(paymentMethod))throw {code:3};
           if(value.fareEstimate!==undefined) {
             const estimate=value.fareEstimate;

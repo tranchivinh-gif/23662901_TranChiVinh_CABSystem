@@ -98,10 +98,32 @@ Authorization: Bearer <customerToken>
 Content-Type: application/json
 Idempotency-Key: demo-booking-001
 
-{"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"bike","pay":"elec"}
+{"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"b","pay":"e"}
 ```
 
-Gateway chấp nhận `svc: "bike"` và `pay: "elec"`, rồi chuyển thành `MOTORBIKE` và `Electronic` trước khi gửi sang Booking service. Header `Authorization` và `Idempotency-Key` vẫn bắt buộc.
+Gateway chấp nhận `svc: "b"` và `pay: "e"` (vẫn hỗ trợ `bike` và `elec`), rồi chuyển thành `MOTORBIKE` và `Electronic` trước khi gửi sang Booking service. Header `Authorization` và `Idempotency-Key` vẫn bắt buộc.
+
+Có thể thay tọa độ bằng địa chỉ mẫu: `{"p":"diachia","des":"diachib","svc":"b","pay":"e"}`. Danh sách địa chỉ demo:
+
+| Mã nhập | Vai trò | Vĩ độ (`lat`) | Kinh độ (`lng`) |
+| --- | --- | ---: | ---: |
+| `diachia` | Điểm đón | 10 | 10 |
+| `diachib` | Điểm đến | 10.01 | 10.01 |
+| `diachic` | Điểm đến | 10.02 | 10 |
+| `diachid` | Điểm đến | 10 | 10.02 |
+| `diachie` | Điểm đến | 9.99 | 10.01 |
+
+Các mã là địa chỉ giả lập, không phải địa chỉ đường phố thật. Chỉ dùng `diachia` cho `p` và một trong `diachib`–`diachie` cho `des`. Mọi booking theo bộ địa chỉ này đều đón tại `(10,10)`, nên thứ tự tài xế được mời giữ như ví dụ tọa độ; lịch sử booking mẫu trong seed cũng dùng `diachia` → `diachib`. Tên không có trong danh sách được trả lỗi đầu vào. Header `Idempotency-Key` vẫn phải đổi khi tạo booking mới.
+
+Để liệt kê tài xế theo tên khu vực trong Postman (token Staff hoặc Admin), gọi `GET http://127.0.0.1:8080/api/v1/drivers/nearby?area=khuvuc1&radi=1&page=0&limit=10`. `radi` tính bằng km; API vẫn nhận `rad` hoặc `radiusKm` và vẫn nhận cặp `lat`, `lng`. Bảng dò khu vực demo:
+
+| `area` | Vĩ độ (`lat`) | Kinh độ (`lng`) | Ghi chú |
+| --- | ---: | ---: | --- |
+| `khuvuc1` | 10 | 10 | Tâm seed tài xế; cùng kết quả với `lat=10&lng=10` |
+| `khuvuc2` | 10.002 | 10.002 | Khu vực mẫu gần tâm |
+| `khuvuc3` | 10.004 | 10.004 | Khu vực mẫu gần tâm |
+
+Tên khu vực chỉ là nhãn giả lập. `page` bắt đầu từ 0, `limit` là số tài xế tối đa mỗi trang. Bảng dò địa chỉ đặt xe nằm ngay phía trên; `diachia` và `khuvuc1` cùng trỏ đến `(10,10)`.
 
 Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 5 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 50 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
 
@@ -125,7 +147,7 @@ docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_i
 | 5–8 | `docker compose ps`; gọi `/api/v1/health`, `/api/v1/ready`, `/api/v1/health/services`; xem `docker compose logs kafka topic-init notification-service`; cho xem `compose.yaml` chỉ map cổng Gateway. |
 | 9–10 | `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; Customer đăng nhập qua `/auth/login` bằng `email` và `password`. Không cần OTP. |
 | 11–12 | Lấy `customerId`, `driverId` từ các response/danh sách; gọi `GET /customers/{customerId}` và `GET /drivers/{driverId}` bằng token phù hợp. |
-| 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10&lng=10&rad=1&page=0&limit=10`, đổi `page` nếu cần. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
+| 13 | Admin/Staff gọi `GET /drivers/nearby?area=khuvuc1&radi=1&page=0&limit=10`, đổi `page` nếu cần. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
 | 14 | Customer 1 gọi `GET /customers/me/bookings?page=0&limit=2`, đổi `page`; có mười booking mẫu. |
 | 15–16 | Customer tạo `POST /bookings`; Driver được mời xem `GET /notifications` và `GET /driver-offers`, sau đó nhận `POST /driver-offers/{offerId}/accept`; kiểm tra `GET /trips/{tripId}`. |
 | 17–18 | Driver gọi lần lượt `POST /trips/{id}/arrive`, `/start`, `/complete` với body rỗng và `Idempotency-Key` riêng cho mỗi bước. Response `arrive` tự hiển thị `location` là điểm đón đã lưu; response `complete` hiển thị điểm đến. `GET /trips/{id}` cũng hiển thị vị trí tương ứng khi chuyến ở trạng thái `ARRIVED` hoặc `COMPLETED`. Giữa các bước, dùng `PUT /drivers/me/location` với `lat`, `lng`, `timestamp` ISO 8601 để ghi nhận vị trí thực tế của tài xế. Với chuyến mới khác, Customer gọi `POST /trips/{id}/cancel` với `{"reason":"Đổi kế hoạch"}`. |

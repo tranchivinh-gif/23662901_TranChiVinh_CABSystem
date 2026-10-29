@@ -14,6 +14,7 @@ COPY contracts/proto ./contracts/proto
 COPY lib ./lib
 COPY infra/app-start.sh ./infra/app-start.sh
 COPY scripts/runtime-health.js ./scripts/runtime-health.js
+COPY scripts/demo-addresses.js ./scripts/demo-addresses.js
 COPY api-gateway/src ./api-gateway/src
 USER node
 ENTRYPOINT ["/bin/sh", "/app/infra/app-start.sh"]
