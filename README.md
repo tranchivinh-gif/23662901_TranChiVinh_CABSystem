@@ -94,7 +94,7 @@ Authorization: Bearer <customerToken>
 Content-Type: application/json
 Idempotency-Key: demo-booking-001
 
-{"pickup":{"lat":10,"lng":10},"destination":{"lat":10.01,"lng":10.01},"serviceType":"MOTORBIKE","paymentMethod":"Electronic"}
+{"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"MOTORBIKE","pay":"Electronic"}
 ```
 
 Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 2 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 20 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
@@ -119,7 +119,7 @@ docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_i
 | 5–8 | `docker compose ps`; gọi `/api/v1/health`, `/api/v1/ready`, `/api/v1/health/services`; xem `docker compose logs kafka topic-init notification-service`; cho xem `compose.yaml` chỉ map cổng Gateway. |
 | 9–10 | `POST /auth/register/customer` với `fullName`, `phoneNumber`, `email`, `password`; Customer đăng nhập qua `/auth/login` bằng `email` và `password`. Không cần OTP. |
 | 11–12 | Lấy `customerId`, `driverId` từ các response/danh sách; gọi `GET /customers/{customerId}` và `GET /drivers/{driverId}` bằng token phù hợp. |
-| 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10&lng=10&radiusKm=1&page=0&limit=10`, đổi `page` nếu cần. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
+| 13 | Admin/Staff gọi `GET /drivers/nearby?lat=10&lng=10&rad=1&page=0&limit=10`, đổi `page` nếu cần. Có 7 Available gần tâm và tài xế Busy/Pending/Suspended để so sánh. |
 | 14 | Customer 1 gọi `GET /customers/me/bookings?page=0&limit=2`, đổi `page`; có mười booking mẫu. |
 | 15–16 | Customer tạo `POST /bookings`; Driver được mời xem `GET /notifications` và `GET /driver-offers`, sau đó nhận `POST /driver-offers/{offerId}/accept`; kiểm tra `GET /trips/{tripId}`. |
 | 17–18 | Driver gọi lần lượt `POST /trips/{id}/arrive`, `/pickup`, `/start`, `/complete`; gửi `Idempotency-Key` riêng cho mỗi bước. Giữa các bước có thể gửi `PUT /drivers/me/location` với `lat`, `lng`, `timestamp` ISO 8601 để cập nhật vị trí. Với chuyến mới khác, Customer gọi `POST /trips/{id}/cancel` với `{"reason":"Đổi kế hoạch"}`. |

@@ -563,7 +563,7 @@ paths:
       - Admin
       summary: Tìm Driver quanh tọa độ cho Staff/Admin grading query
       operationId: getNearbyDrivers
-      description: Endpoint grading riêng. radiusKm=1 không thay thế matching business radius 5 km.
+      description: Endpoint grading riêng. rad=1 không thay thế matching business radius 5 km.
       security:
       - bearerAuth: []
       parameters:
@@ -581,7 +581,7 @@ paths:
           type: number
           minimum: -180
           maximum: 180
-      - name: radiusKm
+      - name: rad
         in: query
         required: false
         schema:
