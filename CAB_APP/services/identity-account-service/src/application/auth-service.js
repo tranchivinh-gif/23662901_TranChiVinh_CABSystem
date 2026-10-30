@@ -87,7 +87,7 @@ function createAuthService({ pool, pii, passwords, tokens, otpProvider, profiles
   async function issue(db, account, familyId=crypto.randomUUID(), rotatedFrom=null) {
     const refreshToken=opaque(),accessToken=tokens.access(account);
     await db.query("INSERT INTO refresh_sessions (session_id,account_id,token_hash,family_id,rotated_from,expires_at) VALUES ($1,$2,$3,$4,$5,now()+interval '7 days')",[crypto.randomUUID(),account.account_id,tokenHash(refreshToken),familyId,rotatedFrom]);
-    return { accessToken,refreshToken,expiresIn:1800,refreshExpiresIn:604800,accountId:account.account_id,role:account.role_code };
+    return { accessToken,refreshToken,expiresIn:3600,refreshExpiresIn:604800,accountId:account.account_id,role:account.role_code };
   }
   async function canLogin(db, account) {
     if (account.status==='Active') return true;

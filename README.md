@@ -70,6 +70,7 @@ Tất cả tài khoản mẫu dùng mật khẩu `123`. Customer và Admin đăn
 | Vai trò | Số điện thoại | Ghi chú |
 |---|---|---|
 | Customer 1 | `khach1@gmail.com` | Có 9 booking lịch sử, 1 chuyến Completed để đánh giá/thanh toán |
+| Customer 2 | `khach2@gmail.com` | Tài khoản mới, chưa có booking; số điện thoại `0900000002` |
 | Admin | `admin@gmail.com` | Duyệt tài xế, xem dashboard |
 | Staff | `0900000011` | Xem danh sách, duyệt tài xế |
 | Driver 1–7 | `0900000101` đến `0900000107` | Active, Available, ở gần `10,10` |
@@ -125,7 +126,7 @@ Các mã là địa chỉ giả lập, không phải địa chỉ đường ph�
 
 Tên khu vực chỉ là nhãn giả lập. `page` bắt đầu từ 0, `limit` là số tài xế tối đa mỗi trang. Bảng dò địa chỉ đặt xe nằm ngay phía trên; `diachia` và `khuvuc1` cùng trỏ đến `(10,10)`.
 
-Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 5 phút để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 50 phút. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
+Lưu `bookingId` và `tripId` từ response. Mỗi Driver có tối đa 1 giờ để phản hồi offer; hệ thống tìm tuần tự tối đa 10 Driver nên một booking mới có thể tìm tài xế tối đa 10 giờ. Đăng nhập Driver 1–7 rồi gọi `GET /driver-offers` để xem lời mời đang chờ; `GET /notifications` để xem thông báo trong ứng dụng. Thông báo qua Kafka có thể đến trễ vài giây. Nếu cần đối chiếu trực tiếp bảng offer trong DB của Booking, chạy:
 
 ```powershell
 docker compose exec booking-db psql -U postgres -d booking_db -c "SELECT offer_id,driver_id,status,expires_at FROM driver_offers ORDER BY created_at DESC LIMIT 10;"

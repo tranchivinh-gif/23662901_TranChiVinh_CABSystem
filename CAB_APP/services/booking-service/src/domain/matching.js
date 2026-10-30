@@ -3,7 +3,8 @@ function policy(value) {
   if(!value || value.radiusKm!==5 || value.maxCandidates!==10 ||
     !((value.offerTimeoutSeconds===60 && value.searchTimeoutSeconds===120) ||
       (value.offerTimeoutSeconds===300 && value.searchTimeoutSeconds===3000) ||
-      (value.offerTimeoutSeconds===120 && value.searchTimeoutSeconds===1200)) ||
+      (value.offerTimeoutSeconds===120 && value.searchTimeoutSeconds===1200) ||
+      (value.offerTimeoutSeconds===3600 && value.searchTimeoutSeconds===36000)) ||
     value.strategy!=='sequential' || value.radiusExpansion!==false)throw {code:9,businessCode:'MATCHING_POLICY_INVALID'};
   return value;
 }

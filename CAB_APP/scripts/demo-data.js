@@ -13,7 +13,7 @@ function person(name, role, number) {
   return { name, role, localPhone, phone: '+84' + localPhone.slice(1), email:(role==='CUSTOMER'?'khach'+number+'@gmail.com':role==='ADMIN'?'admin@gmail.com':name+'@example.test'),
     accountId: id(name + ':account'), profileId: id(name + ':profile'), fullName: 'CAB Demo ' + name };
 }
-const customers = [person('customer1','CUSTOMER',1)];
+const customers = [person('customer1','CUSTOMER',1),person('customer2','CUSTOMER',2)];
 const operators = [person('admin','ADMIN',10),person('staff','STAFF',11)];
 const drivers = Array.from({length:10},(_,index)=>person('driver'+(index+1),'DRIVER',101+index));
 module.exports = { password, center, id, customers, operators, drivers };

@@ -150,8 +150,8 @@ async function seedPayment() {
 async function main() {
   await seedIdentity(); await seedCustomers(); await seedDrivers();
   await seedBookings(); await seedTrips(); await seedPayment();
-  console.log('CAB demo data ready: 1 Customer, 10 Drivers, 1 Staff, 1 Admin, 10 Bookings/Trips, 1 Pending electronic Payment.');
-  console.log('Login: Customer khach1@gmail.com; Staff 0900000011; Admin 0900000010; Drivers 0900000101..0900000110.');
+  console.log('CAB demo data ready: 2 Customers, 10 Drivers, 1 Staff, 1 Admin, 10 Bookings/Trips, 1 Pending electronic Payment.');
+  console.log('Login: Customers khach1@gmail.com and khach2@gmail.com; Staff 0900000011; Admin 0900000010; Drivers 0900000101..0900000110.');
   console.log('Demo password: ' + password + ' (local demo only). Nearby center: ' + center.lat + ',' + center.lng);
 }
 main().catch(error => { console.error('Demo seed failed: ' + (error.code || error.message)); process.exitCode = 1; });

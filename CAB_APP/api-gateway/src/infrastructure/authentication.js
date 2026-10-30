@@ -37,7 +37,7 @@ function createAuthentication(env = process.env, redis) {
       algorithms: ["RS256"],
       issuer: env.CAB_JWT_ISSUER || "cab-system",
       audience: env.CAB_JWT_AUDIENCE || "cab-public-api",
-      maxAge: 1800,
+      maxAge: 3600,
     });
     if (
       claims.tokenUse !== "access" ||
@@ -47,7 +47,7 @@ function createAuthentication(env = process.env, redis) {
       !["CUSTOMER", "DRIVER", "STAFF", "ADMIN"].includes(claims.role) ||
       !Number.isInteger(claims.exp) ||
       !Number.isInteger(claims.iat) ||
-      claims.exp - claims.iat > 1800 ||
+      claims.exp - claims.iat > 3600 ||
       claims.exp <= claims.iat ||
       claims.iat > Math.floor(Date.now() / 1000) + 30
     )

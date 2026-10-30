@@ -16,13 +16,13 @@ function createTokens(env = process.env) {
   if (crypto.createPublicKey(privateKey).export({ type:'spki',format:'pem' }) !== keys[kid].export({ type:'spki',format:'pem' })) throw new Error('JWT key pair mismatch');
   function access(account) {
     return jwt.sign({ role: account.role_code, tokenUse:'access' }, privateKey,
-      { algorithm:'RS256',keyid:kid,issuer,audience,subject:account.account_id,expiresIn:1800,jwtid:crypto.randomUUID() });
+      { algorithm:'RS256',keyid:kid,issuer,audience,subject:account.account_id,expiresIn:3600,jwtid:crypto.randomUUID() });
   }
   function verify(token) {
     const decoded = jwt.decode(token,{complete:true});
     if (!decoded || decoded.header.alg !== 'RS256' || !Object.hasOwn(keys,decoded.header.kid)) throw new Error('Invalid token');
     const result = jwt.verify(token,keys[decoded.header.kid],{algorithms:['RS256'],issuer,audience});
-    if (result.tokenUse !== 'access' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(result.sub || '') || !['CUSTOMER','DRIVER','STAFF','ADMIN'].includes(result.role) || !Number.isInteger(result.exp) || !Number.isInteger(result.iat) || result.exp-result.iat > 1800 || result.exp<=result.iat || result.iat>Math.floor(Date.now()/1000)+30) throw new Error('Invalid claims');
+    if (result.tokenUse !== 'access' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(result.sub || '') || !['CUSTOMER','DRIVER','STAFF','ADMIN'].includes(result.role) || !Number.isInteger(result.exp) || !Number.isInteger(result.iat) || result.exp-result.iat > 3600 || result.exp<=result.iat || result.iat>Math.floor(Date.now()/1000)+30) throw new Error('Invalid claims');
     return result;
   }
   function profileToken(accountId) {
