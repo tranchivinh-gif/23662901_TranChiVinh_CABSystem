@@ -24,6 +24,18 @@ function createApp(dependencies) {
     req.correlationId =
       supplied && uuidPattern.test(supplied) ? supplied : randomUUID();
     res.set("X-Correlation-Id", req.correlationId);
+    const started = process.hrtime.bigint();
+    res.once("finish", () => {
+      console.log(JSON.stringify({
+        event: "http_request",
+        name: "api-gateway",
+        correlationId: req.correlationId,
+        method: req.method,
+        path: req.path,
+        statusCode: res.statusCode,
+        durationMs: Number(process.hrtime.bigint() - started) / 1e6,
+      }));
+    });
     next();
   });
   api.get("/health", (_req, res) => res.json({ status: "HEALTHY" }));
@@ -87,6 +99,12 @@ function createApp(dependencies) {
   );
   app.use((error, req, res, next) => {
     if (res.headersSent) return next(error);
+    console.error(JSON.stringify({
+      event: "http_error",
+      name: "api-gateway",
+      correlationId: req.correlationId,
+      error: error.message,
+    }));
     if (error.type === "entity.parse.failed")
       return sendError(
         res,
