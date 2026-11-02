@@ -22,7 +22,7 @@ function createProfile(pool,pii,verify) {
       await db.query('INSERT INTO driver_availability (driver_id) VALUES ($1)',[id]);
       const vehicleId=crypto.randomUUID(),plate=pii.encrypt(profile.vehicle.licensePlate,'vehicles:'+vehicleId+':plate');
       await db.query('INSERT INTO vehicles (vehicle_id,driver_id,service_type,plate_hash,plate_ciphertext,plate_key_id,plate_iv,plate_tag,make,model,color,seat_count) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[vehicleId,id,profile.vehicle.serviceType,pii.hmac(profile.vehicle.licensePlate),plate.ciphertext,plate.keyId,plate.iv,plate.tag,profile.vehicle.make || null,profile.vehicle.model || null,profile.vehicle.color || null,profile.vehicle.seatCount ?? null]);
-      const documents=[{type:'IDENTITY',value:profile.identityDocument},{type:'LICENSE',value:profile.driverLicense},
+      const documents=[{type:'LICENSE',value:profile.driverLicense},
         ...request.documents.map((doc,index)=>({type:'UPLOAD_'+index,value:{filename:doc.filename,mediaType:doc.mediaType,contentBase64:doc.content.toString('base64')}}))];
       for(const doc of documents) {
         const docId=crypto.randomUUID(),sealed=pii.encrypt(JSON.stringify(doc.value),'driver_documents:'+docId+':document');

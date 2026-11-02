@@ -4,8 +4,8 @@ const { normalizeString, normalizeEmail } = require('../infrastructure/input-val
 const operations=[
   ['requestCustomerRegistrationOtp','/auth/register/customer/request-otp','requestOtp',['phoneNumber'],[],200],
   ['verifyCustomerRegistrationOtp','/auth/register/customer/verify-otp','verifyOtp',['phoneNumber','otp'],[],200],
-  ['requestDriverRegistrationOtp','/auth/register/driver/request-otp','requestOtp',['phoneNumber'],[],200],
-  ['verifyDriverRegistrationOtp','/auth/register/driver/verify-otp','verifyOtp',['phoneNumber','otp'],[],200],
+  ['requestDriverRegistrationOtp','/auth/register/driver/request-otp','requestOtp',['phone'],[],200],
+  ['verifyDriverRegistrationOtp','/auth/register/driver/verify-otp','verifyOtp',['phone','otp'],[],200],
   ['registerCustomer','/auth/register/customer','registerCustomer',['email','pass'],[],201],
   ['login','/auth/login','login',['pass'],['email','phone'],200],
   ['refreshToken','/auth/refresh','refresh',['refreshToken'],[],200],
@@ -28,7 +28,7 @@ function registerAuthRoutes(app,dependencies) {
       normalized = Object.fromEntries(Object.entries(value).map(([key,entry]) => {
         if (typeof entry !== 'string') return [key, entry];
         if (key === 'email') return [key, normalizeEmail(entry)];
-        if (key === 'password' || key === 'otp' || key === 'refreshToken' || key === 'registrationContext' || key === 'phoneNumber') {
+        if (key === 'password' || key === 'otp' || key === 'refreshToken' || key === 'registrationContext' || key === 'phoneNumber' || key === 'phone') {
           return [key, normalizeString(entry, { field: key, maxLength: 256 })];
         }
         if (key === 'fullName') return [key, normalizeString(entry, { field: key, maxLength: 128 })];
@@ -50,8 +50,8 @@ function registerAuthRoutes(app,dependencies) {
     const health=await dependencies.serviceHealth('identity-account-service',req.correlationId);
     if(!health.ready) return sendError(res,req.correlationId,503,'SERVICE_UNAVAILABLE','Required service is unavailable');
     let payload;
-    if(rpc==='requestOtp') payload={phone:valueToUse.phoneNumber,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
-    else if(rpc==='verifyOtp') payload={phone:valueToUse.phoneNumber,otp:valueToUse.otp,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
+    if(rpc==='requestOtp') payload={phone:valueToUse.phone || valueToUse.phoneNumber,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
+    else if(rpc==='verifyOtp') payload={phone:valueToUse.phone || valueToUse.phoneNumber,otp:valueToUse.otp,purpose:operation.includes('Driver')?'DRIVER_REGISTRATION':'CUSTOMER_REGISTRATION'};
     else if(rpc==='registerCustomer') payload={password:valueToUse.pass,email:valueToUse.email};
     else if(rpc==='login') payload={email:valueToUse.email || '',phone:valueToUse.phone || '',password:valueToUse.pass};
     else payload={refreshToken:valueToUse.refreshToken};

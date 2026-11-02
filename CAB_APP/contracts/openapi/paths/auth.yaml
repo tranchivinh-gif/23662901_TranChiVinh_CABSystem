@@ -129,7 +129,7 @@ authRegisterDriverRequestOtp:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/auth.yaml#/OtpRequest
+            $ref: ../components/schemas/auth.yaml#/DriverOtpRequest
     responses:
       '200':
         description: OTP đã được gửi/khởi tạo. OTP không được trả trong response.
@@ -165,7 +165,7 @@ authRegisterDriverVerifyOtp:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/auth.yaml#/OtpVerifyRequest
+            $ref: ../components/schemas/auth.yaml#/DriverOtpVerifyRequest
     responses:
       '200':
         description: OTP hợp lệ; phát verified registration context.
@@ -203,12 +203,9 @@ authRegisterDriver:
     requestBody:
       required: true
       content:
-        multipart/form-data:
+        application/json:
           schema:
-            $ref: ../components/schemas/auth.yaml#/DriverRegistrationMultipart
-          encoding:
-            profile:
-              contentType: application/json
+            $ref: ../components/schemas/auth.yaml#/DriverRegistrationRequest
     responses:
       '201':
         description: Driver profile Pending.
@@ -232,8 +229,7 @@ authRegisterDriver:
     - PC-34
     - PC-60
     x-contract-confidence: DESIGN_LOCKED
-    description: Self-registration dùng multipart/form-data để gửi profile + required documents. Missing registrationContext
-      → 400; invalid/expired → 401. Valid request tạo Driver PENDING.
+    description: Gửi registrationContext từ bước verify OTP cùng hồ sơ Driver đơn giản bằng JSON. Context không hợp lệ hoặc hết hạn → 401.
     parameters:
     - $ref: ../components/parameters.yaml#/CorrelationId
     x-cab-owner-service: identity-account-service

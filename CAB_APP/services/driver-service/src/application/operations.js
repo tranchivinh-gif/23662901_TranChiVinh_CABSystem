@@ -70,7 +70,7 @@ function createOperations(pool,pii,identity,verify) {
       if(row.approval_status===target) return project(row,pii);
       if(row.approval_status!=='Pending') throw {code:grpc.status.FAILED_PRECONDITION};
       if(!(await db.query('SELECT 1 FROM vehicles WHERE driver_id=$1 AND active LIMIT 1',[row.driver_id])).rowCount ||
-         Number((await db.query('SELECT count(*) FROM driver_documents WHERE driver_id=$1',[row.driver_id])).rows[0].count)<3) throw {code:grpc.status.FAILED_PRECONDITION};
+         !(await db.query("SELECT 1 FROM driver_documents WHERE driver_id=$1 AND document_type='LICENSE' LIMIT 1",[row.driver_id])).rowCount) throw {code:grpc.status.FAILED_PRECONDITION};
       context.assertActive();
       // Identity first: partial failure leaves the local profile Pending, which still cannot go Online.
       await identity.decide({accountId:row.account_id,driverId:row.driver_id,status:target,reason:request.reason || ''},context);

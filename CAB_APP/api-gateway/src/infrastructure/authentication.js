@@ -63,8 +63,9 @@ function createAuthentication(env = process.env, redis) {
       .digest("hex");
   async function rateLimit(req, operation) {
     const identities = [["ip:" + req.ip, 60]];
-    if (typeof req.body?.phoneNumber === "string") {
-      let phone = req.body.phoneNumber.replace(/[\s().-]/g, "");
+    const suppliedPhone = req.body?.phoneNumber ?? req.body?.phone;
+    if (typeof suppliedPhone === "string") {
+      let phone = suppliedPhone.replace(/[\s().-]/g, "");
       if (/^0\d{9}$/.test(phone)) phone = "+84" + phone.slice(1);
       else if (/^\d+$/.test(phone)) phone = "+" + phone;
       identities.push([

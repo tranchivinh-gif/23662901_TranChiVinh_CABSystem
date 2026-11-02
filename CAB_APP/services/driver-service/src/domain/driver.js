@@ -7,12 +7,12 @@ function registration(request) {
   try {value=JSON.parse(request.profileJson);} catch {invalid();}
   if(!uuid.test(request.accountId || '') || !value || Array.isArray(value) || typeof value!=='object' || Object.keys(value).some(key=>!['fullName','phoneNumber','identityDocument','driverLicense','vehicle'].includes(key)) ||
     typeof value.fullName!=='string' || !value.fullName.trim() || !/^\+[1-9]\d{5,14}$/.test(value.phoneNumber || '') ||
-    typeof value.identityDocument!=='string' || !value.identityDocument.trim() || typeof value.driverLicense!=='string' || !value.driverLicense.trim()) invalid();
+    (value.identityDocument!==undefined && (typeof value.identityDocument!=='string' || !value.identityDocument.trim())) || typeof value.driverLicense!=='string' || !value.driverLicense.trim()) invalid();
   const vehicle=value.vehicle;
   if(!vehicle || typeof vehicle.licensePlate!=='string' || !vehicle.licensePlate.trim() || !['MOTORBIKE','CAR_4_SEATS'].includes(vehicle.serviceType) ||
     ['make','model','color'].some(key=>vehicle[key]!==undefined && typeof vehicle[key]!=='string') ||
     (vehicle.seatCount!==undefined && (!Number.isInteger(vehicle.seatCount) || vehicle.seatCount<1)) ||
-    !Array.isArray(request.documents) || request.documents.length<1 || request.documents.length>5) invalid();
+    !Array.isArray(request.documents) || request.documents.length>5) invalid();
   let total=0;
   for(const doc of request.documents) {
     if(typeof doc.filename!=='string' || !doc.filename.trim() || typeof doc.mediaType!=='string' || !Buffer.isBuffer(doc.content) || !doc.content.length || doc.content.length>1048576) invalid();

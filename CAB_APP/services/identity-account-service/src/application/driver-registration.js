@@ -11,16 +11,19 @@ function createDriverRegistration({pool,pii,passwords,drivers,authorize,env}) {
   const invalid = ()=>new AuthError('REGISTRATION_CONTEXT_INVALID',grpc.status.UNAUTHENTICATED);
   const unwrap = value=>{if(value instanceof AuthError)throw value;return value;};
   async function registerDriver(request,context) {
-    const normalized = phone(request.phone), contextHash = tokenHash(text(request.verificationToken,'REGISTRATION_CONTEXT_REQUIRED'));
+    const verificationToken=text(request.verificationToken,'REGISTRATION_CONTEXT_REQUIRED');
+    const contextHash=tokenHash(verificationToken);
+    const encodedPhone=verificationToken.split('.')[1];
+    let normalized;
+    try { normalized=phone(Buffer.from(encodedPhone || '','base64url').toString('utf8')); }
+    catch { throw invalid(); }
     let profile;
     try {profile=JSON.parse(request.driverProfileJson);} catch {throw new AuthError('INVALID_ARGUMENT');}
-    if (!profile || Array.isArray(profile) || typeof profile!=='object' || Object.keys(profile).some(key=>!['fullName','phoneNumber','identityDocument','driverLicense','vehicle'].includes(key)) ||
-        ['fullName','phoneNumber','identityDocument','driverLicense'].some(key=>typeof profile[key]!=='string' || !profile[key].trim()) || phone(profile.phoneNumber)!==normalized ||
+    if (!profile || Array.isArray(profile) || typeof profile!=='object' || Object.keys(profile).some(key=>!['fullName','driverLicense','vehicle'].includes(key)) ||
+        ['fullName','driverLicense'].some(key=>typeof profile[key]!=='string' || !profile[key].trim()) ||
         !profile.vehicle || typeof profile.vehicle.licensePlate!=='string' || !profile.vehicle.licensePlate.trim() || !['MOTORBIKE','CAR_4_SEATS'].includes(profile.vehicle.serviceType) ||
-        ['make','model','color'].some(key=>profile.vehicle[key]!==undefined && typeof profile.vehicle[key]!=='string') ||
-        (profile.vehicle.seatCount!==undefined && (!Number.isInteger(profile.vehicle.seatCount) || profile.vehicle.seatCount<1)) ||
-        !Array.isArray(request.documents) || !request.documents.length || request.documents.length>5 || request.documents.some(doc=>typeof doc.filename!=='string' || !doc.filename.trim() || typeof doc.mediaType!=='string' || !Buffer.isBuffer(doc.content) || !doc.content.length || doc.content.length>1048576)) throw new AuthError('INVALID_ARGUMENT');
-    if (request.documents.reduce((sum,doc)=>sum+doc.content.length,0)>2097152) throw new AuthError('INVALID_ARGUMENT');
+        Object.keys(profile.vehicle).some(key=>!['licensePlate','serviceType'].includes(key)) ||
+        !Array.isArray(request.documents) || request.documents.length) throw new AuthError('INVALID_ARGUMENT');
     profile.phoneNumber=normalized;
     const payload=JSON.stringify(profile), phoneHash=pii.hmac(normalized);
     const fingerprint=pii.hmac(JSON.stringify([payload,request.documents.map(doc=>[doc.filename,doc.mediaType,crypto.createHash('sha256').update(doc.content).digest('hex')])]));

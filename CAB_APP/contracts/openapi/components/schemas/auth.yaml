@@ -125,6 +125,25 @@ OtpVerifyRequest:
   - phoneNumber
   - otp
   additionalProperties: false
+DriverOtpRequest:
+  type: object
+  properties:
+    phone:
+      type: string
+  required:
+  - phone
+  additionalProperties: false
+DriverOtpVerifyRequest:
+  type: object
+  properties:
+    phone:
+      type: string
+    otp:
+      type: string
+  required:
+  - phone
+  - otp
+  additionalProperties: false
 OtpVerifyResponse:
   type: object
   properties:
@@ -263,23 +282,30 @@ DriverRegistrationProfile:
   - driverLicense
   - vehicle
   additionalProperties: false
-DriverRegistrationMultipart:
+DriverRegistrationRequest:
   type: object
   properties:
     registrationContext:
       type: string
       minLength: 1
-    profile:
-      $ref: ./auth.yaml#/DriverRegistrationProfile
-    documents:
-      type: array
-      minItems: 1
-      items:
-        type: string
-        format: binary
-      description: Required driver document files.
+    name:
+      type: string
+      minLength: 1
+    licenseNumber:
+      type: string
+      minLength: 1
+    vehicleNumber:
+      type: string
+      minLength: 1
+    type:
+      type: string
+      enum:
+      - MOTORBIKE
+      - car4
   required:
   - registrationContext
-  - profile
-  - documents
+  - name
+  - licenseNumber
+  - vehicleNumber
+  - type
   additionalProperties: false

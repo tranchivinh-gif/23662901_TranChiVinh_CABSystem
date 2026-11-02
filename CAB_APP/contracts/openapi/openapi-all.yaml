@@ -282,7 +282,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OtpRequest'
+              $ref: '#/components/schemas/DriverOtpRequest'
       responses:
         '200':
           description: OTP đã được gửi/khởi tạo. OTP không được trả trong response.
@@ -318,7 +318,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OtpVerifyRequest'
+              $ref: '#/components/schemas/DriverOtpVerifyRequest'
       responses:
         '200':
           description: OTP hợp lệ; phát verified registration context.
@@ -356,12 +356,9 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              $ref: '#/components/schemas/DriverRegistrationMultipart'
-            encoding:
-              profile:
-                contentType: application/json
+              $ref: '#/components/schemas/DriverRegistrationRequest'
       responses:
         '201':
           description: Driver profile Pending.
@@ -3890,6 +3887,25 @@ components:
       - phoneNumber
       - otp
       additionalProperties: false
+    DriverOtpRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+      required:
+      - phone
+      additionalProperties: false
+    DriverOtpVerifyRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+        otp:
+          type: string
+      required:
+      - phone
+      - otp
+      additionalProperties: false
     OtpVerifyResponse:
       type: object
       properties:
@@ -4028,25 +4044,32 @@ components:
       - driverLicense
       - vehicle
       additionalProperties: false
-    DriverRegistrationMultipart:
+    DriverRegistrationRequest:
       type: object
       properties:
         registrationContext:
           type: string
           minLength: 1
-        profile:
-          $ref: '#/components/schemas/DriverRegistrationProfile'
-        documents:
-          type: array
-          minItems: 1
-          items:
-            type: string
-            format: binary
-          description: Required driver document files.
+        name:
+          type: string
+          minLength: 1
+        licenseNumber:
+          type: string
+          minLength: 1
+        vehicleNumber:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - MOTORBIKE
+          - car4
       required:
       - registrationContext
-      - profile
-      - documents
+      - name
+      - licenseNumber
+      - vehicleNumber
+      - type
       additionalProperties: false
     ServiceType:
       type: object

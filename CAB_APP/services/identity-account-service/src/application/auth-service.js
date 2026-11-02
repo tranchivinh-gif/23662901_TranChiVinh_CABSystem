@@ -42,7 +42,7 @@ function createAuthService({ pool, pii, passwords, tokens, otpProvider, profiles
         code='OTP_INVALID';
       }
       if (code) { await audit(db,'OtpRejected',context,null,{reason:code}); return new AuthError(code,code==='OTP_ATTEMPTS_EXCEEDED'?grpc.status.RESOURCE_EXHAUSTED:grpc.status.INVALID_ARGUMENT); }
-      const registrationContext = opaque();
+      const registrationContext = opaque()+'.'+Buffer.from(domain.phone(request.phone)).toString('base64url');
       await db.query('UPDATE otp_verifications SET verified_at=now(),registration_context_hash=$2 WHERE verification_id=$1',[row.verification_id,tokenHash(registrationContext)]);
       await audit(db,'OtpVerified',context);
       return { verificationToken:registrationContext };
