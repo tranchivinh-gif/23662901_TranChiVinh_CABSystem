@@ -36,7 +36,9 @@ function registerBookingRoutes(app,runtime) {
         if(!value || Array.isArray(value) || typeof value!=='object')throw {code:3};
         for(const point of [value.pickup,value.destination])if(!point || typeof point.lat!=='number' || typeof point.lng!=='number' || Object.keys(point).some(key=>!['lat','lng'].includes(key)))throw {code:3};
         if(typeof value.serviceType!=='string')throw {code:3};
-        const serviceType=normalizeServiceType(['b','bike'].includes(value.serviceType)?'MOTORBIKE':value.serviceType);
+        const serviceType=normalizeServiceType(
+          ['b','bike'].includes(value.serviceType)?'MOTORBIKE':
+          value.serviceType==='car4'?'CAR_4_SEATS':value.serviceType);
         payload={pickup:value.pickup,destination:value.destination,serviceType};
         if(rpc==='createBooking') {
           const rawKey=req.get('Idempotency-Key');

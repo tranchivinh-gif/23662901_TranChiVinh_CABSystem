@@ -110,7 +110,7 @@ Idempotency-Key: demo-booking-001
 {"p":{"lat":10,"lng":10},"des":{"lat":10.01,"lng":10.01},"svc":"b","pay":"e"}
 ```
 
-Gateway chấp nhận `svc: "b"` và `pay: "e"` (vẫn hỗ trợ `bike` và `elec`), rồi chuyển thành `MOTORBIKE` và `Electronic` trước khi gửi sang Booking service. Header `Authorization` và `Idempotency-Key` vẫn bắt buộc.
+Gateway chấp nhận `svc: "b"` hoặc `"car4"` và `pay: "e"` (vẫn hỗ trợ `bike` và `elec`), rồi chuyển thành `MOTORBIKE` hoặc `CAR_4_SEATS` và `Electronic` trước khi gửi sang Booking service. Header `Authorization` và `Idempotency-Key` vẫn bắt buộc.
 
 Có thể thay tọa độ bằng địa chỉ mẫu: `{"p":"diachia","des":"diachib","svc":"b","pay":"e"}`. Danh sách địa chỉ demo:
 

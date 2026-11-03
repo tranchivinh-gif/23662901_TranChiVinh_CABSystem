@@ -74,9 +74,12 @@ async function seedDrivers() {
         status==='Active'?operators[0].accountId:null,status==='Active'?new Date():null]);
       const vehicleId=id(item.name+':vehicle'),plate='CAB-'+String(index+1).padStart(4,'0');
       const vehicle=pii.encrypt(plate,'vehicles:'+vehicleId+':plate');
+      const serviceType=index===0?'CAR_4_SEATS':'MOTORBIKE';
+      const seatCount=index===0?4:1;
       await db.query(`INSERT INTO vehicles(vehicle_id,driver_id,service_type,plate_hash,plate_ciphertext,plate_key_id,plate_iv,plate_tag,make,model,color,seat_count)
-        VALUES($1,$2,'MOTORBIKE',$3,$4,$5,$6,$7,'CAB','Demo','black',1) ON CONFLICT(vehicle_id) DO NOTHING`,
-      [vehicleId,item.profileId,pii.hmac(plate),vehicle.ciphertext,vehicle.keyId,vehicle.iv,vehicle.tag]);
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,'CAB','Demo','black',$9)
+        ON CONFLICT(vehicle_id) DO UPDATE SET service_type=EXCLUDED.service_type,seat_count=EXCLUDED.seat_count`,
+      [vehicleId,item.profileId,serviceType,pii.hmac(plate),vehicle.ciphertext,vehicle.keyId,vehicle.iv,vehicle.tag,seatCount]);
       const availability=index<7?'Available':index===7?'Busy':'Offline';
       await db.query(`INSERT INTO driver_availability(driver_id,availability_status,available_since,last_heartbeat_at)
         VALUES($1,$2,$3,$4) ON CONFLICT(driver_id) DO NOTHING`,
