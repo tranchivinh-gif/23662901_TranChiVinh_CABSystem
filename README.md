@@ -33,7 +33,15 @@ Mở `http://localhost:8081` rồi chọn cluster `cab-demo` để xem topics, m
 
 Mở `http://localhost:5050` sau khi các database đã khởi động. Đăng nhập bằng email `admin@cab.local` và mật khẩu demo `123` (chỉ dùng cho bản demo chạy local). pgAdmin bắt buộc tên đăng nhập có định dạng email nên không thể dùng riêng chuỗi `admin`.
 
-Trong pgAdmin, chọn **Add New Server**:
+pgAdmin tự đăng ký cả **7 database** trong nhóm **CAB Databases** mỗi lần khởi động từ `infra/pgadmin/servers.json`; bạn không cần Register Server thủ công. Danh sách kết nối được thay thế theo file này khi pgAdmin khởi động (bao gồm các kết nối thêm thủ công), nhưng dữ liệu PostgreSQL không bị ảnh hưởng. pgAdmin tự lấy mật khẩu riêng của từng database từ volume `cab-secrets` và tạo file `.pgpass` có quyền `0600` khi khởi động; không cần nhập mật khẩu kết nối cho 7 DB mặc định. Bấm mở tên DB để kết nối; dấu × đỏ trước khi mở chỉ biểu thị chưa kết nối. Hướng dẫn thêm server bên dưới chỉ dành cho kết nối thủ công.
+
+Nếu đang chạy bản cũ, áp dụng cấu hình mới tại thư mục `CAB_APP`:
+
+```powershell
+docker compose up -d --no-deps pgadmin
+```
+
+Để tự thêm kết nối ngoài danh sách mặc định, chọn **Add New Server** (và bổ sung vào file trên nếu muốn giữ qua lần khởi động tiếp theo):
 
 - Tab **General**: đặt tên, ví dụ `Booking DB`.
 - Tab **Connection**: Host `booking-db`, Port `5432`, Maintenance database `booking_db`, Username `postgres`.

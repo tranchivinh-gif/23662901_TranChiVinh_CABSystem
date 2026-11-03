@@ -1,0 +1,11 @@
+{
+  "Servers": {
+    "1": { "Name": "Identity Account DB", "Group": "CAB Databases", "Host": "identity-account-db", "Port": 5432, "MaintenanceDB": "identity_account_db", "Username": "postgres", "SSLMode": "prefer" },
+    "2": { "Name": "Customer DB", "Group": "CAB Databases", "Host": "customer-db", "Port": 5432, "MaintenanceDB": "customer_db", "Username": "postgres", "SSLMode": "prefer" },
+    "3": { "Name": "Driver DB", "Group": "CAB Databases", "Host": "driver-db", "Port": 5432, "MaintenanceDB": "driver_db", "Username": "postgres", "SSLMode": "prefer" },
+    "4": { "Name": "Booking DB", "Group": "CAB Databases", "Host": "booking-db", "Port": 5432, "MaintenanceDB": "booking_db", "Username": "postgres", "SSLMode": "prefer" },
+    "5": { "Name": "Trip DB", "Group": "CAB Databases", "Host": "trip-db", "Port": 5432, "MaintenanceDB": "trip_db", "Username": "postgres", "SSLMode": "prefer" },
+    "6": { "Name": "Payment DB", "Group": "CAB Databases", "Host": "payment-db", "Port": 5432, "MaintenanceDB": "payment_db", "Username": "postgres", "SSLMode": "prefer" },
+    "7": { "Name": "Notification DB", "Group": "CAB Databases", "Host": "notification-db", "Port": 5432, "MaintenanceDB": "notification_db", "Username": "postgres", "SSLMode": "prefer" }
+  }
+}
