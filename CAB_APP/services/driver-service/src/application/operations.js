@@ -58,6 +58,77 @@ function createOperations(pool,pii,identity,verify) {
       return {driverId:row.driver_id,acceptedAt:clock.received_at.toISOString(),availability:row.assigned_booking_id?'BUSY':project(row,pii).availability};
     });
   }
+  async function updateDriverProfile(request,context) {
+    const fields=new Set(['fullName','phoneNumber','vehicle']);
+    const vehicleFields=new Set(['licensePlate','serviceType','make','model','color','seatCount']);
+    if(!Array.isArray(request.fields) || request.fields.length===0 ||
+      request.fields.some(field=>!fields.has(field)) || new Set(request.fields).size!==request.fields.length ||
+      !Array.isArray(request.vehicleFields) || request.vehicleFields.some(field=>!vehicleFields.has(field)) ||
+      new Set(request.vehicleFields).size!==request.vehicleFields.length ||
+      request.fields.includes('vehicle')!== (request.vehicleFields.length>0)) invalid();
+    const actor=await identity.authorize('driver:update','',context);
+    if(actor.role!=='DRIVER') throw {code:grpc.status.PERMISSION_DENIED};
+    const profileChanges={};
+    if(request.fields.includes('fullName')) {
+      if(typeof request.fullName!=='string' || !request.fullName.trim()) invalid();
+      profileChanges.fullName=request.fullName.trim();
+    }
+    if(request.fields.includes('phoneNumber')) {
+      if(typeof request.phoneNumber!=='string' || !/^\+[1-9]\d{5,14}$/.test(request.phoneNumber)) invalid();
+      profileChanges.phone=request.phoneNumber;
+    }
+    const vehicleChanges={};
+    for(const field of request.vehicleFields) {
+      const key={licensePlate:'licensePlate',serviceType:'serviceType',make:'make',model:'model',color:'color',seatCount:'seatCount'}[field];
+      const value=request[key];
+      if(field==='seatCount') {
+        if(!Number.isInteger(value) || value<1) invalid();
+        vehicleChanges.seatCount=value;
+      } else {
+        if(typeof value!=='string') invalid();
+        if(field==='licensePlate') {
+          const plate=value.replace(/[\s.-]/g,'').toUpperCase();
+          if(!plate) invalid();
+          vehicleChanges.licensePlate=plate;
+        } else if(field==='serviceType') {
+          if(!['MOTORBIKE','CAR_4_SEATS'].includes(value)) invalid();
+          vehicleChanges.serviceType=value;
+        } else {
+          vehicleChanges[field]=value.trim() || null;
+        }
+      }
+    }
+    return transaction(pool,async db=>{
+      const row=await own(db,actor,{});
+      if(row.assigned_booking_id) throw {code:grpc.status.FAILED_PRECONDITION};
+      const vehicle=(await db.query('SELECT * FROM vehicles WHERE driver_id=$1 AND active FOR UPDATE',[row.driver_id])).rows[0];
+      if(!vehicle) throw {code:grpc.status.NOT_FOUND};
+      const current=JSON.parse(pii.decrypt({ciphertext:row.profile_ciphertext,keyId:row.profile_key_id,iv:row.profile_iv,tag:row.profile_tag},'drivers:'+row.driver_id+':profile'));
+      const nextProfile={...current,...profileChanges};
+      const nextPhone=nextProfile.phone;
+      const encrypted=pii.encrypt(JSON.stringify(nextProfile),'drivers:'+row.driver_id+':profile');
+      const nextPlate=vehicleChanges.licensePlate || pii.decrypt({
+        ciphertext:vehicle.plate_ciphertext,keyId:vehicle.plate_key_id,iv:vehicle.plate_iv,tag:vehicle.plate_tag,
+      },'vehicles:'+vehicle.vehicle_id+':plate');
+      const nextServiceType=vehicleChanges.serviceType ?? vehicle.service_type;
+      const nextMake=Object.hasOwn(vehicleChanges,'make') ? vehicleChanges.make : vehicle.make;
+      const nextModel=Object.hasOwn(vehicleChanges,'model') ? vehicleChanges.model : vehicle.model;
+      const nextColor=Object.hasOwn(vehicleChanges,'color') ? vehicleChanges.color : vehicle.color;
+      const nextSeatCount=vehicleChanges.seatCount ?? vehicle.seat_count;
+      const sealedPlate=pii.encrypt(nextPlate,'vehicles:'+vehicle.vehicle_id+':plate');
+      context.assertActive();
+      await db.query('UPDATE drivers SET phone_hash=$2,profile_ciphertext=$3,profile_key_id=$4,profile_iv=$5,profile_tag=$6,updated_at=now() WHERE driver_id=$1',
+        [row.driver_id,pii.hmac(nextPhone),encrypted.ciphertext,encrypted.keyId,encrypted.iv,encrypted.tag]);
+      await db.query('UPDATE vehicles SET service_type=$2,plate_hash=$3,plate_ciphertext=$4,plate_key_id=$5,plate_iv=$6,plate_tag=$7,make=$8,model=$9,color=$10,seat_count=$11,updated_at=now() WHERE vehicle_id=$1',
+        [vehicle.vehicle_id,nextServiceType,pii.hmac(nextPlate),sealedPlate.ciphertext,sealedPlate.keyId,sealedPlate.iv,sealedPlate.tag,
+          nextMake,nextModel,nextColor,nextSeatCount]);
+      await event(db,'DriverProfileUpdated',row,context,{fields:request.fields});
+      const result=project({...row,profile_ciphertext:encrypted.ciphertext,profile_key_id:encrypted.keyId,profile_iv:encrypted.iv,profile_tag:encrypted.tag,
+        availability_status:row.availability_status},pii,true);
+      return {...result,vehicle:{vehicleId:vehicle.vehicle_id,licensePlate:nextPlate,serviceType:nextServiceType,
+        make:nextMake || '',model:nextModel || '',color:nextColor || '',active:true,seatCount:nextSeatCount || 0}};
+    });
+  }
   async function decideDriver(request,context) {
     if(!uuid.test(request.driverId || '') || !['APPROVE','REJECT'].includes(request.decision) ||
       (request.decision==='REJECT' && !request.reason?.trim())) invalid();
@@ -161,6 +232,6 @@ function createOperations(pool,pii,identity,verify) {
       return rows.length;
     });
   }
-  return {setAvailability,heartbeat,decideDriver,getNearbyDrivers,listDrivers,getEligibleDrivers,expireHeartbeats};
+  return {setAvailability,heartbeat,updateDriverProfile,decideDriver,getNearbyDrivers,listDrivers,getEligibleDrivers,expireHeartbeats};
 }
 module.exports={createOperations};

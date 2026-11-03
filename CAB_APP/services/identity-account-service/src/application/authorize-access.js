@@ -11,8 +11,8 @@ function createAuthorizeAccess(pool, tokens) {
     context.assertActive();
     const roles = {
       'notification:read': ['CUSTOMER','DRIVER','STAFF','ADMIN'],
-      'customer:read': ['CUSTOMER', 'STAFF', 'ADMIN'], 'driver:read': ['DRIVER', 'STAFF', 'ADMIN'],
-      'driver:availability': ['DRIVER'], 'driver:location': ['DRIVER'],
+      'customer:read': ['CUSTOMER', 'STAFF', 'ADMIN'], 'customer:update': ['CUSTOMER'], 'driver:read': ['DRIVER', 'STAFF', 'ADMIN'],
+      'driver:availability': ['DRIVER'], 'driver:location': ['DRIVER'], 'driver:update': ['DRIVER'],
       'driver:nearby': ['STAFF', 'ADMIN'], 'driver:approve': ['STAFF', 'ADMIN'],
       'booking:types': ['CUSTOMER','DRIVER','STAFF','ADMIN'], 'booking:estimate': ['CUSTOMER'],
       'booking:create': ['CUSTOMER'], 'booking:list': ['CUSTOMER','STAFF','ADMIN'],

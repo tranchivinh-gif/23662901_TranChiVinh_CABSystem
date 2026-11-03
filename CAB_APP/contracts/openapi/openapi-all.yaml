@@ -455,6 +455,48 @@ paths:
       x-cab-owner-service: customer-service
       x-cab-public-via: api-gateway
       x-cab-internal-transport: gRPC
+    patch:
+      tags:
+      - Customer
+      summary: Cập nhật một phần hồ sơ Customer của chính mình
+      operationId: patchMyCustomerProfile
+      description: Chỉ các trường được gửi trong request body mới bị thay đổi.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+      responses:
+        '200':
+          description: Hồ sơ đã cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProfile'
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-cab-trace:
+      - UC-03
+      - FR-05
+      - PC-06
+      x-contract-confidence: DESIGN_LOCKED
+      parameters:
+      - $ref: '#/components/parameters/CorrelationId'
+      x-cab-owner-service: customer-service
+      x-cab-public-via: api-gateway
+      x-cab-internal-transport: gRPC
   /customers/{customerId}:
     get:
       tags:
@@ -2012,12 +2054,12 @@ paths:
       x-cab-owner-service: driver-service
       x-cab-public-via: api-gateway
       x-cab-internal-transport: gRPC
-    put:
+    patch:
       tags:
       - Driver
-      summary: Cập nhật hồ sơ/phương tiện Driver của chính mình
+      summary: Cập nhật một phần hồ sơ/phương tiện Driver của chính mình
       operationId: updateMyDriverProfile
-      description: Không tự đưa hồ sơ về PENDING sau update; license plate duplicate → 409.
+      description: Chỉ các trường được gửi mới bị thay đổi. Không tự đưa hồ sơ về PENDING; license plate duplicate → 409.
       security:
       - bearerAuth: []
       requestBody:
@@ -4358,7 +4400,7 @@ components:
           type: string
         avatar:
           type: string
-      additionalProperties: true
+      additionalProperties: false
     VehicleSummary:
       type: object
       properties:
@@ -4377,6 +4419,9 @@ components:
           type: string
         color:
           type: string
+        seatCount:
+          type: integer
+          minimum: 1
         active:
           type: boolean
       additionalProperties: true
@@ -4502,10 +4547,8 @@ components:
             seatCount:
               type: integer
               minimum: 1
-          required:
-          - licensePlate
-          - serviceType
-          additionalProperties: true
+          additionalProperties: false
+          minProperties: 1
       additionalProperties: false
       minProperties: 1
     DriverLocationUpdateRequest:

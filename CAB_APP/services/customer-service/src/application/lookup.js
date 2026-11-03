@@ -14,7 +14,9 @@ function createLookup(pool, pii, identity) {
     const value = JSON.parse(pii.decrypt({ ciphertext: row.profile_ciphertext, keyId: row.profile_key_id, iv: row.profile_iv, tag: row.profile_tag }, 'customers:' + row.customer_id + ':profile'));
     const full = actor.role === 'CUSTOMER' || (actor.role === 'ADMIN' && actor.sensitive);
     return { customerId: row.customer_id, fullName: value.fullName,
-      ...(value.phone?{phoneNumber:full ? value.phone : '******' + value.phone.slice(-4)}:{}), ...(full && value.email ? { email: value.email } : {}) };
+      ...(value.phone?{phoneNumber:full ? value.phone : '******' + value.phone.slice(-4)}:{}),
+      ...(full && value.email ? { email: value.email } : {}),
+      ...(actor.role === 'CUSTOMER' && value.avatar ? { avatar: value.avatar } : {}) };
   };
 }
 module.exports = { createLookup };

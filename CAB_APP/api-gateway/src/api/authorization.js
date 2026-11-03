@@ -4,7 +4,7 @@ const operators = ['STAFF', 'ADMIN'];
 const policies = Object.create(null);
 function allow(operations, roles) { for (const operation of operations.split(' ')) policies[operation] = roles; }
 allow('logout getServiceTypes listTrips getTripById getTripPayment', all);
-allow('updateMyCustomerProfile getMyBookings estimateFare createBooking rateTripDriver initiateElectronicPayment retryElectronicPayment', ['CUSTOMER']);
+allow('updateMyCustomerProfile patchMyCustomerProfile getMyBookings estimateFare createBooking rateTripDriver initiateElectronicPayment retryElectronicPayment', ['CUSTOMER']);
 allow('getCustomerById getCustomerBookings', ['CUSTOMER', ...operators]);
 allow('cancelTrip',all);
 allow('getDriverById', ['DRIVER', ...operators]);

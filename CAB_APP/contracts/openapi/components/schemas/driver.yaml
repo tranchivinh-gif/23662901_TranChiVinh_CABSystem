@@ -16,6 +16,9 @@ VehicleSummary:
       type: string
     color:
       type: string
+    seatCount:
+      type: integer
+      minimum: 1
     active:
       type: boolean
   additionalProperties: true
@@ -141,10 +144,8 @@ DriverSelfUpdateRequest:
         seatCount:
           type: integer
           minimum: 1
-      required:
-      - licensePlate
-      - serviceType
-      additionalProperties: true
+      additionalProperties: false
+      minProperties: 1
   additionalProperties: false
   minProperties: 1
 DriverLocationUpdateRequest:

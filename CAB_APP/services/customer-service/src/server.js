@@ -8,6 +8,7 @@ const { createReadinessProbe } = require('./infrastructure/database/readiness');
 const { createPii } = require('./infrastructure/security/pii');
 const { createProfileService } = require('./application/create-profile');
 const { createProfileHandler } = require('./api/create-profile');
+const { createProfileUpdate } = require('./application/update-profile');
 const { createIdentityClient } = require('./infrastructure/identity-client');
 const { createLookup } = require('./application/lookup');
 const { createLookupHandler } = require('./api/lookup');
@@ -34,6 +35,7 @@ async function start(config = getConfig(), options = {}) {
       handlers.resolveAccount=createLookupHandler(require("./application/resolve-account").createResolveAccount(pool,require("../../../lib/events/service-token").createResolverVerifier(env)));
       handlers.getCustomer = createLookupHandler(createLookup(pool, pii, identity));
       handlers.getByAccount = createLookupHandler(createByAccount(pool, identity));
+      handlers.updateCustomerProfile = createLookupHandler(createProfileUpdate(pool, pii, identity));
     }
   } catch(error) {identity?.close();await pool?.end();throw error;}
   server.addService(contracts.business.service, handlers);

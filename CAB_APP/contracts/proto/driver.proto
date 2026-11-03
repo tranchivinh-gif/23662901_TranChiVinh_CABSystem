@@ -17,6 +17,7 @@ service DriverService {
   rpc GetEligibleDrivers(EligibleRequest) returns (DriverPage);
   rpc GetByAccount(cab.common.v1.IdRequest) returns (Driver);
   rpc GetProfileByAccount(cab.common.v1.IdRequest) returns (Driver);
+  rpc UpdateDriverProfile(UpdateDriverProfileRequest) returns (Driver);
   rpc ClaimDriver(DriverClaim) returns (Driver);
   rpc ReleaseDriver(DriverClaim) returns (Driver);
 }
@@ -39,9 +40,10 @@ message EligibleRequest {
 }
 message DriverPage { repeated Driver items = 1; cab.common.v1.PageMeta meta = 2; }
 message DriverListRequest { cab.common.v1.PageRequest pagination = 1; string approval_status = 2; string availability = 3; string driver_id = 4; string phone = 5; string name = 6; string service_type = 7; }
-message Vehicle { string vehicle_id = 1; string license_plate = 2; string service_type = 3; string make = 4; string model = 5; string color = 6; bool active = 7; }
+message Vehicle { string vehicle_id = 1; string license_plate = 2; string service_type = 3; string make = 4; string model = 5; string color = 6; bool active = 7; int32 seat_count = 8; }
 message DriverDocument { string filename = 1; string media_type = 2; bytes content = 3; }
 message CreateDriverProfileRequest { string account_id = 1; string profile_json = 2; repeated DriverDocument documents = 3; }
 message DriverDecisionRequest { string driver_id = 1; string decision = 2; string reason = 3; }
+message UpdateDriverProfileRequest { repeated string fields = 1; string full_name = 2; string phone_number = 3; repeated string vehicle_fields = 4; string license_plate = 5; string service_type = 6; string make = 7; string model = 8; string color = 9; int32 seat_count = 10; }
 message HeartbeatResponse { string driver_id = 1; string accepted_at = 2; string availability = 3; }
 message DriverClaim { string driver_id = 1; string booking_id = 2; string service_type = 3; cab.common.v1.GeoPoint pickup = 4; bool check_only = 5; }

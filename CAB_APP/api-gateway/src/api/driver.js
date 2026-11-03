@@ -2,14 +2,35 @@
 const {sendError,rpcError}=require('./errors');
 const {routeAllowed}=require('./authorization');
 const {resolveDemoArea}=require('../../../scripts/demo-addresses');
+const {escapeHtml}=require('./encoding');
 function driverBody(value) {
   return {driverId:value.driverId,fullName:value.fullName,approvalStatus:value.status,availability:value.availability,
     ...(value.phoneNumber?{phoneNumber:value.phoneNumber}:{})};
+}
+function updatedDriverBody(value) {
+  return {
+    driverId: value.driverId,
+    fullName: escapeHtml(value.fullName),
+    approvalStatus: value.status,
+    availability: value.availability,
+    ...(value.phoneNumber ? { phoneNumber: escapeHtml(value.phoneNumber) } : {}),
+    ...(value.vehicle ? { vehicle: {
+      ...(value.vehicle.vehicleId ? { vehicleId: value.vehicle.vehicleId } : {}),
+      ...(value.vehicle.licensePlate ? { licensePlate: escapeHtml(value.vehicle.licensePlate) } : {}),
+      ...(value.vehicle.serviceType ? { serviceType: value.vehicle.serviceType } : {}),
+      ...(value.vehicle.make ? { make: escapeHtml(value.vehicle.make) } : {}),
+      ...(value.vehicle.model ? { model: escapeHtml(value.vehicle.model) } : {}),
+      ...(value.vehicle.color ? { color: escapeHtml(value.vehicle.color) } : {}),
+      ...(value.vehicle.active !== undefined ? { active: value.vehicle.active } : {}),
+      ...(value.vehicle.seatCount ? { seatCount: value.vehicle.seatCount } : {}),
+    } } : {}),
+  };
 }
 function registerDriverRoutes(app,runtime) {
   const routes=[
     ['get','/admin/drivers','adminListDrivers','listDrivers'],
     ['get','/drivers/nearby','getNearbyDrivers','getNearbyDrivers'],
+    ['patch','/drivers/me','updateMyDriverProfile','updateDriverProfile'],
     ['put','/drivers/me/availability','updateMyDriverAvailability','setAvailability'],
     ['put','/drivers/me/location','updateMyDriverLocation','heartbeat'],
     ['post','/admin/drivers/:id/approve','approveDriver','decideDriver'],
@@ -58,6 +79,33 @@ function registerDriverRoutes(app,runtime) {
         for(const key of ['heading','speed','accuracy']) if(value[key]!==undefined) {
           if(typeof value[key]!=='number') throw {code:3};payload[key]=value[key];
         }
+      } else if(rpc==='updateDriverProfile') {
+        const value=req.body;
+        const allowed=['fullName','phoneNumber','vehicle'];
+        if(!req.is('application/json') || !value || Array.isArray(value) || typeof value!=='object' ||
+          Object.keys(value).length===0 || Object.keys(value).some(key=>!allowed.includes(key)) ||
+          ['fullName','phoneNumber'].some(key=>value[key]!==undefined && typeof value[key]!=='string') ||
+          (value.vehicle!==undefined && (!value.vehicle || Array.isArray(value.vehicle) || typeof value.vehicle!=='object'))) throw {code:3};
+        const fields=Object.keys(value);
+        const vehicle=value.vehicle || {};
+        const vehicleFields=Object.keys(vehicle);
+        if(vehicleFields.some(key=>!['licensePlate','serviceType','make','model','color','seatCount'].includes(key)) ||
+          vehicleFields.some(key=>key==='seatCount' ? !Number.isInteger(vehicle[key]) : typeof vehicle[key]!=='string') ||
+          (value.fullName!==undefined && !value.fullName.trim()) ||
+          (value.phoneNumber!==undefined && !/^\+[1-9]\d{5,14}$/.test(value.phoneNumber))) throw {code:3};
+        if(value.vehicle!==undefined && !vehicleFields.length) throw {code:3};
+        payload={
+          fields,
+          fullName:value.fullName || '',
+          phoneNumber:value.phoneNumber || '',
+          vehicleFields,
+          licensePlate:vehicle.licensePlate || '',
+          serviceType:vehicle.serviceType || '',
+          make:vehicle.make || '',
+          model:vehicle.model || '',
+          color:vehicle.color || '',
+          seatCount:vehicle.seatCount || 0,
+        };
       } else {
         if(req.body!==undefined && (Array.isArray(req.body) || typeof req.body!=='object' || (req.body.reason!==undefined && typeof req.body.reason!=='string'))) throw {code:3};
         payload={driverId:req.params.id,decision:operation==='approveDriver'?'APPROVE':'REJECT',reason:req.body?.reason || ''};
@@ -76,8 +124,9 @@ function registerDriverRoutes(app,runtime) {
           totalItems:total,totalPages:Number(result.meta.totalPages),total});
       }
       if(rpc==='heartbeat') return res.json({driverId:result.driverId,acceptedAt:result.acceptedAt,availability:result.availability});
+      if(rpc==='updateDriverProfile') return res.json(updatedDriverBody(result));
       return res.json(driverBody(result));
     } catch(error) {return rpcError(res,req.correlationId,error);}
   });
 }
-module.exports={registerDriverRoutes,driverBody};
+module.exports={registerDriverRoutes,driverBody,updatedDriverBody};

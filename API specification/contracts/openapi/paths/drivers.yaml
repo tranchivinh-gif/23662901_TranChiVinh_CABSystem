@@ -149,12 +149,12 @@ driversMeAvailability:
     x-cab-public-via: api-gateway
     x-cab-internal-transport: gRPC
 driversMe:
-  put:
+  patch:
     tags:
     - Driver
-    summary: Cập nhật hồ sơ/phương tiện Driver của chính mình
+    summary: Cập nhật một phần hồ sơ/phương tiện Driver của chính mình
     operationId: updateMyDriverProfile
-    description: Không tự đưa hồ sơ về PENDING sau update; license plate duplicate → 409.
+    description: Chỉ các trường được gửi mới bị thay đổi. Không tự đưa hồ sơ về PENDING; license plate duplicate → 409.
     security:
     - bearerAuth: []
     requestBody:

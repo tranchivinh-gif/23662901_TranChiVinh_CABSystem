@@ -61,6 +61,48 @@ customersMe:
     x-cab-owner-service: customer-service
     x-cab-public-via: api-gateway
     x-cab-internal-transport: gRPC
+  patch:
+    tags:
+    - Customer
+    summary: Cập nhật một phần hồ sơ Customer của chính mình
+    operationId: patchMyCustomerProfile
+    description: Chỉ các trường được gửi trong request body mới bị thay đổi.
+    security:
+    - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/customer.yaml#/CustomerUpdateRequest
+    responses:
+      '200':
+        description: Hồ sơ đã cập nhật.
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/customer.yaml#/CustomerProfile
+        headers:
+          X-Correlation-Id:
+            $ref: ../components/headers.yaml#/CorrelationId
+      '400':
+        $ref: ../components/responses.yaml#/BadRequest
+      '401':
+        $ref: ../components/responses.yaml#/Unauthorized
+      '403':
+        $ref: ../components/responses.yaml#/Forbidden
+      '404':
+        $ref: ../components/responses.yaml#/NotFound
+    x-cab-trace:
+    - UC-03
+    - FR-05
+    - PC-06
+    x-contract-confidence: DESIGN_LOCKED
+    parameters:
+    - $ref: ../components/parameters.yaml#/CorrelationId
+    x-cab-owner-service: customer-service
+    x-cab-public-via: api-gateway
+    x-cab-internal-transport: gRPC
 customersCustomerId:
   get:
     tags:
